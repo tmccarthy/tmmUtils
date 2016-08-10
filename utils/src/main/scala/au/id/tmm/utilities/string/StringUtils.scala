@@ -1,7 +1,5 @@
 package au.id.tmm.utilities.string
 
-import scala.annotation.tailrec
-
 object StringUtils {
   implicit class ImprovedString(val string: String) {
     def containsIgnoreCase(subString: String): Boolean = string.toLowerCase.contains(subString.toLowerCase)
