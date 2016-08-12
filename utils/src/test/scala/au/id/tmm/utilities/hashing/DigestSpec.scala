@@ -59,4 +59,14 @@ class DigestSpec extends ImprovedFlatSpec {
   "hashCode" should "return a hashcode" in {
     assert(testDigest.hashCode === -950740302)
   }
+
+  behaviour of "the equality check"
+
+  it should "fail for a class of another type" in {
+    assert(testDigest !== new Object)
+  }
+
+  it should "pass for the same instance" in {
+    assert(testDigest === testDigest)
+  }
 }

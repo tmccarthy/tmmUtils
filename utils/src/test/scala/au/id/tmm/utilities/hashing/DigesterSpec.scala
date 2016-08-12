@@ -17,12 +17,22 @@ class DigesterSpec extends ImprovedFlatSpec with TestingFiles {
     assert(result.get._1 === fileToTestDigest)
   }
 
-  it should "return the exception if one is encountered" in {
+  it should "return the exception if one is encountered in the stream construction" in {
     val result = Digester.sha256(Files.newInputStream(missingFile))
       .map(inputStream => while (inputStream.read() >= 0) {})
       .get()
 
     intercept[NoSuchFileException] {
+      result.get
+    }
+  }
+
+  it should "return the exception if one is encountered in the mapper" in {
+    val result = Digester.sha256(Files.newInputStream(fileToTest))
+      .map(inputStream => throw new IndexOutOfBoundsException)
+      .get()
+
+    intercept[IndexOutOfBoundsException] {
       result.get
     }
   }
