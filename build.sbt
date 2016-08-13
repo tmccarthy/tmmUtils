@@ -14,8 +14,9 @@ lazy val utils = (project in file("utils"))
   .settings(
     name := "tmmUtils",
     organization := "au.id.tmm",
-    version := "1.0-SNAPSHOT"
+    git.baseVersion := "0.1"
   )
+  .enablePlugins(GitVersioning)
   .settings(
     libraryDependencies += "com.google.guava" % "guava" % "19.0",
     libraryDependencies += "com.jsuereth" %% "scala-arm" % "1.4",
@@ -26,8 +27,9 @@ lazy val testUtils = (project in file("testUtils"))
   .settings(
     name := "tmmTestUtils",
     organization := "au.id.tmm",
-    version := "1.0-SNAPSHOT"
+    git.baseVersion := "0.1"
   )
+  .enablePlugins(GitVersioning)
   .settings(
     libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1"
   )
