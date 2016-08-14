@@ -48,6 +48,10 @@ class DigestSpec extends ImprovedFlatSpec {
     assert(testDigest.asHexString === "e37f03dc379fe6baa26298120b0f0a32b8bd366e510ce08c9fa350bf97e99e4f")
   }
 
+  "asBase64String" should "return the base64 representation of the digest" in {
+    assert(testDigest.asBase64 === "438D3Def5rqiYpgSCw8KMri9Nm5RDOCMn6NQv5fpnk8=")
+  }
+
   "toString" should "return the hex representation of the digest and look like a case class toString" in {
     assert(testDigest.toString === s"Digest(${testDigest.asHexString})")
   }

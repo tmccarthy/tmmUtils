@@ -12,6 +12,8 @@ class Digest private (private val bytes: mutable.WrappedArray[Byte]) {
 
   lazy val asHexString: String = bytes.array.toHex
 
+  lazy val asBase64: String = bytes.array.toBase64
+
   def length: Int = bytes.length
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Digest]

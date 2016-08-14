@@ -1,5 +1,6 @@
 package au.id.tmm.utilities.encoding
 
+import java.util.Base64
 import javax.xml.bind.DatatypeConverter
 
 import scala.collection.mutable
@@ -15,6 +16,8 @@ object EncodingUtils {
 
       new String(hexChars)
     }
+
+    def toBase64: String = Base64.getEncoder.encodeToString(bytes)
   }
 
   // http://stackoverflow.com/a/21178195/1951001

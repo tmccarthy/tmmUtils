@@ -27,4 +27,11 @@ class EncodingUtilsSpec extends ImprovedFlatSpec {
     assert(bytes.toHex === "e37f03")
   }
 
+  behaviour of "the toBase64 method"
+
+  it should "correctly convert to base64" in {
+    val bytes: Array[Byte] = Array(-29, 127, 3).map(_.toByte)
+
+    assert(bytes.toBase64 === "438D")
+  }
 }
