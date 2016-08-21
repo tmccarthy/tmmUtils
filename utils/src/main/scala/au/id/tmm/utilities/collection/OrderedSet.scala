@@ -1,66 +1,43 @@
 package au.id.tmm.utilities.collection
 
-import java.util.function.Consumer
+import scala.collection.SetLike
 
-import com.google.common.collect.ImmutableSet
-
-import scala.collection.JavaConverters._
-
-class OrderedSet[A] private (private val data: ImmutableSet[A]) extends Set[A] {
+class OrderedSet[A] private (private val data: Set[A], private val iterationOrder: Vector[A]) extends Set[A] with SetLike[A, OrderedSet[A]] {
   override def contains(elem: A): Boolean = data.contains(elem)
 
-  override def +(elem: A): Set[A] = {
-    if (contains(elem)) {
+  override def +(elem: A): OrderedSet[A] = {
+    if (this contains elem) {
       this
     } else {
-      val newData = ImmutableSet.builder[A]
-        .addAll(data)
-        .add(elem)
-        .build
-
-      new OrderedSet(newData)
+      new OrderedSet(data + elem, iterationOrder :+ elem)
     }
   }
 
-  override def -(elem: A): Set[A] = {
-    if (contains(elem)) {
-      val newData = ImmutableSet.builder[A]
-
-      toStream.filterNot(_ == elem).foreach(newData.add)
-
-      new OrderedSet(newData.build)
+  override def -(elem: A): OrderedSet[A] = {
+    if (this.contains(elem)) {
+      new OrderedSet(data - elem, iterationOrder.filterNot(_ == elem))
     } else {
       this
     }
   }
 
-  override def iterator: Iterator[A] = data.iterator.asScala
+  override def iterator: Iterator[A] = iterationOrder.iterator
 
-  override def empty: OrderedSet[A] = OrderedSet()
+  override def empty: OrderedSet[A] = OrderedSet.EMPTY.asInstanceOf[OrderedSet[A]]
 
   override def foreach[U](f: (A) => U): Unit = {
-    data.forEach(new Consumer[A] {
-      override def accept(element: A): Unit = f(element)
-    })
+    iterationOrder.foreach(f)
   }
 
   override def size: Int = data.size
 }
 
 object OrderedSet {
-  private val EMPTY: OrderedSet[Any] = new OrderedSet(ImmutableSet.of[Any])
+  private val EMPTY: OrderedSet[Any] = new OrderedSet(Set.empty, Vector.empty)
 
-  def apply[A](elems: A*): OrderedSet[A] = {
-    if (elems.isEmpty) {
-      EMPTY.asInstanceOf[OrderedSet[A]]
-    } else {
-      val data = ImmutableSet.builder[A]
+  def empty[A]: OrderedSet[A] = EMPTY.asInstanceOf[OrderedSet[A]]
 
-      elems.foreach(data.add)
+  def apply[A](): OrderedSet[A] = empty
 
-      wrapping(data.build)
-    }
-  }
-
-  def wrapping[A](data: ImmutableSet[A]): OrderedSet[A] = new OrderedSet(data)
+  def apply[A](elems: A*): OrderedSet[A] = new OrderedSet(elems.toSet, elems.distinct.toVector)
 }

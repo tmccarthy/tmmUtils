@@ -1,9 +1,9 @@
-package au.id.tmm.utilities.files
+package au.id.tmm.utilities.io
 
 import java.nio.file.NoSuchFileException
 
 import au.id.tmm.utilities.TestingFiles
-import au.id.tmm.utilities.files.FileUtils.ImprovedPath
+import au.id.tmm.utilities.io.FileUtils.ImprovedPath
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
 
 import scala.util.Success

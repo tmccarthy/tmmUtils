@@ -6,7 +6,7 @@ scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 
 coverageEnabled in ThisBuild := true
 
-lazy val tmmUtilitiesRoot = (project in file("."))
+lazy val root = (project in file("."))
   .aggregate(utils, testUtils)
 
 lazy val utils = (project in file("utils"))

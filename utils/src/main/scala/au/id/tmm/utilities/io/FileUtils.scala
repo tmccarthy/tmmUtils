@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.files
+package au.id.tmm.utilities.io
 
 import java.nio.file.{Files, Path}
 

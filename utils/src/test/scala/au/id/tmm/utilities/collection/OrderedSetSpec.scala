@@ -6,18 +6,16 @@ class OrderedSetSpec extends ImprovedFlatSpec {
 
   behaviour of "an Ordered Set"
 
+  it should "retain the order of the earliest element when initialised" in {
+    assert(OrderedSet(1, 2, 3, 1).toList === List(1, 2, 3))
+  }
+
   it should "not contain duplicates" in {
     assert(OrderedSet(1, 1, 1).count(_ == 1) === 1)
   }
 
   it should "retain insertion order" in {
     assert(OrderedSet("the", "quick", "brown", "fox").toList === List("the", "quick", "brown", "fox"))
-  }
-
-  it should "reject \"null\"" in {
-    intercept[NullPointerException] {
-      OrderedSet(null)
-    }
   }
 
   it should "correctly implement contains" in {
