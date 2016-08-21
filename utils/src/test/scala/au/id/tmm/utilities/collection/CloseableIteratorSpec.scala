@@ -18,6 +18,20 @@ class CloseableIteratorSpec extends ImprovedFlatSpec {
 
   private val sut = CloseableIterator(underlyingIterator, testCloseable)
 
+  "the duck typing constructor" should "allow the closing of the underlying resource" in {
+    val closeable = new Object {
+      var isClosed = false
+
+      def close(): Unit = isClosed = true
+    }
+
+    val closeableIterator = CloseableIterator(underlyingIterator, closeable)
+
+    closeableIterator.close()
+
+    assert(closeable.isClosed)
+  }
+
   behaviour of "the close method"
 
   it should "call close on the underlying resource" in {

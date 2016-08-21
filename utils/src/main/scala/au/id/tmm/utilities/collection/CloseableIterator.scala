@@ -120,6 +120,14 @@ trait CloseableIterator[+A] extends Iterator[A] with Closeable { self =>
 }
 
 object CloseableIterator {
+  def apply[A](iterator: Iterator[A], closeable: {def close(): Unit}): CloseableIterator[A] =
+    closeable match {
+      case c: Closeable => CloseableIterator(iterator, c)
+      case _ => CloseableIterator(iterator, new Closeable {
+        override def close(): Unit = closeable.close()
+      })
+    }
+
   def apply[A](iterator: Iterator[A], closeable: Closeable): CloseableIterator[A] =
     new WrappingCloseableIterator[A](iterator, closeable)
 }
