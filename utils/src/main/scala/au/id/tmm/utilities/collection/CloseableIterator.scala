@@ -4,7 +4,9 @@ import java.io.Closeable
 
 import au.id.tmm.utilities.io.CloseableUtils.ImprovedCloseable
 
-import scala.collection.GenTraversableOnce
+import scala.collection.generic.CanBuildFrom
+import scala.collection.mutable.ArrayBuffer
+import scala.collection.{GenTraversableOnce, mutable}
 
 /**
   * @define closeBoth The [[CloseableIterator]]s returned by this method split the closeable using the
@@ -121,15 +123,59 @@ trait CloseableIterator[+A] extends Iterator[A] with Closeable { self =>
 
 object CloseableIterator {
   def apply[A](iterator: Iterator[A], closeable: {def close(): Unit}): CloseableIterator[A] =
-    closeable match {
-      case c: Closeable => CloseableIterator(iterator, c)
-      case _ => CloseableIterator(iterator, new Closeable {
-        override def close(): Unit = closeable.close()
-      })
-    }
+    CloseableIterator(iterator, new Closeable {
+      override def close(): Unit = closeable.close()
+    })
+
 
   def apply[A](iterator: Iterator[A], closeable: Closeable): CloseableIterator[A] =
     new WrappingCloseableIterator[A](iterator, closeable)
+
+  private object NoOpCloseable extends Closeable {
+    override def close(): Unit = {}
+  }
+
+  def withoutResource[A](iterator: Iterator[A]): CloseableIterator[A] =
+    new WrappingCloseableIterator[A](iterator, NoOpCloseable)
+
+  implicit class IterableConstruction[+A](iterable: Iterable[A]) {
+    def toCloseableIterator: CloseableIterator[A] = withoutResource(iterable.iterator)
+
+    def toCloseableIteratorWith(closeable: Closeable): CloseableIterator[A] = apply(iterable.toIterator, closeable)
+
+    def toCloseableIteratorWith(closeable: {def close(): Unit}): CloseableIterator[A] = apply(iterable.toIterator, closeable)
+  }
+
+  implicit class IteratorConstruction[+A](iterator: Iterator[A]) {
+    def toCloseableIterator: CloseableIterator[A] = withoutResource(iterator)
+
+    def toCloseableIteratorWith(closeable: Closeable): CloseableIterator[A] = apply(iterator, closeable)
+
+    def toCloseableIteratorWith(closeable: {def close(): Unit}): CloseableIterator[A] = apply(iterator, closeable)
+  }
+
+  class CloseableIteratorBuilder[A](initialElems: Iterable[A], closeable: Closeable) extends mutable.Builder[A, CloseableIterator[A]] {
+    private var elems: ArrayBuffer[A] = ArrayBuffer[A](initialElems.toSeq:_*)
+
+    override def +=(elem: A): this.type = {
+      elems += elem
+      this
+    }
+    override def clear(): Unit = elems.clear()
+    override def result(): CloseableIterator[A] = elems.toCloseableIteratorWith(closeable)
+  }
+
+  implicit def CloseableIteratorCanBuildFrom[A]: CanBuildFrom[Iterable[_ <: A], A, CloseableIterator[A]] =
+    new CanBuildFrom[Iterable[_ <: A], A, CloseableIterator[A]] {
+      override def apply(from: Iterable[_ <: A]): mutable.Builder[A, CloseableIterator[A]] = new CloseableIteratorBuilder[A](from, NoOpCloseable)
+      override def apply(): mutable.Builder[A, CloseableIterator[A]] = new CloseableIteratorBuilder[A](Nil, NoOpCloseable)
+    }
+
+  implicit def CloseableIteratorCanBuildFromOther[A]: CanBuildFrom[CloseableIterator[_], A, CloseableIterator[A]] =
+    new CanBuildFrom[CloseableIterator[_], A, CloseableIterator[A]] {
+      override def apply(from: CloseableIterator[_]): mutable.Builder[A, CloseableIterator[A]] = new CloseableIteratorBuilder[A](Nil, from)
+      override def apply(): mutable.Builder[A, CloseableIterator[A]] = new CloseableIteratorBuilder[A](Nil, NoOpCloseable)
+    }
 }
 
 class WrappingCloseableIterator[+A](private val underlying: Iterator[A], private val closeable: Closeable)

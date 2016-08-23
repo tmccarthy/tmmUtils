@@ -2,7 +2,12 @@ package au.id.tmm.utilities.collection
 
 import java.io.Closeable
 
+import au.id.tmm.utilities.collection.CloseableIterator.{IterableConstruction, IteratorConstruction}
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class CloseableIteratorSpec extends ImprovedFlatSpec {
 
@@ -12,24 +17,154 @@ class CloseableIteratorSpec extends ImprovedFlatSpec {
     override def close(): Unit = isClosed = true
   }
 
+  private lazy val testDuckCloseable = new Object {
+    var isClosed = false
+
+    def close(): Unit = isClosed = true
+  }
+
   private val data = Range(0, 5).toList
 
   private val underlyingIterator = data.toIterator
 
   private val sut = CloseableIterator(underlyingIterator, testCloseable)
 
-  "the duck typing constructor" should "allow the closing of the underlying resource" in {
-    val closeable = new Object {
-      var isClosed = false
+  behaviour of "the duck typing constructor"
 
-      def close(): Unit = isClosed = true
-    }
-
-    val closeableIterator = CloseableIterator(underlyingIterator, closeable)
+  it should "allow the closing of the underlying resource" in {
+    val closeableIterator = CloseableIterator(underlyingIterator, testDuckCloseable)
 
     closeableIterator.close()
 
-    assert(closeable.isClosed)
+    assert(testDuckCloseable.isClosed)
+  }
+
+  behaviour of "the toCloseableIterator utility"
+
+  it should "construct a CloseableIterator from a List" in {
+    val closeableIterator = data.toCloseableIterator
+
+    assert(closeableIterator.toList === data)
+  }
+
+  it should "construct a CloseableIterator from an Iterator" in {
+    val closeableIterator = data.toIterator.toCloseableIterator
+
+    assert(closeableIterator.toList === data)
+  }
+
+  it should "make a CloseableIterator that does nothing on a call to close" in {
+    val closeableIterator = data.toCloseableIterator
+
+    closeableIterator.close()
+  }
+
+  behaviour of "the toCloseableIteratorWith utility"
+
+  it should "construct a CloseableIterator from a List" in {
+    val closeableIterator = data.toCloseableIteratorWith(testCloseable)
+
+    assert(closeableIterator.toList === data)
+  }
+
+  it should "close the underlying resource correctly when constructed from a List" in {
+    val closeableIterator = data.toCloseableIteratorWith(testCloseable)
+
+    closeableIterator.close()
+
+    assert(testCloseable.isClosed)
+  }
+
+  it should "close the underlying (duck typed) resource correctly when constructed from a List" in {
+    val closeableIterator = data.toCloseableIteratorWith(testDuckCloseable)
+
+    closeableIterator.close()
+
+    assert(testDuckCloseable.isClosed)
+  }
+
+  it should "construct a CloseableIterator from an Iterator" in {
+    val closeableIterator = data.toIterator.toCloseableIteratorWith(testCloseable)
+
+    assert(closeableIterator.toList === data)
+  }
+
+  it should "close the underlying resource correctly when constructed from an Iterator" in {
+    val closeableIterator = data.toIterator.toCloseableIteratorWith(testCloseable)
+
+    closeableIterator.close()
+
+    assert(testCloseable.isClosed)
+  }
+
+  it should "close the underlying (duck typed) resource correctly when constructed from an Iterator" in {
+    val closeableIterator = data.toIterator.toCloseableIteratorWith(testDuckCloseable)
+
+    closeableIterator.close()
+
+    assert(testDuckCloseable.isClosed)
+  }
+
+  behaviour of "the CanBuildFrom"
+
+  it should "build a CloseableIterator from scratch" in {
+    val builder = CloseableIterator.CloseableIteratorCanBuildFrom[String]()
+
+    val elements = List("hello", "world")
+
+    builder ++= elements
+
+    val closeableIterator = builder.result()
+
+    assert(closeableIterator.toList === elements)
+  }
+
+  it should "build a CloseableIterator from an existing one" in {
+    val builder = CloseableIterator.CloseableIteratorCanBuildFrom(data)
+
+    builder += (5, 6)
+
+    val closeableIterator = builder.result()
+
+    assert(closeableIterator.toList === List(0, 1, 2, 3, 4, 5, 6))
+  }
+
+  it should "build a CloseableIterator from scratch using the CloseableIterator CanBuildFrom" in {
+    val builder = CloseableIterator.CloseableIteratorCanBuildFromOther[String]()
+
+    val elements = List("hello", "world")
+
+    builder ++= elements
+
+    val closeableIterator = builder.result()
+
+    assert(closeableIterator.toList === elements)
+  }
+
+  it should "build a Future CloseableIterator from a CloseableIterator of Futures with Future.sequence" in {
+    val closeableIteratorOfFutures = Iterator(
+      Future(1),
+      Future(2),
+      Future(3)
+    ).toCloseableIteratorWith(testCloseable)
+
+    val futureOfResults = Future.sequence(closeableIteratorOfFutures)
+
+    Await.result(futureOfResults, Duration.Inf).close()
+
+    assert(testCloseable.isClosed)
+  }
+
+  it should "return a builder that can be cleared" in {
+    val builder = CloseableIterator.CloseableIteratorCanBuildFrom[String]()
+
+    builder ++= List("hello", "world")
+
+    builder.clear()
+
+    val closeableIterator = builder.result()
+
+    assert(closeableIterator.toList === Nil)
   }
 
   behaviour of "the close method"
