@@ -6,7 +6,11 @@ scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 
 coverageEnabled in ThisBuild := true
 
+publishTo in ThisBuild := Some("Artifactory Realm" at "http://artifactory.ambitious.tools/artifactory/sbt-libs-release-local")
+credentials in ThisBuild += Credentials(file("ambitiousTools.credentials"))
+
 lazy val root = (project in file("."))
+  .settings(publishArtifact := false)
   .aggregate(utils, testUtils)
 
 lazy val utils = (project in file("utils"))
@@ -31,5 +35,6 @@ lazy val testUtils = (project in file("testUtils"))
   )
   .enablePlugins(GitVersioning)
   .settings(
+    isSnapshot := false,
     libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1"
   )
