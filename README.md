@@ -18,6 +18,6 @@ resolvers in ThisBuild +=
 libraryDependencies += "au.id.tmm" %% "tmmutils" % "0.1"
 
 // Test utilities
-libraryDependencies += "au.id.tmm" %% "tmmtestutils" % "0.1-af6c9233b6ff21eae9a5f2973eb37deb299c429a" % "test"
+libraryDependencies += "au.id.tmm" %% "tmmtestutils" % "0.1" % "test"
 
 ```
