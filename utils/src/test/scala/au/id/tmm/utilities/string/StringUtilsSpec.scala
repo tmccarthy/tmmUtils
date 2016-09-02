@@ -75,4 +75,32 @@ class StringUtilsSpec extends ImprovedFlatSpec {
   it should "return false when the string contains the substring but not as a word" in {
     assert(!LORUM_IPSUM.containsAnyWordIgnoreCase("Lor", "blah"))
   }
+
+  behaviour of "rtrim"
+
+  it should "trim trailing spaces" in {
+    assert("hello  ".rtrim === "hello")
+  }
+
+  it should "trim trailing tabs" in {
+    assert("hello\t".rtrim === "hello")
+  }
+
+  it should "return the same string if there's nothing to trim" in {
+    assert("hello".rtrim eq "hello")
+  }
+
+  behaviour of "ltrim"
+
+  it should "trim leading spaces" in {
+    assert("  hello".ltrim === "hello")
+  }
+
+  it should "trim leading tabs" in {
+    assert("\thello".ltrim === "hello")
+  }
+
+  it should "return the same string if there's nothing to trim" in {
+    assert("hello".ltrim eq "hello")
+  }
 }

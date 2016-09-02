@@ -21,5 +21,25 @@ object StringUtils {
         case word if string.containsWordIgnoreCase(word) => true
       } getOrElse false
     }
+
+    def rtrim: String = {
+      var i = string.length - 1
+
+      while (i >= 0 && Character.isWhitespace(string.charAt(i))) {
+        i = i - 1
+      }
+
+      string.substring(0, i + 1)
+    }
+
+    def ltrim: String = {
+      var i = 0
+
+      while (i < string.length() && Character.isWhitespace(string.charAt(i))) {
+        i = i + 1
+      }
+
+      string.substring(i)
+    }
   }
 }
