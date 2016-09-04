@@ -9,7 +9,7 @@ coverageEnabled in ThisBuild := true
 publishTo in ThisBuild := Some("Artifactory Realm" at "http://artifactory.ambitious.tools/artifactory/sbt-libs-release-local")
 credentials in ThisBuild += Credentials(file("ambitiousTools.credentials"))
 
-lazy val root = (project in file("."))
+lazy val root = Project("tmmUtils", file("."))
   .settings(publishArtifact := false)
   .aggregate(utils, testUtils)
 
