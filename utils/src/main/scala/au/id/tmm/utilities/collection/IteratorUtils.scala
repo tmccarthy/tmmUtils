@@ -1,5 +1,8 @@
 package au.id.tmm.utilities.collection
 
+import scala.annotation.tailrec
+import scala.collection.mutable
+
 object IteratorUtils {
   implicit class ImprovedIterator[+A](iterator: Iterator[A]) {
 
@@ -9,11 +12,32 @@ object IteratorUtils {
       * leaving it free for continued use after the invocation.
       */
     def readAtMost(n: Int): Vector[A] = {
-      val result: scala.collection.mutable.ArrayBuffer[A] = new scala.collection.mutable.ArrayBuffer(n)
+      val result: mutable.ArrayBuffer[A] = new mutable.ArrayBuffer(n)
 
       while (result.size < n && iterator.hasNext) {
         result += iterator.next()
       }
+
+      result.toVector
+    }
+
+    def readUntil(p: A => Boolean): Vector[A] = {
+      val result: mutable.ArrayBuffer[A] = mutable.ArrayBuffer()
+
+      @tailrec
+      def readMore(): Unit = {
+        if (iterator.hasNext) {
+          val element = iterator.next()
+
+          result += element
+
+          if (!p(element)) {
+            readMore()
+          }
+        }
+      }
+
+      readMore()
 
       result.toVector
     }

@@ -8,7 +8,7 @@ class IteratorUtilsSpec extends ImprovedFlatSpec {
   val data = List("the", "quick", "brown", "fox")
   val iterator = data.iterator
 
-  "read" should "read the first n elements of the iterator" in {
+  "readAtMost" should "read the first n elements of the iterator" in {
     assert(List("the", "quick") === iterator.readAtMost(2))
   }
 
@@ -20,6 +20,20 @@ class IteratorUtilsSpec extends ImprovedFlatSpec {
 
   it should "read only as many elements remain in the iterator" in {
     assert(data === iterator.readAtMost(5))
+  }
+
+  "readUntil" should "read until encountering an element matching the condition" in {
+    assert(Vector("the", "quick", "brown") === iterator.readUntil(_.startsWith("b")))
+  }
+
+  it should "leave the underlying iterator iterating through the subsequent elements" in {
+    iterator.readUntil(_.startsWith("b"))
+
+    assert(List("fox") === iterator.toList)
+  }
+
+  it should "read only as many elements remain in the iterator" in {
+    assert(data === iterator.readUntil(_ => false))
   }
 
 }
