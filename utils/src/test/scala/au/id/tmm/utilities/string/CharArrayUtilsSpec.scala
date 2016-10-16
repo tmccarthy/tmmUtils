@@ -10,7 +10,7 @@ class CharArrayUtilsSpec extends ImprovedFlatSpec {
 
     charArray.zeroOut()
 
-    assert(charArray.toList === Vector.fill(charArray.length)('\0'))
+    assert(charArray.toList === Vector.fill(charArray.length)('\u0000'))
   }
 
 }

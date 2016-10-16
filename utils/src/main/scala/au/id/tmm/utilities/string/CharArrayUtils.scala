@@ -4,6 +4,6 @@ import java.util
 
 object CharArrayUtils {
   implicit class ImprovedCharArray(array: Array[Char]) {
-    def zeroOut(): Unit = util.Arrays.fill(array, '\0')
+    def zeroOut(): Unit = util.Arrays.fill(array, '\u0000')
   }
 }
