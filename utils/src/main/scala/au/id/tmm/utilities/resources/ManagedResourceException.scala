@@ -1,7 +1,7 @@
 package au.id.tmm.utilities.resources
 
 final class ManagedResourceException(val exceptions: Vector[Throwable])
-  extends Exception ("Managed resource encountered exception") {
+  extends Exception ("Managed resource encountered exception", exceptions.headOption.orNull) {
 
   override def equals(other: Any): Boolean = other match {
     case that: ManagedResourceException =>

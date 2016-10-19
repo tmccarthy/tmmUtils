@@ -41,5 +41,26 @@ object IteratorUtils {
 
       result.toVector
     }
+
+    def readAtMostUntil(n: Int, p: A => Boolean): Vector[A] = {
+      val result: mutable.ArrayBuffer[A] = new mutable.ArrayBuffer[A](n)
+
+      @tailrec
+      def readMore(): Unit = {
+        if (iterator.hasNext) {
+          val element = iterator.next()
+
+          result += element
+
+          if (!p(element) && result.size < n) {
+            readMore()
+          }
+        }
+      }
+
+      readMore()
+
+      result.toVector
+    }
   }
 }

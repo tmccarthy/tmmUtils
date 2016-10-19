@@ -13,4 +13,10 @@ class ManagedResourceExceptionSpec extends ImprovedFlatSpec {
       "ManagedResourceException(Vector(java.lang.RuntimeException: Hello world))")
   }
 
+  it should "make the head of the exceptions vector its cause" in {
+    val exception = new RuntimeException("Hello world")
+
+    assert(new ManagedResourceException(Vector(exception)).getCause === exception)
+  }
+
 }
