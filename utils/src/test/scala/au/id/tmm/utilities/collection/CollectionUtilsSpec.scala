@@ -2,6 +2,7 @@ package au.id.tmm.utilities.collection
 
 import au.id.tmm.utilities.collection.CollectionUtils.Crossable
 import au.id.tmm.utilities.collection.CollectionUtils.Sortable
+import au.id.tmm.utilities.collection.CollectionUtils.DoubleMapOps
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
 
 import scala.collection.SortedSet
@@ -41,6 +42,60 @@ class CollectionUtilsSpec extends ImprovedFlatSpec {
 
     assert(List(first, second, third).toSortedSet === SortedSet(first, second, third))
   }
+
+  behaviour of "map addition"
+
+  it should "add the elements of two maps" in {
+    val left = Map("A" -> 1d, "B" -> 2d)
+    val right = Map("A" -> 2d, "B" -> 3d)
+
+    assert(left + right === Map("A" -> 3d, "B" -> 5d))
+  }
+
+  it should "consider missing keys to map to 0" in {
+    val left = Map("A" -> 1d, "B" -> 2d)
+    val right = Map("B" -> 3d)
+
+    assert(left + right === Map("A" -> 1d, "B" -> 5d))
+  }
+
+  behaviour of "map division by another map"
+
+  it should "divide the map values" in {
+    val left = Map("A" -> 2d, "B" -> 8d)
+    val right = Map("A" -> 1d, "B" -> 2d)
+
+    assert(left / right === Map("A" -> 2d, "B" -> 4d))
+  }
+
+  it should "consider missing keys in the numerator to map to 0" in {
+    val left = Map("A" -> 2d)
+    val right = Map("A" -> 1d, "B" -> 2d)
+
+    assert(left / right === Map("A" -> 2d, "B" -> 0d))
+  }
+
+  it should "fail if there are missing keys in the denominator" in {
+    val left = Map("A" -> 2d, "B" -> 8d)
+    val right = Map("A" -> 1d)
+
+    intercept[NoSuchElementException](left / right)
+  }
+
+  behaviour of "map division by a scalar"
+
+  it should "divide the map values" in {
+    val tally = Map("A" -> 2d, "B" -> 8d)
+
+    assert(tally / 2d === Map("A" -> 1d, "B" -> 4d))
+  }
+
+  it should "fail if dividing by 0" in {
+    val tally = Map("A" -> 2d, "B" -> 8d)
+
+    intercept[ArithmeticException](tally / 0d)
+  }
+
 }
 
 private final case class TestOrdered private (name: String) extends Ordered[TestOrdered] {
