@@ -36,5 +36,6 @@ lazy val testUtils = (project in file("testUtils"))
   .enablePlugins(GitVersioning)
   .settings(
     isSnapshot := false,
-    libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1"
+    libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1",
+    libraryDependencies += "commons-io" % "commons-io" % "2.4"
   )
