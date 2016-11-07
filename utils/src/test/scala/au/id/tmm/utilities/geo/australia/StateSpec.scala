@@ -20,8 +20,15 @@ class StateSpec extends ImprovedFlatSpec {
     assert(State.fromAbbreviation("SA") === Some(State.SA))
   }
 
-  it should "have a nice toString" in {
+  it should "have a toString" in {
     assert(State.SA.toString === "State(SA)")
   }
 
+  it should "have a toNiceString" in {
+    assert(State.SA.toNiceString === "South Australia")
+  }
+
+  it should "include the definite article in the nice string representation when appropriate" in {
+    assert(State.ACT.toNiceString === "the Australian Capital Territory")
+  }
 }

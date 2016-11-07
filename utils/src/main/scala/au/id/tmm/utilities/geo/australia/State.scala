@@ -2,11 +2,20 @@ package au.id.tmm.utilities.geo.australia
 
 final case class State private (name: String,
                                 abbreviation: String,
-                                isTerritory: Boolean) extends Ordered[State] {
+                                isTerritory: Boolean,
+                                requiresDefiniteArticle: Boolean = false) extends Ordered[State] {
 
   override def compare(that: State): Int = State.ordering.compare(this, that)
 
   override def toString: String = s"${getClass.getSimpleName}($abbreviation)"
+
+  def toNiceString: String = {
+    if (requiresDefiniteArticle) {
+      s"the $name"
+    } else {
+      name
+    }
+  }
 }
 
 object State {
@@ -17,8 +26,8 @@ object State {
   val VIC = State("Victoria", "VIC", isTerritory = false)
   val WA = State("Western Australia", "WA", isTerritory = false)
 
-  val NT = State("Northern Territory", "NT", isTerritory = true)
-  val ACT = State("Australian Capital Territory", "ACT", isTerritory = true)
+  val NT = State("Northern Territory", "NT", isTerritory = true, requiresDefiniteArticle = true)
+  val ACT = State("Australian Capital Territory", "ACT", isTerritory = true, requiresDefiniteArticle = true)
 
   val ALL_STATES = Set(NSW, QLD, SA, TAS, VIC, WA, NT, ACT)
 
