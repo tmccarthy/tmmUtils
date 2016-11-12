@@ -4,6 +4,7 @@ import java.io.Closeable
 
 import au.id.tmm.utilities.io.CloseableUtils.ImprovedCloseable
 
+import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{GenTraversableOnce, mutable}
@@ -92,6 +93,15 @@ trait CloseableIterator[+A] extends Iterator[A] with Closeable { self =>
   override def sliding[B >: A](size: Int, step: Int): CloseableGroupedIterator[B] = new CloseableGroupedIterator[B](this, size, step)
 
   override def toIterator: CloseableIterator[A] = this
+
+  // Signature is copied from the overridden method
+  override def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, A, Col[A @uncheckedVariance]]): Col[A @uncheckedVariance] = {
+    try {
+      super.to(cbf)
+    } finally {
+      close()
+    }
+  }
 
   @deprecated(message = "Unsupported", since = "0.1")
   override def buffered = throw new UnsupportedOperationException()

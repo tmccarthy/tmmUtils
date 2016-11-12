@@ -326,6 +326,12 @@ class CloseableIteratorSpec extends ImprovedFlatSpec {
     }
   }
 
+  "toVector" should "close the iterator" in {
+    sut.toVector
+
+    assert(testCloseable.isClosed)
+  }
+
   def testMappingMethod[A](methodName: String, testInvocation: (CloseableIterator[Int]) => CloseableIterator[A], expected: => List[A]): Unit = {
     behaviour of methodName
 
