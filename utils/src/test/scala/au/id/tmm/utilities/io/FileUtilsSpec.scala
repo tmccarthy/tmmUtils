@@ -21,4 +21,12 @@ class FileUtilsSpec extends ImprovedFlatSpec with TestingFiles {
       missingFile.sha256Checksum.get
     }
   }
+
+  "a path" can "be used to create a Source" in {
+    val source = fileToTest.source()
+
+    val actualContent = source.getLines().mkString("\n")
+
+    assert(actualContent === fileToTestContent)
+  }
 }
