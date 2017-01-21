@@ -49,6 +49,12 @@ class PairingSpec extends ImprovedFlatSpec {
     }
   }
 
+  it should "combine 3 values" in {
+    assert(Pairing.Szudzik.combine(42, 53, 1) === 8131053)
+  }
 
+  it should "invert to 3 values" in {
+    assert(Pairing.Szudzik.invert3(8131053) === (42, 53, 1))
+  }
 
 }
