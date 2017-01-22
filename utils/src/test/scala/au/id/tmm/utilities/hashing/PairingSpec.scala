@@ -57,4 +57,10 @@ class PairingSpec extends ImprovedFlatSpec {
     assert(Pairing.Szudzik.invert3(8131053) === (42, 53, 1))
   }
 
+  it should "throw on an overflow" in {
+    intercept[ArithmeticException] {
+      Pairing.Szudzik.pair(Long.MaxValue, 3)
+    }
+  }
+
 }

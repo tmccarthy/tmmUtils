@@ -1,5 +1,7 @@
 package au.id.tmm.utilities.hashing
 
+import java.lang.Math._
+
 import scala.math.{floor, pow, sqrt}
 
 object Pairing {
@@ -45,9 +47,9 @@ object Pairing {
       require(y >= 0)
 
       if (y > x) {
-        y * y + x
+        addExact(multiplyExact(y, y), x)
       } else {
-        x * x + x + y
+        addExact(addExact(multiplyExact(x, x), x), y)
       }
     }
 
