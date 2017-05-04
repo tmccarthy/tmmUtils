@@ -1,6 +1,6 @@
 import sbt.Keys._
 
-scalaVersion in ThisBuild := "2.11.8"
+scalaVersion in ThisBuild := "2.12.2"
 
 scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 
@@ -23,8 +23,8 @@ lazy val utils = (project in file("utils"))
   .enablePlugins(GitVersioning)
   .settings(
     libraryDependencies += "com.google.guava" % "guava" % "19.0",
-    libraryDependencies += "com.jsuereth" %% "scala-arm" % "1.4",
-    libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+    libraryDependencies += "com.jsuereth" %% "scala-arm" % "2.0",
+    libraryDependencies += "org.scalatest" % "scalatest_2.12" % "3.0.1" % "test"
   )
 
 lazy val testUtils = (project in file("testUtils"))
@@ -36,6 +36,6 @@ lazy val testUtils = (project in file("testUtils"))
   .enablePlugins(GitVersioning)
   .settings(
     isSnapshot := false,
-    libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.1",
+    libraryDependencies += "org.scalatest" % "scalatest_2.12" % "3.0.1",
     libraryDependencies += "commons-io" % "commons-io" % "2.4"
   )

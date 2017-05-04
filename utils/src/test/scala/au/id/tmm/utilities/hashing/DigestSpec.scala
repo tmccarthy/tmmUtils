@@ -61,7 +61,7 @@ class DigestSpec extends ImprovedFlatSpec {
   }
 
   "hashCode" should "return a hashcode" in {
-    assert(testDigest.hashCode === -950740302)
+    assert(testDigest.hashCode === 240390586)
   }
 
   behaviour of "the equality check"

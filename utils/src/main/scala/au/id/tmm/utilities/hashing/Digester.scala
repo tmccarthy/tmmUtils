@@ -23,7 +23,7 @@ class Digester[A] private(checksumAlgorithm: String,
       .map(mapFunction)
       .either
 
-    outcome match {
+    outcome.either match {
       case Right(result) => Success((Digest(digest.digest()), result))
       case Left(exceptions) => Failure(exceptions.last)
     }
