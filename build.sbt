@@ -9,6 +9,8 @@ coverageEnabled in ThisBuild := true
 publishTo in ThisBuild := Some("Artifactory Realm" at "http://artifactory.ambitious.tools/artifactory/sbt-libs-release-local")
 credentials in ThisBuild += Credentials(file("ambitiousTools.credentials"))
 
+crossScalaVersions in ThisBuild := Seq("2.11.8", "2.12.2")
+
 lazy val root = Project("tmmUtils", file("."))
   .settings(publishArtifact := false)
   .aggregate(utils, testUtils)
@@ -24,7 +26,7 @@ lazy val utils = (project in file("utils"))
   .settings(
     libraryDependencies += "com.google.guava" % "guava" % "19.0",
     libraryDependencies += "com.jsuereth" %% "scala-arm" % "2.0",
-    libraryDependencies += "org.scalatest" % "scalatest_2.12" % "3.0.1" % "test"
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
   )
 
 lazy val testUtils = (project in file("testUtils"))
@@ -36,6 +38,6 @@ lazy val testUtils = (project in file("testUtils"))
   .enablePlugins(GitVersioning)
   .settings(
     isSnapshot := false,
-    libraryDependencies += "org.scalatest" % "scalatest_2.12" % "3.0.1",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1",
     libraryDependencies += "commons-io" % "commons-io" % "2.4"
   )

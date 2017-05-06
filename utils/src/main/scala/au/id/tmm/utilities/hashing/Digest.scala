@@ -26,7 +26,7 @@ class Digest private (private val bytes: mutable.WrappedArray[Byte]) {
   }
 
   override lazy val hashCode: Int = {
-    val state = Seq(bytes)
+    val state = Seq(bytes: _*)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 
