@@ -4,8 +4,6 @@ scalaVersion in ThisBuild := "2.12.2"
 
 scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 
-coverageEnabled in ThisBuild := true
-
 publishTo in ThisBuild := Some("Artifactory Realm" at "http://artifactory.ambitious.tools/artifactory/sbt-libs-release-local")
 credentials in ThisBuild += Credentials(file("ambitiousTools.credentials"))
 
