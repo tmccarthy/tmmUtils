@@ -7,7 +7,7 @@ scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 publishTo in ThisBuild := Some("Artifactory Realm" at "http://artifactory.ambitious.tools/artifactory/sbt-libs-release-local")
 credentials in ThisBuild += Credentials(file("ambitiousTools.credentials"))
 
-crossScalaVersions in ThisBuild := Seq("2.11.8", "2.12.2")
+crossScalaVersions in ThisBuild := Seq("2.12.2")
 
 lazy val root = Project("tmmUtils", file("."))
   .settings(publishArtifact := false)
