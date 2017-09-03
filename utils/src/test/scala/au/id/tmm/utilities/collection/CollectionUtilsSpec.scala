@@ -1,8 +1,6 @@
 package au.id.tmm.utilities.collection
 
-import au.id.tmm.utilities.collection.CollectionUtils.Crossable
-import au.id.tmm.utilities.collection.CollectionUtils.Sortable
-import au.id.tmm.utilities.collection.CollectionUtils.DoubleMapOps
+import au.id.tmm.utilities.collection.CollectionUtils.{Crossable, DoubleMapOps, Sortable, TraversableOps}
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
 
 import scala.collection.SortedSet
@@ -30,7 +28,7 @@ class CollectionUtilsSpec extends ImprovedFlatSpec {
   }
 
   it should "correctly construct a sorted set with an implicit custom Ordering" in {
-    implicit val customOrdering = Ordering.Int.reverse
+    implicit val customOrdering: Ordering[Int] = Ordering.Int.reverse
 
     assert(List(1, 1, 2, 3).toSortedSet.toList === List(3, 2, 1))
   }
@@ -96,6 +94,43 @@ class CollectionUtilsSpec extends ImprovedFlatSpec {
     intercept[ArithmeticException](tally / 0d)
   }
 
+  behaviour of "groupedBy"
+
+  it should "group by consecutive results of key function" in {
+    val elements = Vector(
+      "apple",
+      "apricot",
+      "banana",
+      "pear",
+      "avocado",
+      "pumpkin",
+      "plum",
+    )
+
+    val expectedGroups = Vector(
+      "a" -> Vector(
+        "apple",
+        "apricot",
+      ),
+      "b" -> Vector(
+        "banana",
+      ),
+      "p" -> Vector(
+        "pear",
+      ),
+      "a" -> Vector(
+        "avocado",
+      ),
+      "p" -> Vector(
+        "pumpkin",
+        "plum",
+      ),
+    )
+
+    val actualGroups = elements.groupedBy(_.charAt(0).toString)
+
+    assert(expectedGroups === actualGroups)
+  }
 }
 
 private final case class TestOrdered private (name: String) extends Ordered[TestOrdered] {
@@ -103,7 +138,7 @@ private final case class TestOrdered private (name: String) extends Ordered[Test
 
   require(validNames contains name)
 
-  lazy val actualVal = name match {
+  lazy val actualVal: Int = name match {
     case "first" => 1
     case "second" => 2
     case "third" => 3
