@@ -3,8 +3,8 @@ package au.id.tmm.utilities.concurrent
 import au.id.tmm.utilities.concurrent.FutureUtils.TryFutureOps
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
 
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 
 class FutureUtilsSpec extends ImprovedFlatSpec {
@@ -26,4 +26,7 @@ class FutureUtilsSpec extends ImprovedFlatSpec {
     assert(thrownException eq exception)
   }
 
+  "await" should "await a return a future's result" in {
+    assert(FutureUtils.await(Future.successful("asdf")) === "asdf")
+  }
 }
