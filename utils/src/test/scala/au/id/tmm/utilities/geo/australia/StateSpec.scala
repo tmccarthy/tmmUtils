@@ -20,6 +20,10 @@ class StateSpec extends ImprovedFlatSpec {
     assert(State.fromAbbreviation("SA") === Some(State.SA))
   }
 
+  it can "be looked up by its abbreviation in a case-insensitive fashion" in {
+    assert(State.fromAbbreviation("sa") === Some(State.SA))
+  }
+
   it should "have a toString" in {
     assert(State.SA.toString === "State(SA)")
   }

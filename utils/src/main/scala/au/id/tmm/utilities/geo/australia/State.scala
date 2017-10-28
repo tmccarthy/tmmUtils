@@ -31,9 +31,9 @@ object State {
 
   val ALL_STATES = Set(NSW, QLD, SA, TAS, VIC, WA, NT, ACT)
 
-  private lazy val abbreviationLookup = ALL_STATES.groupBy(_.abbreviation).mapValues(_.head)
+  private val abbreviationLookup = ALL_STATES.groupBy(_.abbreviation.toUpperCase).mapValues(_.head)
 
-  def fromAbbreviation(abbreviation: String): Option[State] = abbreviationLookup.get(abbreviation)
+  def fromAbbreviation(abbreviation: String): Option[State] = abbreviationLookup.get(abbreviation.toUpperCase)
 
   private val ordering: Ordering[State] = Ordering.by(_.name)
 }
