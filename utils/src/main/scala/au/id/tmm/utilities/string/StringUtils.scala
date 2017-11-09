@@ -1,5 +1,7 @@
 package au.id.tmm.utilities.string
 
+import com.google.common.base.Strings
+
 object StringUtils {
   implicit class ImprovedString(val string: String) {
     def containsIgnoreCase(subString: String): Boolean = string.toLowerCase.contains(subString.toLowerCase)
@@ -41,5 +43,16 @@ object StringUtils {
 
       string.substring(i)
     }
+
+    def indentWith(indentString: String): String =
+      if (string.isEmpty) {
+        ""
+      } else {
+        indentString + string.replace("\n", "\n" + indentString)
+      }
+
+    def indentWithSpaces(numSpaces: Int): String = indentWith(Strings.repeat(" ", numSpaces))
+
+    def indentWithTabs(numTabs: Int): String = indentWith(Strings.repeat("\t", numTabs))
   }
 }

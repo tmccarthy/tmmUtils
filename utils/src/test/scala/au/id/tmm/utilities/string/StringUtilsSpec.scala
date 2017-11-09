@@ -103,4 +103,46 @@ class StringUtilsSpec extends ImprovedFlatSpec {
   it should "return the same string if there's nothing to trim" in {
     assert("hello".ltrim eq "hello")
   }
+
+  behaviour of "indentWith"
+
+  it should "not indent an empty string" in {
+    assert("".indentWith("_") === "")
+  }
+
+  it should "indent a single line string" in {
+    assert("asdf".indentWith("_") === "_asdf")
+  }
+
+  it should "indent a multi-line string" in {
+    assert("asdf\nghjk".indentWith("_") === "_asdf\n_ghjk")
+  }
+
+  behaviour of "indentWithSpaces"
+
+  it should "not indent an empty string" in {
+    assert("".indentWithSpaces(2) === "")
+  }
+
+  it should "indent a single-line string" in {
+    assert("asdf".indentWithSpaces(2) === "  asdf")
+  }
+
+  it should "indent a multi-line string" in {
+    assert("asdf\nghjk".indentWithSpaces(2) === "  asdf\n  ghjk")
+  }
+
+  behaviour of "indentWithTabs"
+
+  it should "not indent an empty string" in {
+    assert("".indentWithTabs(1) === "")
+  }
+
+  it should "indent a single-line string" in {
+    assert("asdf".indentWithTabs(1) === "\tasdf")
+  }
+
+  it should "indent a multi-line string" in {
+    assert("asdf\nghjk".indentWithTabs(1) === "\tasdf\n\tghjk")
+  }
 }
