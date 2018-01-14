@@ -60,4 +60,68 @@ class OrderedSetSpec extends ImprovedFlatSpec {
   it should "be returned by the empty instance method" in {
     assert(OrderedSet() eq OrderedSet().empty)
   }
+
+  behaviour of "the ordered set builder"
+
+  it should "build the empty set" in {
+    assert(OrderedSet.newBuilder[Int].result() eq OrderedSet.empty)
+  }
+
+  it should "build a set with 2 distinct items" in {
+    val builder = OrderedSet.newBuilder[Int]
+
+    builder += 1
+    builder += 3
+
+    assert(builder.result() === OrderedSet(1, 3))
+  }
+
+  it should "iterate in the order of first insertion" in {
+    val builder = OrderedSet.newBuilder[Int]
+
+    builder += 1
+    builder += 3
+    builder += 1
+
+    assert(builder.result() === OrderedSet(1, 3))
+  }
+
+  it can "be cleared" in {
+    val builder = OrderedSet.newBuilder[Int]
+
+    builder += 1
+    builder += 3
+    builder.clear()
+
+    assert(builder.result().isEmpty)
+  }
+
+  it can "append multiple elements at once" in {
+    val builder = OrderedSet.newBuilder[Int]
+
+    builder ++= Vector(1, 3, 1)
+
+    assert(builder.result() === OrderedSet(1, 3))
+  }
+
+  it should "accept a size hint" in {
+    val builder = OrderedSet.newBuilder[Int]
+
+    builder.sizeHint(5)
+
+    builder += 1
+    builder += 3
+
+    assert(builder.result() === OrderedSet(1, 3))
+  }
+
+  behaviour of "the ordered set cbf"
+
+  it should "allow building from a Set" in {
+    assert(Set(1, 2, 3, 2).to[OrderedSet] === OrderedSet(1, 2, 3))
+  }
+
+  it should "allow building from a List" in {
+    assert(List(1, 2, 3, 2).to[OrderedSet] === OrderedSet(1, 2, 3))
+  }
 }
