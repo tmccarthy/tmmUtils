@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/tmccarthy/tmmUtils.svg?branch=master)](https://travis-ci.org/tmccarthy/tmmUtils)
-[![Coverage Status](https://coveralls.io/repos/github/tmccarthy/tmmUtils/badge.svg?branch=master)](https://coveralls.io/github/tmccarthy/tmmUtils?branch=master)
+[![codecov](https://codecov.io/gh/tmccarthy/tmmUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/tmccarthy/tmmUtils)
 
 # My Scala Utilities
 
