@@ -24,7 +24,11 @@ lazy val utils = (project in file("utils"))
   .settings(
     libraryDependencies += "com.google.guava" % "guava" % "19.0",
     libraryDependencies += "com.jsuereth" %% "scala-arm" % "2.0",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+    libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.25",
+    libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.7",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+    libraryDependencies += "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % "test",
+    libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.25" % "test"
   )
 
 lazy val testUtils = (project in file("testUtils"))
