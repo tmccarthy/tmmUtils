@@ -1,0 +1,3 @@
+rootProject.name = 'tmmUtils'
+
+include 'utils', 'testUtils'

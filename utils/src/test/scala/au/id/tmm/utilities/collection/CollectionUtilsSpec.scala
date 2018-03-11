@@ -52,9 +52,9 @@ class CollectionUtilsSpec extends ImprovedFlatSpec {
 
   it should "consider missing keys to map to 0" in {
     val left = Map("A" -> 1d, "B" -> 2d)
-    val right = Map("B" -> 3d)
+    val right = Map("B" -> 3d, "C" -> 4d)
 
-    assert(left + right === Map("A" -> 1d, "B" -> 5d))
+    assert(left + right === Map("A" -> 1d, "B" -> 5d, "C" -> 4d))
   }
 
   behaviour of "map division by another map"
