@@ -1,7 +1,4 @@
-plugins {
-    id 'net.researchgate.release' version '2.6.0'
-}
-
+apply plugin: au.id.tmm.tmmUtils.build.MyReleasePlugin
 apply plugin: 'idea'
 
 group = 'au.id.tmm'
@@ -9,15 +6,6 @@ group = 'au.id.tmm'
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
-}
-
-release {
-    tagTemplate = 'v${version}'
-
-    scmAdapters = [
-            net.researchgate.release.GitAdapter,
-    ]
-
 }
 
 task build(dependsOn: [':utils:build', ':testUtils:build'])
