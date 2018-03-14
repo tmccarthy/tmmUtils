@@ -1,4 +1,6 @@
 package au.id.tmm.utilities.geo
 
-final case class LatLong(latitude: Double, longitude: Double) {
-}
+/**
+  * A latitude and longitude pairing.
+  */
+final case class LatLong(latitude: Double, longitude: Double)

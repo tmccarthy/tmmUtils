@@ -2,6 +2,9 @@ package au.id.tmm.utilities.collection
 
 import scala.collection.mutable
 
+/**
+  * A simple implementation of the <a href="https://en.wikipedia.org/wiki/Flyweight_pattern">flyweight pattern</a>
+  */
 final class Flyweight[A, B] private (generator: A => B) {
   private val map: mutable.Map[A, B] = mutable.Map()
 

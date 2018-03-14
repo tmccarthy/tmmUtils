@@ -6,6 +6,11 @@ import scala.collection.JavaConverters._
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable
 
+/**
+  * An implementation of a bidirectional map, backed by an instance of [[com.google.common.collect.ImmutableBiMap]].
+  * @tparam K the key type
+  * @tparam V the value type
+  */
 class BiMap[K, V] private(private val underlying: ImmutableBiMap[K, V])
   extends Map[K, V]
     with PartialFunction[K, V] {
@@ -18,6 +23,10 @@ class BiMap[K, V] private(private val underlying: ImmutableBiMap[K, V])
     underlying.entrySet().iterator.asScala.map(entry => (entry.getKey, entry.getValue))
   }
 
+  /**
+    * Returns new instance of the map backed by the [[com.google.common.collect.ImmutableBiMap#inverse inverse]] of the
+    * underlying [[com.google.common.collect.ImmutableBiMap <code>ImmutableBiMap</code>]]
+    */
   lazy val inverse: BiMap[V, K] = new BiMap(underlying.inverse)
 
   override def +[V1 >: V](entry: (K, V1)): BiMap[K, V1] = {

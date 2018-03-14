@@ -8,8 +8,15 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{GenTraversableOnce, mutable}
+import scala.language.{higherKinds, reflectiveCalls}
 
 /**
+  * An $iterator that exposes a $close method which closes an underlying resource.
+  *
+  * @define closeableIterator [[au.id.tmm.utilities.collection.CloseableIterator <code>CloseableIterator</code>]]
+  * @define close     [[au.id.tmm.utilities.collection.CloseableIterator#close() <code>close()</code>]]
+  * @define iterator  [[scala.collection.Iterator <code>Iterator</code>]]
+  * @define closeable [[java.io.Closeable <code>Closeable</code>]]
   * @define closeBoth The [[CloseableIterator]]s returned by this method split the closeable using the
   *                   [[au.id.tmm.utilities.io.CloseableUtils.ImprovedCloseable.split()]] method. Hence, the underlying
   *                   resource will not be closed until *both* of the returned iterators have been closed.
@@ -127,17 +134,28 @@ trait CloseableIterator[+A] extends Iterator[A] with Closeable { self =>
       (left, right)
     }
 
-    override def close() = normalIterator.close()
+    override def close(): Unit = normalIterator.close()
   }
 }
 
 object CloseableIterator {
+
+  /**
+    * Construct a $closeableIterator that iterates over the given iterator and closes the given resource. Note that
+    * instances created with this method will invoke the $close method via reflection. Where possible, use the
+    * `apply` method that accepts a $closeable.
+    * @param iterator  the underlying $iterator over which the $closeableIterator will iterate
+    * @param closeable an object that exposes a <code>close()</code> method which will be invoked when the
+    *                  $closeableIterator is closed.
+    */
   def apply[A](iterator: Iterator[A], closeable: {def close(): Unit}): CloseableIterator[A] =
-    CloseableIterator(iterator, new Closeable {
-      override def close(): Unit = closeable.close()
-    })
+    CloseableIterator(iterator, () => closeable.close())
 
-
+  /**
+    * Construct a $closeableIterator that iterates over the given iterator and closes the given resource.
+    * @param iterator   the underlying $iterator over which the $closeableIterator will iterate
+    * @param closeable  the resource to which the $close call will be delegated
+    */
   def apply[A](iterator: Iterator[A], closeable: Closeable): CloseableIterator[A] =
     new WrappingCloseableIterator[A](iterator, closeable)
 
@@ -145,6 +163,11 @@ object CloseableIterator {
     override def close(): Unit = {}
   }
 
+  /**
+    * Construct a $closeableIterator that iterates over the given iterator, with a no-op implementation of the $close
+    * method.
+    * @param iterator   the underlying $iterator over which the $closeableIterator will iterate
+    */
   def withoutResource[A](iterator: Iterator[A]): CloseableIterator[A] =
     new WrappingCloseableIterator[A](iterator, NoOpCloseable)
 
@@ -188,6 +211,12 @@ object CloseableIterator {
     }
 }
 
+/**
+  * An implementation of $closeableIterator, which combines an $iterator with a $closeable.
+  * @param underlying the underlying $iterator over which the $closeableIterator will iterate
+  * @param closeable  the resource to which the $close call will be delegated
+  * @tparam A         the element type
+  */
 class WrappingCloseableIterator[+A](private val underlying: Iterator[A], private val closeable: Closeable)
   extends CloseableIterator[A] {
 
@@ -199,7 +228,6 @@ class WrappingCloseableIterator[+A](private val underlying: Iterator[A], private
 
   override protected def mapUnderlying[B](f: Iterator[A] => Iterator[B]): CloseableIterator[B] =
     new WrappingCloseableIterator[B](f(underlying), closeable)
-
 
   override protected def splitUnderlying[U >: A](f: (Iterator[A]) => (Iterator[U], Iterator[U])): (CloseableIterator[U], CloseableIterator[U]) = {
     val (leftPartition, rightPartition) = f(underlying)

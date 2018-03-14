@@ -1,5 +1,8 @@
 package au.id.tmm.utilities.geo.australia
 
+/**
+  * An Australian address
+  */
 final case class Address(lines: Vector[String],
                          suburb: String,
                          postcode: Postcode,

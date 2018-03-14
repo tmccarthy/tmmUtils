@@ -3,6 +3,9 @@ package au.id.tmm.utilities.collection
 import scala.collection.generic.ImmutableMapFactory
 import scala.collection.immutable.{HashMap, MapLike}
 
+/**
+  * A `Map` that retains insertion order when iterated over.
+  */
 class OrderedMap[K, +V] private (private val map: HashMap[K, V],
                                  private val iterationOrder: Vector[(K, V)]) extends Map[K, V] with MapLike[K, V, OrderedMap[K, V]] {
 

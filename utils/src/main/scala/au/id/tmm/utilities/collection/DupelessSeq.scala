@@ -6,6 +6,9 @@ import scala.collection.generic._
 import scala.collection.immutable.{IndexedSeq, Vector}
 import scala.collection.{AbstractSeq, IndexedSeqLike, mutable}
 
+/**
+  * A sequence without duplicates, and a constant-time `contains` lookup.
+  */
 class DupelessSeq[A] private (private val iterationOrder: Vector[A], private val elements: Set[A])
   extends AbstractSeq[A]
     with IndexedSeq[A]
@@ -27,8 +30,14 @@ class DupelessSeq[A] private (private val iterationOrder: Vector[A], private val
 
   override def iterator: Iterator[A] = iterationOrder.iterator
 
+  /**
+    * Always returns a reference to this collection, since it will never contain duplicates
+    */
   override def distinct: DupelessSeq[A] = this
 
+  /**
+    * Tests if some element is contained in this collection. This is a constant time operation.
+    */
   @inline
   override def contains[A1 >: A](elem: A1): Boolean = elements.asInstanceOf[Set[Any]].contains(elem)
 
@@ -39,6 +48,9 @@ class DupelessSeq[A] private (private val iterationOrder: Vector[A], private val
     }
   }
 
+  /**
+    * Appends the given element to this sequence if it is not already in the sequence. Otherwise, returns this sequence.
+    */
   override def +:[B >: A, That](elem: B)(implicit bf: CanBuildFrom[DupelessSeq[A], B, That]): That = {
     if (!isBuiltToDupelessSeq(bf)) {
       return super.+:(elem)(bf)
@@ -54,6 +66,9 @@ class DupelessSeq[A] private (private val iterationOrder: Vector[A], private val
     ).asInstanceOf[That]
   }
 
+  /**
+    * Appends the given element to this sequence if it is not already in the sequence. Otherwise, returns this sequence.
+    */
   override def :+[B >: A, That](elem: B)(implicit bf: CanBuildFrom[DupelessSeq[A], B, That]): That = {
     if (!isBuiltToDupelessSeq(bf)) {
       return super.:+(elem)(bf)

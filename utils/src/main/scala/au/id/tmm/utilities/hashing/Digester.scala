@@ -7,6 +7,14 @@ import resource._
 
 import scala.util.{Failure, Success, Try}
 
+/**
+  * Utility class which performs an action on an [[java.io.InputStream InputStream]] while simultaneously producing a
+  * [[au.id.tmm.utilities.hashing.Digest]].
+  *
+  * @param checksumAlgorithm the checksum algorithm, as would be provided to [[java.security.MessageDigest#getInstance]]
+  * @param inputStream the input stream that will be digested
+  * @param mapFunction an operation to perform on the input stream while it is being digested
+  */
 class Digester[A] private(checksumAlgorithm: String,
                           inputStream: => InputStream,
                           mapFunction: InputStream => A) {

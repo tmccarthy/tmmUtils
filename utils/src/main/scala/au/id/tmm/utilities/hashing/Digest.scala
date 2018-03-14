@@ -4,6 +4,9 @@ import au.id.tmm.utilities.encoding.EncodingUtils.{ArrayConversions, StringConve
 
 import scala.collection.mutable
 
+/**
+  * The output of a hash function, an array of bytes.
+  */
 class Digest private (private val bytes: mutable.WrappedArray[Byte]) {
 
   def asArray(): Array[Byte] = bytes.clone().array

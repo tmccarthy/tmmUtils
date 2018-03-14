@@ -6,6 +6,9 @@ object FutureCollectionUtils {
 
   implicit class FutureSetOps[A](futureSet: Set[A]) {
 
+    /**
+      * Filters the given `Set` asynchronously, returning a `Future` wrapping the filtered `Set`.
+      */
     def filterEventually(p: A => Future[Boolean])(implicit ec: ExecutionContext): Future[Set[A]] = {
 
       def filterElement(element: A): Future[Option[A]] = {

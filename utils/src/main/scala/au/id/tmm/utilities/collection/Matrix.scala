@@ -1,5 +1,8 @@
 package au.id.tmm.utilities.collection
 
+/**
+  * An extremely simple implementation of a two-dimensional array.
+  */
 final case class Matrix[A](rows: Vector[Vector[A]]) {
   val width: Int = {
     val rowWidths = rows.map(_.size).distinct

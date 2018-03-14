@@ -1,5 +1,12 @@
 package au.id.tmm.utilities.geo.australia
 
+/**
+  * An Australian state or territory.
+  * @param name                    the full name of the state
+  * @param abbreviation            the states' abbreviation
+  * @param isTerritory             whether this is a territory
+  * @param requiresDefiniteArticle whether the state name requires a definite article ("<bold>the</bold> ACT")
+  */
 final case class State private (name: String,
                                 abbreviation: String,
                                 isTerritory: Boolean,
