@@ -1,3 +1,6 @@
-rootProject.name = 'tmmUtils'
+rootProject.name = 'root'
 
 include 'utils', 'testUtils'
+
+project(':utils').name = 'tmmUtils'
+project(':testUtils').name = 'tmmTestUtils'

@@ -5,6 +5,8 @@ plugins {
 }
 
 apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 repositories {
     mavenCentral()
@@ -40,3 +42,7 @@ checkScoverage {
 }
 
 check.dependsOn(checkScoverage)
+
+description = 'A small library of ScalaTest utilities'
+
+apply from: rootProject.file('gradle/maven-publishing.gradle')

@@ -1,11 +1,15 @@
+plugins {
+    id 'io.codearte.nexus-staging' version '0.11.0'
+}
+
 apply plugin: au.id.tmm.tmmUtils.build.MyReleasePlugin
 apply plugin: 'idea'
 
-group = 'au.id.tmm'
+allprojects {
+    group = 'au.id.tmm'
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
     distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
-
-task build(dependsOn: [':utils:build', ':testUtils:build'])
