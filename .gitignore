@@ -36,3 +36,4 @@ gradle-app.setting
 /build/
 /testUtils/build/
 /utils/build/
+/buildSrc/build
