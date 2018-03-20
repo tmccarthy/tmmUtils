@@ -30,7 +30,13 @@ artifacts {
 signing {
     useGpgCmd()
 
+    required { gradle.taskGraph.hasTask(tasks.uploadArchives) }
+
     sign configurations.archives
+}
+
+tasks.withType(Sign).each {
+    it.onlyIf { gradle.taskGraph.hasTask(tasks.uploadArchives) }
 }
 
 nexusStaging {
