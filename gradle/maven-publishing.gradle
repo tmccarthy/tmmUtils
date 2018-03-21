@@ -40,8 +40,8 @@ tasks.withType(Sign).each {
 }
 
 nexusStaging {
-    username = ossrhUser
-    password = ossrhPassword
+    username = findProperty('ossrhUser') ?: ''
+    password = findProperty('ossrhPassword') ?: ''
 }
 
 uploadArchives {
@@ -50,7 +50,7 @@ uploadArchives {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUser, password: ossrhPassword)
+                authentication(userName: nexusStaging.username, password: nexusStaging.password)
             }
 
             pom.project {
