@@ -25,7 +25,7 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.apache.commons:commons-lang3:3.7'
 
-    testCompile project(':tmmTestUtils')
+    testCompile project(':tmm-test-utils')
     testCompile "org.scalatest:scalatest${s}:${scalaTestVersion}"
     testCompile "org.scalamock:scalamock-scalatest-support${s}:3.6.0"
     testCompile 'org.slf4j:slf4j-simple:1.7.25'
