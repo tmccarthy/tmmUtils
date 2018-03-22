@@ -3,8 +3,8 @@ package au.id.tmm.utilities.testing
 import org.scalatest.{FlatSpec, GivenWhenThen, OneInstancePerTest}
 
 /**
-  * An "improved" implementation of [[org.scalatest.FlatSpec]], which adds some commonly used traits and
-  * fixes some spelling.
+  * An "improved" implementation of <a href="http://doc.scalatest.org/1.8/org/scalatest/FlatSpec.html">`org.scalatest.FlatSpec`</a>,
+  * which adds some commonly used traits and fixes some spelling.
   */
 class ImprovedFlatSpec extends FlatSpec with GivenWhenThen with OneInstancePerTest {
 

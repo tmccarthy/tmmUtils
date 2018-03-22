@@ -21,6 +21,7 @@ dependencies {
 
     compile 'com.google.guava:guava:19.0'
     compile "com.jsuereth:scala-arm${s}:2.0"
+    compile "org.typelevel:spire${s}:0.14.1"
     compile 'org.slf4j:slf4j-api:1.7.25'
     compile 'org.apache.commons:commons-lang3:3.7'
 

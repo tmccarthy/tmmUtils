@@ -33,7 +33,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   "error logging" should "support logging key value pairs against an event" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isErrorEnabled: () => Boolean).when().returns(true)
+    (underlying.isErrorEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -44,7 +44,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isErrorEnabled: () => Boolean).when().returns(true)
+    (underlying.isErrorEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -55,7 +55,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent with an exception" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isErrorEnabled: () => Boolean).when().returns(true)
+    (underlying.isErrorEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -72,7 +72,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support lazily logging an iterable" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isErrorEnabled: () => Boolean).when().returns(true)
+    (underlying.isErrorEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -83,7 +83,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   "warn logging" should "support logging key value pairs against an event" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isWarnEnabled: () => Boolean).when().returns(true)
+    (underlying.isWarnEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -94,7 +94,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isWarnEnabled: () => Boolean).when().returns(true)
+    (underlying.isWarnEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -105,7 +105,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent with an exception" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isWarnEnabled: () => Boolean).when().returns(true)
+    (underlying.isWarnEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -122,7 +122,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support lazily logging an iterable" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isWarnEnabled: () => Boolean).when().returns(true)
+    (underlying.isWarnEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -133,7 +133,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   "info logging" should "support logging key value pairs against an event" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isInfoEnabled: () => Boolean).when().returns(true)
+    (underlying.isInfoEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -144,7 +144,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isInfoEnabled: () => Boolean).when().returns(true)
+    (underlying.isInfoEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -155,7 +155,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent with an exception" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isInfoEnabled: () => Boolean).when().returns(true)
+    (underlying.isInfoEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -172,7 +172,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support lazily logging an iterable" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isInfoEnabled: () => Boolean).when().returns(true)
+    (underlying.isInfoEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -183,7 +183,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   "debug logging" should "support logging key value pairs against an event" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isDebugEnabled: () => Boolean).when().returns(true)
+    (underlying.isDebugEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -194,7 +194,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isDebugEnabled: () => Boolean).when().returns(true)
+    (underlying.isDebugEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -205,7 +205,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent with an exception" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isDebugEnabled: () => Boolean).when().returns(true)
+    (underlying.isDebugEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -222,7 +222,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support lazily logging an iterable" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isDebugEnabled: () => Boolean).when().returns(true)
+    (underlying.isDebugEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -233,7 +233,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   "trace logging" should "support logging key value pairs against an event" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isTraceEnabled: () => Boolean).when().returns(true)
+    (underlying.isTraceEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -244,7 +244,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isTraceEnabled: () => Boolean).when().returns(true)
+    (underlying.isTraceEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -255,7 +255,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support logging a LoggedEvent with an exception" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isTraceEnabled: () => Boolean).when().returns(true)
+    (underlying.isTraceEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -272,7 +272,7 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
   it should "support lazily logging an iterable" in {
     val underlying = stub[org.slf4j.Logger]
-    (underlying.isTraceEnabled: () => Boolean).when().returns(true)
+    (underlying.isTraceEnabled _: () => Boolean).when().returns(true)
 
     val logger = new Logger(underlying)
 
@@ -280,13 +280,6 @@ class LoggerSpec extends ImprovedFlatSpec with MockFactory {
 
     (underlying.trace(_: String)).verify("event_id=eventId; key=value")
   }
-
-
-
-
-
-
-
 
   "the logger format" should "write the event id" in {
     val actualFormat = Logger.format("EVENT_ID", Vector())

@@ -19,9 +19,12 @@ task javadocJar(type: Jar, dependsOn: [javadoc, writeJavadocReadme]) {
 }
 
 task scaladocJar(type: Jar, dependsOn: scaladoc) {
+    shouldRunAfter('test')
     classifier = 'scaladoc'
     from scaladoc.destinationDir
 }
+
+tasks.build.dependsOn(scaladocJar)
 
 artifacts {
     archives javadocJar, sourcesJar, scaladocJar
