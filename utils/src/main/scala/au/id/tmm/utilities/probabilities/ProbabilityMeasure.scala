@@ -44,7 +44,7 @@ sealed trait ProbabilityMeasure[A] {
 
 object ProbabilityMeasure {
 
-  def always[A](outcome: A): ProbabilityMeasure[A] = new Always(outcome)
+  def always[A](outcome: A): ProbabilityMeasure[A] = Always(outcome)
 
   def evenly[A](possibilities: A*): ProbabilityMeasure[A] = allElementsEvenly(possibilities)
 
@@ -64,13 +64,13 @@ object ProbabilityMeasure {
 
   def apply[A](asMap: Map[A, Rational]): ProbabilityMeasure[A] = {
     if (asMap.size == 1 && asMap.values.head == Rational.one) {
-      new Always(asMap.keys.head)
+      Always(asMap.keys.head)
     } else {
-      new Varied(asMap)
+      Varied(asMap)
     }
   }
 
-  private final class Always[A](outcome: A) extends ProbabilityMeasure[A] {
+  final case class Always[A](outcome: A) extends ProbabilityMeasure[A] {
     override def chanceOf(possibility: A): Rational = {
       if (outcome == possibility) {
         Rational.one
@@ -79,7 +79,7 @@ object ProbabilityMeasure {
       }
     }
 
-    override def map[U](f: A => U): ProbabilityMeasure[U] = new Always(f(outcome))
+    override def map[U](f: A => U): ProbabilityMeasure[U] = Always(f(outcome))
 
     override def flatMap[U](f: A => ProbabilityMeasure[U]): ProbabilityMeasure[U] = f(outcome)
 
@@ -92,9 +92,10 @@ object ProbabilityMeasure {
     override def hasOnlyOneOutcome: Boolean = true
   }
 
-  private final class Varied[A](val asMap: Map[A, Rational]) extends ProbabilityMeasure[A] {
+  final case class Varied[A](asMap: Map[A, Rational]) extends ProbabilityMeasure[A] {
     require(asMap.valuesIterator.foldLeft(Rational.zero)(_ + _) == Rational.one)
     require(asMap.valuesIterator.forall(_ >= Rational.zero))
+    require(asMap.size > 1)
 
     override def chanceOf(outcome: A): Rational = asMap.getOrElse(outcome, Rational.zero)
 

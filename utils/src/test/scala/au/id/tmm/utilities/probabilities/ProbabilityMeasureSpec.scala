@@ -158,6 +158,18 @@ class ProbabilityMeasureSpec extends ImprovedFlatSpec {
     assert(!ProbabilityMeasure.evenly(Apple, Banana).hasOnlyOneOutcome)
   }
 
+  it can "not be constructed with an empty set of possibilities" in {
+    intercept[IllegalArgumentException] {
+      ProbabilityMeasure.Varied(Map.empty[Fruit, Rational])
+    }
+  }
+
+  it can "not be constructed with one possibility" in {
+    intercept[IllegalArgumentException] {
+      ProbabilityMeasure.Varied(Map(Apple -> Rational(1)))
+    }
+  }
+
   "a possibility" must "have a positive probability" in {
     intercept[IllegalArgumentException] {
       ProbabilityMeasure(
