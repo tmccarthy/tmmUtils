@@ -6,6 +6,7 @@ import au.id.tmm.utilities.resources.ManagedResourceUtils.ExtractableManagedReso
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
 
 import scala.util.{Failure, Success}
+import scala.language.reflectiveCalls
 
 class ManagedResourceUtilsSpec extends ImprovedFlatSpec {
 

@@ -8,6 +8,7 @@ import au.id.tmm.utilities.testing.ImprovedFlatSpec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+import scala.language.reflectiveCalls
 
 class CloseableIteratorSpec extends ImprovedFlatSpec {
 
@@ -332,18 +333,14 @@ class CloseableIteratorSpec extends ImprovedFlatSpec {
     assert(testCloseable.isClosed)
   }
 
-  def testMappingMethod[A](methodName: String, testInvocation: (CloseableIterator[Int]) => CloseableIterator[A], expected: => List[A]): Unit = {
+  def testMappingMethod[A](methodName: String, testInvocation: CloseableIterator[Int] => CloseableIterator[A], expected: => List[A]): Unit = {
     behaviour of methodName
-
-    it should "return a closeable iterator" in {
-      testInvocation(sut).isInstanceOf[CloseableIterator[Int]]
-    }
 
     it should "work like the super implementation" in {
       assert(testInvocation(sut).toList === expected)
     }
   }
 
-  def testSimpleMappingMethod(methodName: String, testInvocation: (CloseableIterator[Int] => CloseableIterator[Int]), expected: => List[Int]): Unit =
+  def testSimpleMappingMethod(methodName: String, testInvocation: CloseableIterator[Int] => CloseableIterator[Int], expected: => List[Int]): Unit =
     testMappingMethod[Int](methodName, testInvocation, expected)
 }

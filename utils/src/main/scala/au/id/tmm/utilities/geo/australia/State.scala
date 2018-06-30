@@ -1,21 +1,33 @@
 package au.id.tmm.utilities.geo.australia
 
-/**
-  * An Australian state or territory.
-  * @param name                    the full name of the state
-  * @param abbreviation            the states' abbreviation
-  * @param isTerritory             whether this is a territory
-  * @param requiresDefiniteArticle whether the state name requires a definite article ("<bold>the</bold> ACT")
-  */
-final case class State private (name: String,
-                                abbreviation: String,
-                                isTerritory: Boolean,
-                                requiresDefiniteArticle: Boolean = false) extends Ordered[State] {
+sealed trait State extends Ordered[State] {
+  /**
+    * The full name of the state.
+    */
+  def name: String
+
+  /**
+    * The state's abbreviation.
+    */
+  def abbreviation: String
+
+  /**
+    * Whether this is a territory.
+    */
+  def isTerritory: Boolean
+
+  /**
+    * Whether the state name requires a definite article ("<bold>the</bold> ACT").
+    */
+  def requiresDefiniteArticle: Boolean = false
 
   override def compare(that: State): Int = State.ordering.compare(this, that)
 
-  override def toString: String = s"${getClass.getSimpleName}($abbreviation)"
+  override def toString: String = s"$abbreviation"
 
+  /**
+    * The full name of the state, with a definite article if needed.
+    */
   def toNiceString: String = {
     if (requiresDefiniteArticle) {
       s"the $name"
@@ -26,15 +38,55 @@ final case class State private (name: String,
 }
 
 object State {
-  val NSW = State("New South Wales", "NSW", isTerritory = false)
-  val QLD = State("Queensland", "QLD", isTerritory = false)
-  val SA = State("South Australia", "SA", isTerritory = false)
-  val TAS = State("Tasmania", "TAS", isTerritory = false)
-  val VIC = State("Victoria", "VIC", isTerritory = false)
-  val WA = State("Western Australia", "WA", isTerritory = false)
+  sealed trait StateProper extends State {
+    override val isTerritory: Boolean = false
+  }
 
-  val NT = State("Northern Territory", "NT", isTerritory = true, requiresDefiniteArticle = true)
-  val ACT = State("Australian Capital Territory", "ACT", isTerritory = true, requiresDefiniteArticle = true)
+  sealed trait Territory extends State {
+    override def isTerritory: Boolean = true
+  }
+
+  case object NSW extends StateProper {
+    val name = "New South Wales"
+    val abbreviation = "NSW"
+  }
+
+  case object QLD extends StateProper {
+    val name = "Queensland"
+    val abbreviation = "QLD"
+  }
+
+  case object SA extends StateProper {
+    val name = "South Australia"
+    val abbreviation = "SA"
+  }
+
+  case object TAS extends StateProper {
+    val name = "Tasmania"
+    val abbreviation = "TAS"
+  }
+
+  case object VIC extends StateProper {
+    val name = "Victoria"
+    val abbreviation = "VIC"
+  }
+
+  case object WA extends StateProper {
+    val name = "Western Australia"
+    val abbreviation = "WA"
+  }
+
+  case object NT extends Territory {
+    val name = "Northern Territory"
+    val abbreviation = "NT"
+    override val requiresDefiniteArticle = true
+  }
+
+  case object ACT extends Territory {
+    val name = "Australian Capital Territory"
+    val abbreviation = "ACT"
+    override val requiresDefiniteArticle = true
+  }
 
   val ALL_STATES = Set(NSW, QLD, SA, TAS, VIC, WA, NT, ACT)
 

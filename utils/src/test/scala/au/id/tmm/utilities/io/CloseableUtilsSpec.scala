@@ -4,6 +4,7 @@ import java.io.Closeable
 
 import au.id.tmm.utilities.io.CloseableUtils.ImprovedCloseable
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
+import scala.language.reflectiveCalls
 
 class CloseableUtilsSpec extends ImprovedFlatSpec {
 

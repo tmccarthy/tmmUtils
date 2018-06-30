@@ -25,7 +25,7 @@ class StateSpec extends ImprovedFlatSpec {
   }
 
   it should "have a toString" in {
-    assert(State.SA.toString === "State(SA)")
+    assert(State.SA.toString === "SA")
   }
 
   it should "have a toNiceString" in {

@@ -110,7 +110,7 @@ trait CloseableIterator[+A] extends Iterator[A] with Closeable { self =>
     }
   }
 
-  @deprecated(message = "Unsupported", since = "0.1")
+//  @deprecated(message = "Unsupported", since = "0.1")
   override def buffered = throw new UnsupportedOperationException()
 
   class CloseableGroupedIterator[B >: A](normalIterator: CloseableIterator[A], size: Int, step: Int)
@@ -188,7 +188,7 @@ object CloseableIterator {
   }
 
   class CloseableIteratorBuilder[A](initialElems: Iterable[A], closeable: Closeable) extends mutable.Builder[A, CloseableIterator[A]] {
-    private var elems: ArrayBuffer[A] = ArrayBuffer[A](initialElems.toSeq:_*)
+    private[this] var elems: ArrayBuffer[A] = ArrayBuffer[A](initialElems.toSeq:_*)
 
     override def +=(elem: A): this.type = {
       elems += elem

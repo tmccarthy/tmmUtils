@@ -1,7 +1,7 @@
 package au.id.tmm.utilities.datetime
 
 import java.time.Month._
-import java.time.{LocalDate, Month, Period, ZoneId}
+import java.time.{LocalDate, Period, ZoneId}
 import java.util.Date
 
 import au.id.tmm.utilities.datetime.DateUtils._
