@@ -1,7 +1,6 @@
 package au.id.tmm.utilities.probabilities
 
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
-import spire.math.Rational
 
 class TieSensitiveSortingSpec extends ImprovedFlatSpec {
 
@@ -12,7 +11,7 @@ class TieSensitiveSortingSpec extends ImprovedFlatSpec {
   "the minimum of a list with no duplicates" should "be the minimum" in {
     val list = List(1, 2, 3)
 
-    assert(TieSensitiveSorting.min(list) === Some(ProbabilityMeasure.always(1)))
+    assert(TieSensitiveSorting.min(list) === Some(ProbabilityMeasure.Always(1)))
   }
 
   "the minimum of a list with some duplicates" should "be an evenly distributed probability across all the minimums" in {
@@ -25,10 +24,7 @@ class TieSensitiveSortingSpec extends ImprovedFlatSpec {
 
     val scoreFn: String => Int = _.length
 
-    val expectedMin = ProbabilityMeasure(
-      "cat" -> Rational(1, 2),
-      "dog" -> Rational(1, 2),
-    )
+    val expectedMin = ProbabilityMeasure.evenly("cat", "dog")
 
     val actualMin = TieSensitiveSorting.min(list)(Ordering.by(scoreFn))
 
@@ -40,7 +36,7 @@ class TieSensitiveSortingSpec extends ImprovedFlatSpec {
 
     val actualResult: ProbabilityMeasure[List[Int]] = TieSensitiveSorting.sort(set)
 
-    val expectedResult = ProbabilityMeasure.always(List(1, 2, 3, 4, 5))
+    val expectedResult = ProbabilityMeasure.Always(List(1, 2, 3, 4, 5))
 
     assert(actualResult === expectedResult)
   }
@@ -77,19 +73,19 @@ class TieSensitiveSortingSpec extends ImprovedFlatSpec {
 
     val actualResult = TieSensitiveSorting.sort(scores.keySet)(Ordering.by(scores))
 
-    val expectedResult = ProbabilityMeasure(
-      List("A", "B", "C", "D", "E", "F", "G") -> Rational(1, 12),
-      List("A", "B", "C", "F", "D", "E", "G") -> Rational(1, 12),
-      List("A", "B", "C", "E", "D", "F", "G") -> Rational(1, 12),
-      List("A", "B", "C", "E", "F", "D", "G") -> Rational(1, 12),
-      List("A", "B", "C", "D", "F", "E", "G") -> Rational(1, 12),
-      List("A", "B", "C", "F", "E", "D", "G") -> Rational(1, 12),
-      List("A", "C", "B", "D", "F", "E", "G") -> Rational(1, 12),
-      List("A", "C", "B", "F", "D", "E", "G") -> Rational(1, 12),
-      List("A", "C", "B", "E", "F", "D", "G") -> Rational(1, 12),
-      List("A", "C", "B", "E", "D", "F", "G") -> Rational(1, 12),
-      List("A", "C", "B", "F", "E", "D", "G") -> Rational(1, 12),
-      List("A", "C", "B", "D", "E", "F", "G") -> Rational(1, 12),
+    val expectedResult = ProbabilityMeasure.evenly(
+      List("A", "B", "C", "D", "E", "F", "G"),
+      List("A", "B", "C", "F", "D", "E", "G"),
+      List("A", "B", "C", "E", "D", "F", "G"),
+      List("A", "B", "C", "E", "F", "D", "G"),
+      List("A", "B", "C", "D", "F", "E", "G"),
+      List("A", "B", "C", "F", "E", "D", "G"),
+      List("A", "C", "B", "D", "F", "E", "G"),
+      List("A", "C", "B", "F", "D", "E", "G"),
+      List("A", "C", "B", "E", "F", "D", "G"),
+      List("A", "C", "B", "E", "D", "F", "G"),
+      List("A", "C", "B", "F", "E", "D", "G"),
+      List("A", "C", "B", "D", "E", "F", "G"),
     )
 
     assert(actualResult === expectedResult)

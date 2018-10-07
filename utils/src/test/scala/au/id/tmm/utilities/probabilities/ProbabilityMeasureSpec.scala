@@ -1,208 +1,302 @@
 package au.id.tmm.utilities.probabilities
 
-import au.id.tmm.utilities.Fruit
-import au.id.tmm.utilities.Fruit._
+import au.id.tmm.utilities.probabilities.ProbabilityMeasure.{Always, ConstructionError, Varied}
 import au.id.tmm.utilities.testing.ImprovedFlatSpec
 import spire.math.Rational
 
 class ProbabilityMeasureSpec extends ImprovedFlatSpec {
 
-  "a probability measure" should "assign a probability to each possibility" in {
-    val pMeasure = ProbabilityMeasure(
-      Apple -> Rational(1, 3),
-      Banana -> Rational(1, 3),
-      Pear -> Rational(1, 6),
-      Strawberry -> Rational(1, 6),
+  private def makeVaried[A](possibilities: (A, Rational)*): Varied[A] = ProbabilityMeasure(possibilities.toMap) match {
+    case Right(varied: Varied[A]) => varied
+    case Right(Always(outcome)) => fail(s"Single outcome $outcome")
+    case Left(constructionError) => fail(constructionError.toString)
+  }
+
+  "a probability measure with a single outcome" can "be represented as a map" in {
+    assert(Always("hello").asMap === Map("hello" -> Rational.one))
+  }
+
+  it should "have a chance of its outcome of 1" in {
+    assert(Always("hello").chanceOf("hello") === Rational.one)
+  }
+
+  it should "have a chance of any other outcome of zero" in {
+    assert(Always("hello").chanceOf("world") === Rational.zero)
+  }
+
+  it can "be mapped" in {
+    assert(Always("hello").map(_.length) === Always(5))
+  }
+
+  it can "be flatMapped to another probability measure with a single outcome" in {
+    assert(Always("hello").flatMap(s => Always(s.length)) === Always(5))
+  }
+
+  it can "be flatMapped to another probability measure with a varied outcome" in {
+    assert(
+      Always("hello").flatMap(_ => makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))) ===
+        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
     )
-
-    assert(pMeasure.chanceOf(Apple) === Rational(1, 3))
   }
 
-  it must "sum to 1" in {
-    intercept[IllegalArgumentException] {
-      ProbabilityMeasure(
-        Apple -> Rational(2, 3),
-        Banana -> Rational(2, 3),
-      )
-    }
+  it should "be equal to another probability measure with the same single outcome" in {
+    assert(Always("hello") === Always("hello"))
   }
 
-  it can "apply an operation on the possibility" in {
-    val pMeasure = ProbabilityMeasure(
-      Apple -> Rational(1, 3),
-      Banana -> Rational(2, 3),
-    )
-
-    val f: Fruit => Char = _.toString.charAt(0)
-
-    val expectedResult = ProbabilityMeasure(
-      'A' -> Rational(1, 3),
-      'B' -> Rational(2, 3),
-    )
-
-    val actualResult = pMeasure.map(f)
-
-    assert(actualResult === expectedResult)
+  it should "not be equal to another probability measure with a different single outcome" in {
+    assert(Always("hello") !== Always("world"))
   }
 
-  it can "map a possibility to another ProbabilityMeasure" in {
-    val pMeasure: ProbabilityMeasure[Fruit] = ProbabilityMeasure(
-      Apple -> Rational(1, 3),
-      Banana -> Rational(2, 3),
-    )
-
-    val f: Fruit => ProbabilityMeasure[(Fruit, Fruit)] = (_: Fruit @unchecked) match {
-      case Apple => ProbabilityMeasure(
-        (Apple, Pear) -> Rational(3, 4),
-        (Apple, Strawberry) -> Rational(1, 4),
-      )
-      case Banana => ProbabilityMeasure(
-        (Banana, Pear) -> Rational(2, 5),
-        (Banana, Strawberry) -> Rational(3, 5),
-      )
-    }
-
-    val expectedResult = ProbabilityMeasure(
-      (Apple, Pear) -> Rational(1, 3) * Rational(3, 4),
-      (Apple, Strawberry) -> Rational(1, 3) * Rational(1, 4),
-      (Banana, Pear) -> Rational(2, 3) * Rational(2, 5),
-      (Banana, Strawberry) -> Rational(2, 3) * Rational(3, 5),
-    )
-
-    val actualResult = pMeasure.flatMap(f)
-
-    assert(actualResult === expectedResult)
+  it should "not equal any non-always object" in {
+    assert(Always("hello") !== 5)
   }
 
-  it can "be built from a number of evenly distributed possibilities" in {
-    val actualResult = ProbabilityMeasure.evenly(Apple, Pear, Strawberry)
-
-    val expectedResult = ProbabilityMeasure(
-      Apple -> Rational(1, 3),
-      Pear -> Rational(1, 3),
-      Strawberry -> Rational(1, 3),
-    )
-
-    assert(actualResult === expectedResult)
+  it should "return its only outcome as any outcome" in {
+    assert(Always("hello").anyOutcome === "hello")
   }
 
-  it can "return any of the possibilities" in {
-    val probabilityMeasure = ProbabilityMeasure.evenly(Apple, Pear, Strawberry)
-
-    assert(Set(Apple, Pear, Stream) contains probabilityMeasure.anyOutcome)
+  it should "return its only outcome as its only outcome" in {
+    assert(Always("hello").onlyOutcome === Some("hello"))
   }
 
-  it can "not return its only possibility" in {
-    val probabilityMeasure = ProbabilityMeasure.evenly(Apple, Pear, Strawberry)
-
-    intercept[IllegalStateException] {
-      probabilityMeasure.onlyOutcome
-    }
-  }
-
-  it should "have a sensible toString" in {
-    val probabilityMeasure = ProbabilityMeasure.evenly(Apple, Pear, Strawberry)
-    val expected = "ProbabilityMeasure(Apple -> 1/3, Pear -> 1/3, Strawberry -> 1/3)"
-
-    assert(probabilityMeasure.toString === expected)
-  }
-
-  it should "be equal to itself" in {
-    assert(ProbabilityMeasure.evenly(Apple, Pear, Strawberry) === ProbabilityMeasure.evenly(Apple, Strawberry, Pear))
-  }
-
-  it should "not be equal to another probability measure" in {
-    assert(ProbabilityMeasure.evenly(Apple, Pear, Strawberry) !== ProbabilityMeasure.always(Apple, Pear))
-  }
-
-  it should "not be equal to an object of another type" in {
-    assert(ProbabilityMeasure.evenly(Apple, Pear, Strawberry) !== Unit)
-  }
-
-  "a probability measure with a single possibility" should "have a probability of 1" in {
-    assert(ProbabilityMeasure.always(Apple).chanceOf(Apple) === Rational.one)
-  }
-
-  it should "have no probability of another outcome" in {
-    assert(ProbabilityMeasure.always[Fruit](Apple).chanceOf(Banana) === Rational.zero)
-  }
-
-  it can "return its only possibility as any possibility" in {
-    assert(ProbabilityMeasure.always(Apple).anyOutcome === Apple)
-  }
-
-  it can "return its only possibility" in {
-    assert(ProbabilityMeasure.always(Apple).onlyOutcome === Apple)
+  it should "return its only outcome as its only outcome (unsafe)" in {
+    assert(Always("hello").onlyOutcomeUnsafe === "hello")
   }
 
   it should "have only one outcome" in {
-    assert(ProbabilityMeasure.always(Apple).hasOnlyOneOutcome)
+    assert(Always("hello").hasOnlyOneOutcome)
   }
 
   it should "have a sensible toString" in {
-    val probabilityMeasure = ProbabilityMeasure.always(Apple)
-    val expected = "ProbabilityMeasure(Apple -> always)"
-
-    assert(probabilityMeasure.toString === expected)
+    assert(Always("hello").toString === "ProbabilityMeasure(hello -> 1)")
   }
 
-  it should "be equal to itself" in {
-    assert(ProbabilityMeasure.always(Apple) === ProbabilityMeasure.always(Apple))
+  "a probability measure with many possibilities" can "be represented as a map" in {
+    val varied = makeVaried("hello" -> Rational(1, 2), "world" -> Rational(1, 2))
+
+    assert(varied.asMap === Map("hello" -> Rational(1, 2), "world" -> Rational(1, 2)))
   }
 
-  it should "not be equal to another possibility" in {
-    assert(ProbabilityMeasure.always(Apple) !== ProbabilityMeasure.always(Banana))
+  it should "return the chance of any possibility" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(varied.chanceOf("hello") === Rational(1, 3))
   }
 
-  "a probability measure with many possibilities" should "not have one outcome" in {
-    assert(!ProbabilityMeasure.evenly(Apple, Banana).hasOnlyOneOutcome)
+  it should "return zero as the possibility of an impossible outcome" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(varied.chanceOf("other") === Rational.zero)
   }
 
-  it can "not be constructed with an empty set of possibilities" in {
-    intercept[IllegalArgumentException] {
-      ProbabilityMeasure.Varied(Map.empty[Fruit, Rational])
-    }
+  it can "be mapped when there is no outcome merging" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    val mappingFunction: String => String = _.toUpperCase
+
+    val expectedAfterMap = makeVaried("HELLO" -> Rational(1, 3), "WORLD" -> Rational(2, 3))
+
+    assert(varied.map(mappingFunction) === expectedAfterMap)
   }
 
-  it can "not be constructed with one possibility" in {
-    intercept[IllegalArgumentException] {
-      ProbabilityMeasure.Varied(Map(Apple -> Rational(1)))
-    }
+  it can "be mapped when outcomes are merged" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "cat" -> Rational(1, 3))
+
+    val mappingFunction: String => Int = _.length
+
+    val expectedAfterMap = makeVaried(5 -> Rational(2, 3), 3 -> Rational(1, 3))
+
+    assert(varied.map(mappingFunction) === expectedAfterMap)
   }
 
-  "a possibility" must "have a positive probability" in {
-    intercept[IllegalArgumentException] {
-      ProbabilityMeasure(
-        Apple -> Rational(-1, 3),
-        Banana -> Rational(2, 3),
-        Strawberry -> Rational(2, 3),
-      )
-    }
+  it can "be mapped when outcomes are merged to an always" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    val mappingFunction: String => Int = _.length
+
+    val expectedAfterMap = Always(5)
+
+    assert(varied.map(mappingFunction) === expectedAfterMap)
   }
 
-  it must "have a probability equal to or less than 1" in {
-    intercept[IllegalArgumentException] {
-      ProbabilityMeasure(
-        Apple -> Rational(2),
-      )
-    }
+  it can "be flatMapped to an Always instance when there is no outcome merging" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    val mappingFunction: String => ProbabilityMeasure[String] = s => Always(s.toUpperCase)
+
+    val expectedAfterMap = makeVaried("HELLO" -> Rational(1, 3), "WORLD" -> Rational(2, 3))
+
+    assert(varied.flatMap(mappingFunction) === expectedAfterMap)
   }
 
-  it can "not be duplicated" in {
-    intercept[IllegalArgumentException] {
-      ProbabilityMeasure(
-        Apple -> Rational(2, 3),
-        Apple -> Rational(1, 3),
-      )
-    }
+  it can "be flatMapped when there is outcome spreading" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "wherld" -> Rational(2, 3))
+
+    val mappingFunction: String => ProbabilityMeasure[Int] = s => ProbabilityMeasure.evenly(s.length, s.length + 1)
+
+    val expectedAfterMap = makeVaried(5 -> Rational(1, 6), 6 -> Rational(1, 2), 7 -> Rational(2, 6))
+
+    assert(varied.flatMap(mappingFunction) === expectedAfterMap)
   }
 
-  "an unlisted possibility" should "have a possibility of zero" in {
-    val pMeasure = ProbabilityMeasure(
-      Apple -> Rational(1, 3),
-      Banana -> Rational(2, 3),
+  it can "be flatMapped when there is outcome merging" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "cat" -> Rational(1, 3))
+
+    val mappingFunction: String => ProbabilityMeasure[Int] = s => Always(s.length)
+
+    val expectedAfterMap = makeVaried(5 -> Rational(2, 3), 3 -> Rational(1, 3))
+
+    assert(varied.flatMap(mappingFunction) === expectedAfterMap)
+  }
+
+  it can "be flatMapped when there is outcome merging to Always" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    val mappingFunction: String => ProbabilityMeasure[Int] = s => Always(s.length)
+
+    val expectedAfterMap = Always(5)
+
+    assert(varied.flatMap(mappingFunction) === expectedAfterMap)
+  }
+
+
+  it should "return an outcome as any outcome" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(Set("hello", "world") contains varied.anyOutcome)
+  }
+
+  it should "return None as its only outcome" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(varied.onlyOutcome === None)
+  }
+
+  it should "throw when unsafely requesting its only outcome" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    intercept[NoSuchElementException](varied.onlyOutcomeUnsafe)
+  }
+
+  it should "not have only one outcome" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(varied.hasOnlyOneOutcome === false)
+  }
+
+  it should "have a sensible toString" in {
+    val varied = makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    assert(varied.toString === "ProbabilityMeasure(world -> 2/3, hello -> 1/3)")
+  }
+
+  "constructing a probability measure evenly from some possibilities" should
+    "return all possibilities with equal probabilities" in {
+    assert(
+      ProbabilityMeasure.evenly("hello", "world", "apple") ===
+        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))
     )
-
-    assert(pMeasure.chanceOf(Pear) === Rational.zero)
   }
+
+  it should "return an Always when given only one argument" in {
+    assert(ProbabilityMeasure.evenly("hello") === Always("hello"))
+  }
+
+  "constructing a probability measure evenly from a non-empty list" should
+    "return all possibilities with equal probabilities" in {
+    assert(
+      ProbabilityMeasure.evenly(::("hello", List("world", "apple"))) ===
+        makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3))
+    )
+  }
+
+  it should "return an Always when given a list with only a head" in {
+    assert(ProbabilityMeasure.evenly(::("hello", Nil)) === Always("hello"))
+  }
+
+  "constructing a probability measure evenly from a traversable of possibilities" should
+    "return all possibilities with equal probabilities" in {
+    assert(
+      ProbabilityMeasure.allElementsEvenly(List("hello", "world", "apple")) ===
+        Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(1, 3), "apple" -> Rational(1, 3)))
+    )
+  }
+
+  it should "return an Always when given a traversable with one element" in {
+    assert(ProbabilityMeasure.allElementsEvenly(List("hello")) === Right(Always("hello")))
+  }
+
+  it should "fail if no possibilities are supplied" in {
+    val actualResult = ProbabilityMeasure.allElementsEvenly(Nil)
+
+    val expectedResult = Left(ConstructionError.NoPossibilitiesProvided)
+
+    assert(actualResult === expectedResult)
+  }
+
+  "constructing a probability measure" should "fail if no possibilities are supplied" in {
+    val attemptedProbabilityMeasure = ProbabilityMeasure()
+
+    assert(attemptedProbabilityMeasure === Left(ConstructionError.NoPossibilitiesProvided))
+  }
+
+  it should "fail if any probability is less than 0" in {
+    val attemptedProbabilityMeasure =
+      ProbabilityMeasure("hello" -> Rational(-1), "world" -> Rational(-1), "apple" -> Rational(2))
+
+    val expectedOutput = Left(ConstructionError.InvalidProbabilityForKey("hello", Rational(-1)))
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
+  it should "fail if any probability is greater than 1" in {
+    val attemptedProbabilityMeasure =
+      ProbabilityMeasure("hello" -> Rational(2), "world" -> Rational(2), "apple" -> Rational(0))
+
+    val expectedOutput = Left(ConstructionError.InvalidProbabilityForKey("hello", Rational(2)))
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
+  it should "fail if the probabilities do not add up to 1" in {
+    val attemptedProbabilityMeasure =
+      ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(1, 3))
+
+    val expectedOutput = Left(ConstructionError.ProbabilitiesDontSumToOne)
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
+  it should "produce an Always if only one possibility is supplied" in {
+    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1))
+
+    val expectedOutput = Right(Always("hello"))
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
+  it should "produce an Always if only one possibility is supplied twice" in {
+    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1, 2), "hello" -> Rational(1, 2))
+
+    val expectedOutput = Right(Always("hello"))
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
+  it should "produce a Varied if more than one possibility is supplied" in {
+    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(2, 3))
+
+    val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
+  it should "remove zero probabilities" in {
+    val attemptedProbabilityMeasure = ProbabilityMeasure("hello" -> Rational(1, 3), "world" -> Rational(2, 3), "apple" -> Rational.zero)
+
+    val expectedOutput = Right(makeVaried("hello" -> Rational(1, 3), "world" -> Rational(2, 3)))
+
+    assert(attemptedProbabilityMeasure === expectedOutput)
+  }
+
 }

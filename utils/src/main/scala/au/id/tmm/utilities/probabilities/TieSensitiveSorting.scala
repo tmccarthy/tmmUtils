@@ -16,9 +16,9 @@ object TieSensitiveSorting {
           }
       }
       .map { elements =>
-        ProbabilityMeasure.allElementsEvenly(elements.permutations.toList)
+        ProbabilityMeasure.allElementsEvenly(elements.permutations.toList).right.get
       }
-      .foldLeft(ProbabilityMeasure.always(List.empty[A])) { case (acc, nextPMeasure) =>
+      .foldLeft[ProbabilityMeasure[List[A]]](ProbabilityMeasure.Always(List.empty[A])) { case (acc, nextPMeasure) =>
         acc.flatMap { previousElements =>
           nextPMeasure.map { nextPossiblePermutation =>
             previousElements ++ nextPossiblePermutation
@@ -50,7 +50,7 @@ object TieSensitiveSorting {
 
     }
 
-    Some(ProbabilityMeasure.allElementsEvenly(minimums))
+    Some(ProbabilityMeasure.headTailEvenly(minimums.head, minimums.tail))
   }
 
 }
