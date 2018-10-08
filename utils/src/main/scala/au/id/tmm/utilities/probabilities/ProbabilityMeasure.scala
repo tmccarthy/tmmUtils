@@ -40,9 +40,9 @@ object ProbabilityMeasure {
 
   def evenly[A](firstPossibility: A, otherPossibilities: A*): ProbabilityMeasure[A] = headTailEvenly(firstPossibility, otherPossibilities)
 
-  def headTailEvenly[A](firstPossibility: A, otherPossibilities: Traversable[A]): ProbabilityMeasure[A] = {
-    otherPossibilities.size match {
-      case 0 => Always(firstPossibility)
+  def headTailEvenly[A](possibilitiesHead: A, possibilitiesTail: Traversable[A]): ProbabilityMeasure[A] = {
+    possibilitiesTail.size match {
+      case 0 => Always(possibilitiesHead)
       case numOtherPossibilities => {
         val numPossibilities = numOtherPossibilities + 1
         val probabilityPerPossibility = Rational(1, numPossibilities)
@@ -51,9 +51,9 @@ object ProbabilityMeasure {
 
         underlyingMapBuilder.sizeHint(numPossibilities)
 
-        underlyingMapBuilder += firstPossibility -> probabilityPerPossibility
+        underlyingMapBuilder += possibilitiesHead -> probabilityPerPossibility
 
-        otherPossibilities.foreach(possibility => underlyingMapBuilder += (possibility -> probabilityPerPossibility))
+        possibilitiesTail.foreach(possibility => underlyingMapBuilder += (possibility -> probabilityPerPossibility))
 
         VariedImpl(underlyingMapBuilder.result())
       }
@@ -75,6 +75,8 @@ object ProbabilityMeasure {
 
   def apply[A](branches: (A, Rational)*): Either[ConstructionError, ProbabilityMeasure[A]] = {
     val builder = new ProbabilityMeasureBuilder[A]
+
+    builder.sizeHint(branches.size)
 
     builder ++= branches
 
@@ -116,11 +118,13 @@ object ProbabilityMeasure {
       this
     }
 
+    // $COVERAGE-OFF$
     override def clear(): Unit = {
       underlying.clear()
       badKey = None
       runningTotalProbability = Rational.zero
     }
+    // $COVERAGE-ON$
 
     override def result(): Either[ConstructionError, ProbabilityMeasure[A]] = {
       if (badKey.isDefined) {
@@ -169,6 +173,8 @@ object ProbabilityMeasure {
     override def map[U](f: A => U): ProbabilityMeasure[U] = {
       val builder = new ProbabilityMeasureBuilder[U]
 
+      builder.sizeHint(asMap.size)
+
       asMap.foreach { case (possibility, probability) => builder += (f(possibility) -> probability) }
 
       builder.result().right.get
@@ -176,6 +182,8 @@ object ProbabilityMeasure {
 
     override def flatMap[U](f: A => ProbabilityMeasure[U]): ProbabilityMeasure[U] = {
       val builder = new ProbabilityMeasureBuilder[U]
+
+      builder.sizeHint(asMap.size)
 
       for {
         (possibility, branchProbability) <- asMap
