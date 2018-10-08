@@ -1,8 +1,10 @@
+import au.id.tmm.tmmUtils.build.MyVersionPlugin
+
 plugins {
     id 'io.codearte.nexus-staging' version '0.11.0'
 }
 
-apply plugin: au.id.tmm.tmmUtils.build.MyReleasePlugin
+apply plugin: MyVersionPlugin
 apply plugin: 'idea'
 
 allprojects {
