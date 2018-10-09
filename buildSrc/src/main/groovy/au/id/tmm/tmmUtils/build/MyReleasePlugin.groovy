@@ -112,7 +112,7 @@ final class MyReleasePlugin implements Plugin<Project> {
             startParameter.logLevel = LogLevel.INFO
             startParameter.showStacktrace = ShowStacktrace.ALWAYS_FULL
 
-            tasks = ['assemble', 'uploadArchives', 'closeAndReleaseRepository']
+            tasks = ['assemble', 'uploadArchives', ':closeAndReleaseRepository']
         }
     }
 
