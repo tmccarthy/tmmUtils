@@ -7,6 +7,7 @@ plugins {
 apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: au.id.tmm.tmmUtils.build.MyReleasePlugin.class
 
 repositories {
     mavenCentral()
@@ -96,5 +97,3 @@ checkScoverage {
 check.dependsOn(checkScoverage)
 
 description = 'A small set of Scala utilities'
-
-apply from: rootProject.file('gradle/maven-publishing.gradle')

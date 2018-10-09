@@ -44,5 +44,3 @@ checkScoverage {
 check.dependsOn(checkScoverage)
 
 description = 'A small library of ScalaTest utilities'
-
-apply from: rootProject.file('gradle/maven-publishing.gradle')
