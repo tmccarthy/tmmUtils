@@ -8,7 +8,7 @@ allprojects {
     group = 'au.id.tmm'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
-    distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = '4.10.2'
 }

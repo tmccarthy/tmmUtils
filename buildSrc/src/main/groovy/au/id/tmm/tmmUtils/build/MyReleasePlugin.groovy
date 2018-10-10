@@ -107,7 +107,10 @@ final class MyReleasePlugin implements Plugin<Project> {
         }
 
         target.task(type: GradleBuild, 'releaseIfFinalVersion') {
-            onlyIf { target.rootProject.ext.versionIsFinal }
+            onlyIf {
+                target.rootProject.ext.versionIsFinal &&
+                        (System.getenv().TRAVIS == "true" ? System.getenv().TRAVIS_TAG != null : true)
+            }
 
             startParameter.logLevel = LogLevel.INFO
             startParameter.showStacktrace = ShowStacktrace.ALWAYS_FULL
