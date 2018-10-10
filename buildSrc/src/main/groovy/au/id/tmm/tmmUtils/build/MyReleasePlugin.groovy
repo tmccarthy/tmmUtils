@@ -31,7 +31,7 @@ final class MyReleasePlugin implements Plugin<Project> {
         target.apply(plugin: 'signing')
 
         target.ext.'signing.keyId' = property(target, 'signing.keyId', 'GNU_KEY_ID')
-        target.ext.'signing.secretKeyRingFile' = property(target, 'signing.secretKeyRingFile', 'GNU_KEY_FILE')
+        target.ext.'signing.secretKeyRingFile' = target.rootProject.file('secring.gpg').absolutePath
         target.ext.'signing.password' = property(target, 'signing.password', 'GNU_KEY_PASSWORD')
 
         target.extensions.add(MyReleasePluginExtension.class, EXTENSION_NAME, new MyReleasePluginExtension())
