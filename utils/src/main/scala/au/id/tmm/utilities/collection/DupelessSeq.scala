@@ -2,6 +2,7 @@ package au.id.tmm.utilities.collection
 
 import au.id.tmm.utilities.collection.DupelessSeq.DupelessSeqCBF
 
+import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.generic._
 import scala.collection.immutable.{IndexedSeq, Vector}
 import scala.collection.{AbstractSeq, IndexedSeqLike, mutable}
@@ -9,7 +10,7 @@ import scala.collection.{AbstractSeq, IndexedSeqLike, mutable}
 /**
   * A sequence without duplicates, and a constant-time `contains` lookup.
   */
-class DupelessSeq[A] private (private val iterationOrder: Vector[A], private val elements: Set[A])
+class DupelessSeq[+A] private (private val iterationOrder: Vector[A], private val elements: Set[A @uncheckedVariance])
   extends AbstractSeq[A]
     with IndexedSeq[A]
     with GenericTraversableTemplate[A, DupelessSeq]
@@ -118,11 +119,11 @@ class DupelessSeq[A] private (private val iterationOrder: Vector[A], private val
     elements = this.elements,
   )
 
-  def -(elem: A): DupelessSeq[A] = {
+  def -[A1 >: A](elem: A1): DupelessSeq[A] = {
     if (this.contains(elem)) {
       new DupelessSeq(
         iterationOrder = this.iterationOrder.filterNot(_ == elem),
-        elements = this.elements - elem,
+        elements = this.elements - elem.asInstanceOf[A],
       )
     } else {
       this

@@ -88,7 +88,7 @@ object State {
     override val requiresDefiniteArticle = true
   }
 
-  val ALL_STATES = Set(NSW, QLD, SA, TAS, VIC, WA, NT, ACT)
+  val ALL_STATES: Set[State] = Set(NSW, QLD, SA, TAS, VIC, WA, NT, ACT)
 
   private val abbreviationLookup = ALL_STATES.groupBy(_.abbreviation.toUpperCase).mapValues(_.head)
 
