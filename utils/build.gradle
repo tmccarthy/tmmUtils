@@ -97,3 +97,14 @@ checkScoverage {
 check.dependsOn(checkScoverage)
 
 description = 'A small set of Scala utilities'
+
+myRelease {
+    githubUser = 'tmccarthy'
+    githubRepoName = 'tmmUtils'
+
+    licenceName = 'BSD 3-Clause'
+    licenceUrl = 'https://opensource.org/licenses/BSD-3-Clause'
+
+    developerName = 'Timothy McCarthy'
+    developerEmail = 'ebh042@gmail.com'
+}
