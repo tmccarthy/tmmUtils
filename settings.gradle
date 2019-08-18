@@ -1,6 +1,0 @@
-rootProject.name = 'root'
-
-include 'utils', 'testUtils'
-
-project(':utils').name = 'tmm-utils'
-project(':testUtils').name = 'tmm-test-utils'
