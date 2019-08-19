@@ -1,12 +1,12 @@
 package au.id.tmm.utilities.collection
 
 import au.id.tmm.utilities.collection.IteratorUtils.ImprovedIterator
-import au.id.tmm.utilities.testing.ImprovedFlatSpec
+import org.scalatest.{FlatSpec, OneInstancePerTest}
 
-class IteratorUtilsSpec extends ImprovedFlatSpec {
+class IteratorUtilsSpec extends FlatSpec with OneInstancePerTest {
 
-  val data = List("the", "quick", "brown", "fox")
-  val iterator = data.iterator
+  private val data = List("the", "quick", "brown", "fox")
+  private val iterator = data.iterator
 
   "readAtMost" should "read the first n elements of the iterator" in {
     assert(List("the", "quick") === iterator.readAtMost(2))

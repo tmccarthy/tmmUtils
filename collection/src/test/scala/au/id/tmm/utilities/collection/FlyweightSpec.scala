@@ -1,17 +1,18 @@
 package au.id.tmm.utilities.collection
 
-import au.id.tmm.utilities.geo.australia.Postcode
-import au.id.tmm.utilities.testing.ImprovedFlatSpec
+import java.time.LocalDate
 
-class FlyweightSpec extends ImprovedFlatSpec {
+import org.scalatest.FlatSpec
 
-  private val testFlyweight = Flyweight(Postcode.apply)
+class FlyweightSpec extends FlatSpec {
+
+  private val testFlyweight = Flyweight(LocalDate.parse)
 
   "a flyweight" should "construct its element from the supplied function" in {
-    assert(testFlyweight("3000") === Postcode("3000"))
+    assert(testFlyweight("2019-08-18") === LocalDate.parse("2019-08-18"))
   }
 
   it should "reuse previous values" in {
-    assert(testFlyweight("3000") eq testFlyweight("3000"))
+    assert(testFlyweight("2019-08-18") eq testFlyweight("2019-08-18"))
   }
 }

@@ -1,17 +1,8 @@
 package au.id.tmm.utilities.collection
 
-import au.id.tmm.utilities.testing.ImprovedFlatSpec
+import org.scalatest.FlatSpec
 
-import scala.collection.generic.CanBuildFrom
-import scala.collection.mutable
-
-class DupelessSeqSpec extends ImprovedFlatSpec {
-
-  private def toListCbf: CanBuildFrom[DupelessSeq[Int], Int, List[Int]] = new CanBuildFrom[DupelessSeq[Int], Int, List[Int]] {
-    override def apply(from: DupelessSeq[Int]): mutable.Builder[Int, List[Int]] = List.newBuilder
-
-    override def apply(): mutable.Builder[Int, List[Int]] = List.newBuilder
-  }
+class DupelessSeqSpec extends FlatSpec {
 
   "an DupelessSeq" should "retain the order of the earliest element when initialised" in {
     assert(DupelessSeq(1, 2, 3, 1).toList === List(1, 2, 3))
@@ -50,10 +41,6 @@ class DupelessSeqSpec extends ImprovedFlatSpec {
     assert((originalSeq :+ 1) eq originalSeq)
   }
 
-  it should "append an element correctly when converting to a list" in {
-    assert(DupelessSeq(1, 2).:+(2)(toListCbf) === List(1, 2, 2))
-  }
-
   it should "prepend an element correctly" in {
     assert(DupelessSeq(1, 2).+:(3) === DupelessSeq(3, 1, 2))
   }
@@ -62,10 +49,6 @@ class DupelessSeqSpec extends ImprovedFlatSpec {
     val originalSeq = DupelessSeq(1, 2)
 
     assert(originalSeq.+:(2) eq originalSeq)
-  }
-
-  it should "prepend an element correctly when converting to a list" in {
-    assert(DupelessSeq(1, 2).+:(2)(toListCbf) === List(2, 1, 2))
   }
 
   it should "remove an element correctly" in {
@@ -119,10 +102,6 @@ class DupelessSeqSpec extends ImprovedFlatSpec {
     assert(actual === expected)
   }
 
-  it should "update an element correctly when converting to a list" in {
-    assert(DupelessSeq(1, 2).updated(0, 2)(toListCbf) === List(2, 2))
-  }
-
   it can "pad the end of the seq with an element that is not in the seq" in {
     assert(DupelessSeq(1, 2, 3, 4, 5).padTo(99999, 6) === DupelessSeq(1, 2, 3, 4, 5, 6))
   }
@@ -131,10 +110,6 @@ class DupelessSeqSpec extends ImprovedFlatSpec {
     val original = DupelessSeq(1, 2, 3, 4, 5)
 
     assert(original.padTo(99999, 2) eq original)
-  }
-
-  it should "pad the end correctly when converting to a list" in {
-    assert(DupelessSeq(1, 2).padTo(4, 2)(toListCbf) === List(1, 2, 2, 2))
   }
 
   it should "support sorting" in {
@@ -241,23 +216,4 @@ class DupelessSeqSpec extends ImprovedFlatSpec {
     assert(builder.result() === DupelessSeq(1, 3))
   }
 
-  "the DupelessSeq cbf" should "allow building from a Set" in {
-    assert(Set(1, 2, 3, 2).to[DupelessSeq] === DupelessSeq(1, 2, 3))
-  }
-
-  it should "allow building from a List" in {
-    assert(List(1, 2, 3, 2).to[DupelessSeq] === DupelessSeq(1, 2, 3))
-  }
-
-  it should "allow building a new builder from another DupelessSeq" in {
-    val other = DupelessSeq(1, 2, 3, 2)
-
-    val builder = DupelessSeq.cbf[Int](other)
-
-    builder += 1
-    builder += 2
-    builder += 3
-
-    assert(builder.result() === other)
-  }
 }
