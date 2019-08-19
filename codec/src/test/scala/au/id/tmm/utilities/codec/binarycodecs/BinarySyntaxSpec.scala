@@ -1,4 +1,5 @@
 package au.id.tmm.utilities.codec.binarycodecs
+
 import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation.ByteArray
 import org.apache.commons.codec.DecoderException
 import org.scalatest.FlatSpec
