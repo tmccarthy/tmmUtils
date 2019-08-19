@@ -6,44 +6,49 @@ import org.scalatest.FlatSpec
 
 class HexSyntaxSpec extends FlatSpec {
 
+  private val validHexString = "ADE1A1DE"
+  private val bytes          = ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
+
+  private val invalidHexString = "ZZZZ"
+
   "the hex string context" should "convert some hex to a byte array" in {
-    assert(hex"ADE1A1DE" === ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte))
+    assert(hex"$validHexString" === bytes)
   }
 
   it should "throw if invalid hex is provided" in {
-    val exception = intercept[DecoderException](hex"ZZZZ")
+    val exception = intercept[DecoderException](hex"$invalidHexString")
 
     assert(exception.getClass === classOf[DecoderException])
   }
 
   "the hex string ops" should "parse a byte array from a hex string" in {
-    assert("ADE1A1DE".parseHex === Right(ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)))
+    assert(validHexString.parseHex === Right(bytes))
   }
 
   it should "fail to parse an invalid hex string" in {
-    assert("ZZZZ".parseHex.left.map(_.getClass) === Left(classOf[DecoderException]))
+    assert(invalidHexString.parseHex.left.map(_.getClass) === Left(classOf[DecoderException]))
   }
 
   it should "parse a byte array from a hex string using parseOrThrow" in {
-    assert("ADE1A1DE".parseHex === Right(ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)))
+    assert(validHexString.parseHex === Right(bytes))
   }
 
   it should "throw if parsing an invalid hex string with parseOrThrow" in {
-    val exception = intercept[DecoderException]("ZZZZ".parseHexUnsafe)
+    val exception = intercept[DecoderException](invalidHexString.parseHexUnsafe)
 
     assert(exception.getClass === classOf[DecoderException])
   }
 
   "the hex iterable ops" should "encode a ByteArray to hex" in {
-    assert(ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte).asHexString === "ade1a1de")
+    assert(bytes.asHexString === validHexString.toLowerCase)
   }
 
   it should "encode a list of bytes to hex" in {
-    assert(List(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte).asHexString === "ade1a1de")
+    assert(bytes.toList.asHexString === validHexString.toLowerCase)
   }
 
   "the hex array ops" should "encode an array to hex" in {
-    assert(Array(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte).asHexString === "ade1a1de")
+    assert(ByteArray.unwrapUnsafe(bytes).asHexString === validHexString.toLowerCase)
   }
 
 }
