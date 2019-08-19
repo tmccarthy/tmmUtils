@@ -1,4 +1,4 @@
-import DependencySettings._
+
 
 val settingsHelper = ProjectSettingsHelper("au.id.tmm","tmm-utils")()
 
@@ -10,12 +10,20 @@ lazy val root = project
   .settings(console := (console in Compile in collection).value)
   .aggregate(
     collection,
+    codec,
     testing,
   )
 
 lazy val collection = project
   .in(file("collection"))
   .settings(settingsHelper.settingsForSubprojectCalled("collection"))
+
+lazy val codec = project
+  .in(file("codec"))
+  .settings(settingsHelper.settingsForSubprojectCalled("codec"))
+  .settings(
+    libraryDependencies += "commons-codec" % "commons-codec" % "1.13",
+  )
 
 lazy val testing = project
   .in(file("testing"))
