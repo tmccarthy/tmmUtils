@@ -5,7 +5,7 @@ import org.scalatest.{FlatSpec, OneInstancePerTest}
 
 class IteratorUtilsSpec extends FlatSpec with OneInstancePerTest {
 
-  private val data = List("the", "quick", "brown", "fox")
+  private val data     = List("the", "quick", "brown", "fox")
   private val iterator = data.iterator
 
   "readAtMost" should "read the first n elements of the iterator" in {

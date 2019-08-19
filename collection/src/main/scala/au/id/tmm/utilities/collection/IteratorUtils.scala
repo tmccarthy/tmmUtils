@@ -32,7 +32,7 @@ object IteratorUtils {
       val result: mutable.ArrayBuffer[A] = mutable.ArrayBuffer()
 
       @tailrec
-      def readMore(): Unit = {
+      def readMore(): Unit =
         if (iterator.hasNext) {
           val element = iterator.next()
 
@@ -42,7 +42,6 @@ object IteratorUtils {
             readMore()
           }
         }
-      }
 
       readMore()
 
@@ -61,7 +60,7 @@ object IteratorUtils {
       val result: mutable.ArrayBuffer[A] = new mutable.ArrayBuffer[A](n)
 
       @tailrec
-      def readMore(): Unit = {
+      def readMore(): Unit =
         if (iterator.hasNext) {
           val element = iterator.next()
 
@@ -71,7 +70,6 @@ object IteratorUtils {
             readMore()
           }
         }
-      }
 
       readMore()
 

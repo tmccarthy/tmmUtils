@@ -8,7 +8,7 @@ import scala.collection.{AbstractSeq, SeqFactory, mutable}
   * A sequence without duplicates, and a constant-time `contains` lookup.
   */
 class DupelessSeq[+A] private (private val iterationOrder: Vector[A], private val elements: Set[A @uncheckedVariance])
-  extends AbstractSeq[A]
+    extends AbstractSeq[A]
     with IndexedSeq[A] {
 
   override def iterableFactory: SeqFactory[DupelessSeq] = DupelessSeq
@@ -81,21 +81,19 @@ class DupelessSeq[+A] private (private val iterationOrder: Vector[A], private va
     (leftSplit, rightSplit)
   }
 
-  override def padTo[B >: A](len: Int, elem: B): DupelessSeq[B] = {
+  override def padTo[B >: A](len: Int, elem: B): DupelessSeq[B] =
     if (this.contains(elem)) {
       this
     } else {
       this appended elem
     }
 
-  }
-
   override def sorted[B >: A](implicit ord: Ordering[B]): DupelessSeq[A] = new DupelessSeq(
     iterationOrder = this.iterationOrder.sorted(ord),
     elements = this.elements,
   )
 
-  def -[A1 >: A](elem: A1): DupelessSeq[A] = {
+  def -[A1 >: A](elem: A1): DupelessSeq[A] =
     if (this.contains(elem)) {
       new DupelessSeq(
         iterationOrder = this.iterationOrder.filterNot(_ == elem),
@@ -104,7 +102,6 @@ class DupelessSeq[+A] private (private val iterationOrder: Vector[A], private va
     } else {
       this
     }
-  }
 
   override def toList: List[A] = this.iterationOrder.toList
 
@@ -128,7 +125,7 @@ object DupelessSeq extends SeqFactory[DupelessSeq] {
   override def newBuilder[A]: DupelessSeqBuilder[A] = new DupelessSeqBuilder()
 
   class DupelessSeqBuilder[A] extends mutable.ReusableBuilder[A, DupelessSeq[A]] {
-    private val set: mutable.Set[A] = mutable.Set()
+    private val set: mutable.Set[A]                    = mutable.Set()
     private val iterationOrder: mutable.ArrayBuffer[A] = mutable.ArrayBuffer()
 
     override def addOne(elem: A): DupelessSeqBuilder.this.type = {
@@ -145,13 +142,12 @@ object DupelessSeq extends SeqFactory[DupelessSeq] {
       iterationOrder.clear()
     }
 
-    override def result(): DupelessSeq[A] = {
+    override def result(): DupelessSeq[A] =
       if (set.isEmpty) {
         DupelessSeq.empty
       } else {
         new DupelessSeq[A](iterationOrder.toVector, set.toSet)
       }
-    }
 
     override def sizeHint(size: Int): Unit = {
       set.sizeHint(size)

@@ -8,7 +8,7 @@ import scala.collection.mutable
 final class Flyweight[A, B] private (generator: A => B) {
   private val map: mutable.Map[A, B] = mutable.Map()
 
-  def apply(key: A): B = {
+  def apply(key: A): B =
     map.synchronized {
       if (map.contains(key)) {
         map(key)
@@ -18,7 +18,6 @@ final class Flyweight[A, B] private (generator: A => B) {
         value
       }
     }
-  }
 }
 
 object Flyweight {
