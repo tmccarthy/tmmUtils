@@ -28,6 +28,26 @@ object Digest {
   def sha384[A : SafeDigestible](a: A): ByteArray = digest(SHA_384)(a)
   def sha512[A : SafeDigestible](a: A): ByteArray = digest(SHA_512)(a)
 
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_224[A : SafeDigestible](a: A): ByteArray = digest(SHA3_224)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_256[A : SafeDigestible](a: A): ByteArray = digest(SHA3_256)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_384[A : SafeDigestible](a: A): ByteArray = digest(SHA3_384)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_512[A : SafeDigestible](a: A): ByteArray = digest(SHA3_512)(a)
+
   def md2OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray]    = digestOrError(MD2)(a)
   def md5OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray]    = digestOrError(MD5)(a)
   def sha1OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray]   = digestOrError(SHA_1)(a)
@@ -36,6 +56,26 @@ object Digest {
   def sha384OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray] = digestOrError(SHA_384)(a)
   def sha512OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray] = digestOrError(SHA_512)(a)
 
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_224OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray] = digestOrError(SHA3_224)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_256OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray] = digestOrError(SHA3_256)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_384OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray] = digestOrError(SHA3_384)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_512OrError[A : UnsafeDigestible](a: A): Either[IOException, ByteArray] = digestOrError(SHA3_512)(a)
+
   trait Syntax {
 
     implicit class SafeDigestibleOps[-A : SafeDigestible](a: A) {
@@ -43,6 +83,16 @@ object Digest {
       def sha1: ByteArray   = Digest.sha1(a)
       def sha256: ByteArray = Digest.sha256(a)
       def sha512: ByteArray = Digest.sha512(a)
+
+      /**
+        * This algorithm is available from Java 9 onwards
+        */
+      def sha3_256: ByteArray = Digest.sha3_256(a)
+
+      /**
+        * This algorithm is available from Java 9 onwards
+        */
+      def sha3_512: ByteArray = Digest.sha3_512(a)
     }
 
     implicit class UnsafeDigestibleOps[-A : UnsafeDigestible](a: A) {
@@ -50,6 +100,16 @@ object Digest {
       def sha1OrError: Either[IOException, ByteArray]   = Digest.sha1OrError(a)
       def sha256OrError: Either[IOException, ByteArray] = Digest.sha256OrError(a)
       def sha512OrError: Either[IOException, ByteArray] = Digest.sha512OrError(a)
+
+      /**
+        * This algorithm is available from Java 9 onwards
+        */
+      def sha3_256OrError: Either[IOException, ByteArray] = Digest.sha3_256OrError(a)
+
+      /**
+        * This algorithm is available from Java 9 onwards
+        */
+      def sha3_512OrError: Either[IOException, ByteArray] = Digest.sha3_512OrError(a)
     }
 
   }

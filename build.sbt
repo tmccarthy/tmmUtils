@@ -24,6 +24,7 @@ lazy val codec = project
   .settings(
     libraryDependencies += "commons-codec" % "commons-codec" % "1.13",
   )
+  .dependsOn(testing % "test->compile")
 
 lazy val testing = project
   .in(file("testing"))

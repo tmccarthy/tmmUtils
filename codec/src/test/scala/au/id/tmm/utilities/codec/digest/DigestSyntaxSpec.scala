@@ -6,9 +6,10 @@ import java.nio.file.Files
 
 import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation.ByteArray
 import au.id.tmm.utilities.codec.binarycodecs._
+import au.id.tmm.utilities.testing.JreVersionDependentFlatSpec
 import org.scalatest.FlatSpec
 
-class DigestSyntaxSpec extends FlatSpec {
+class DigestSyntaxSpec extends FlatSpec with JreVersionDependentFlatSpec {
 
   private val string     = "hello world"
   private def array      = "hello world".getBytes
@@ -72,5 +73,32 @@ class DigestSyntaxSpec extends FlatSpec {
   it should "work for a inputStream" in assert(inputStream.sha512OrError === Right(expectedSha512Hash))
   it should "work for a path" in assert(path.sha512OrError === Right(expectedSha512Hash))
   it should "work for a file" in assert(file.sha512OrError === Right(expectedSha512Hash))
+
+  behavior of "The syntax to compute a SHA3_256 hash"
+
+  private val expectedSha3_256Hash = hex"644bcc7e564373040999aac89e7622f3ca71fba1d972fd94a31c3bfbf24e3938"
+
+  ignoreJava8("work for a string")(assert(string.sha3_256 === expectedSha3_256Hash))
+  ignoreJava8("work for a array")(assert(array.sha3_256 === expectedSha3_256Hash))
+  ignoreJava8("work for a byteArray")(assert(byteArray.sha3_256 === expectedSha3_256Hash))
+  ignoreJava8("work for a byteVector")(assert(byteVector.sha3_256 === expectedSha3_256Hash))
+  ignoreJava8("work for a byteBuffer")(assert(byteBuffer.sha3_256OrError === Right(expectedSha3_256Hash)))
+  ignoreJava8("work for a inputStream")(assert(inputStream.sha3_256OrError === Right(expectedSha3_256Hash)))
+  ignoreJava8("work for a path")(assert(path.sha3_256OrError === Right(expectedSha3_256Hash)))
+  ignoreJava8("work for a file")(assert(file.sha3_256OrError === Right(expectedSha3_256Hash)))
+
+  behavior of "The syntax to compute a SHA3_512 hash"
+
+  private val expectedSha3_512Hash =
+    hex"840006653e9ac9e95117a15c915caab81662918e925de9e004f774ff82d7079a40d4d27b1b372657c61d46d470304c88c788b3a4527ad074d1dccbee5dbaa99a"
+
+  ignoreJava8("work for a string")(assert(string.sha3_512 === expectedSha3_512Hash))
+  ignoreJava8("work for a array")(assert(array.sha3_512 === expectedSha3_512Hash))
+  ignoreJava8("work for a byteArray")(assert(byteArray.sha3_512 === expectedSha3_512Hash))
+  ignoreJava8("work for a byteVector")(assert(byteVector.sha3_512 === expectedSha3_512Hash))
+  ignoreJava8("work for a byteBuffer")(assert(byteBuffer.sha3_512OrError === Right(expectedSha3_512Hash)))
+  ignoreJava8("work for a inputStream")(assert(inputStream.sha3_512OrError === Right(expectedSha3_512Hash)))
+  ignoreJava8("work for a path")(assert(path.sha3_512OrError === Right(expectedSha3_512Hash)))
+  ignoreJava8("work for a file")(assert(file.sha3_512OrError === Right(expectedSha3_512Hash)))
 
 }
