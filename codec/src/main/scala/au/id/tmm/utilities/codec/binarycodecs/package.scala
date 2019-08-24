@@ -1,3 +1,3 @@
 package au.id.tmm.utilities.codec
 
-package object binarycodecs extends HexSyntax with BinarySyntax with Base64Syntax with Base32Syntax
+package object binarycodecs extends Hex.Syntax with Binary.Syntax with Base64.Syntax with Base32.Syntax
