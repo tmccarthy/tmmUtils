@@ -13,7 +13,7 @@ libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection" % tmmUtil
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing"    % tmmUtilsVersion % "test" // Test utilities
 ```
 
-<br/><br/>
+<br/>
 
 ## Codec
 
@@ -59,7 +59,7 @@ val sha3_256 = bytes.sha3_256
 val sha3_512 = bytes.sha3_512
 ```
 
-<br/><br/>
+<br/>
 
 ## Collections
 
@@ -70,7 +70,7 @@ A couple of utilities and collections:
 * `Flyweight`, which is a very simple in-memory cache
 * `IteratorUtils`, which adds a couple of extension methods to `Iterator`
 
-<br/><br/>
+<br/>
 
 ## Testing
 
