@@ -1,6 +1,6 @@
 # `tmmUtils`
 [![CircleCI](https://circleci.com/gh/tmccarthy/tmmUtils/tree/master.svg?style=svg)](https://circleci.com/gh/tmccarthy/tmmUtils/tree/master)
-[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.tmm-utils/tmm-utils-core_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/tmm-utils/tmm-utils-core_2.13/)
+[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.tmm-utils/tmm-utils-codec_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/tmm-utils/tmm-utils-codec_2.13/)
 
 A bunch of Scala utilities I've found myself writing that I haven't (yet) decided to spin out into 
 their own projects.
