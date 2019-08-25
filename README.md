@@ -1,23 +1,63 @@
-[![Build Status](https://travis-ci.org/tmccarthy/tmmUtils.svg?branch=master)](https://travis-ci.org/tmccarthy/tmmUtils)
-[![codecov](https://codecov.io/gh/tmccarthy/tmmUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/tmccarthy/tmmUtils)
+# `tmmUtils`
+[![CircleCI](https://circleci.com/gh/tmccarthy/tmmUtils/tree/master.svg?style=svg)](https://circleci.com/gh/tmccarthy/tmmUtils/tree/master)
+[![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.tmm-utils/tmm-utils-core_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/tmm-utils/tmm-utils-core_2.13/)
 
-# My Scala Utilities
+A bunch of Scala utilities I've found myself writing that I haven't (yet) decided to spin out into 
+their own projects.
 
-Just some utilities I've found myself writing more than once for different projects.
+```scala
+val tmmUtilsVersion = "0.3.0"
 
-## Usage
-
-At some point I'll probably add this to the central repository, but for the moment I'm just hosting
-it on my own server. To use:
-
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-codec"      % tmmUtilsVersion          // Codecs and hashing
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection" % tmmUtilsVersion          // Collections
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing"    % tmmUtilsVersion % "test" // Test utilities
 ```
-resolvers in ThisBuild +=
-  "Ambitious Tools Artifactory" at "http://artifactory.ambitious.tools/artifactory/sbt-libs-release-local/"
 
-// Production utilities
-libraryDependencies += "au.id.tmm" %% "tmmutils" % "0.1"
+<br/><br/>
 
-// Test utilities
-libraryDependencies += "au.id.tmm" %% "tmmtestutils" % "0.1" % "test"
+## Codec
 
+`tmm-utils-codec` is a set of extension methods and string interpolaters over the top of the Apache
+[`commons-codec`](https://commons.apache.org/proper/commons-codec/) library.
+
+#### Binary codecs
+
+```scala
+import au.id.tmm.utilities.codec.binarycodecs._
+
+import scala.collection.immutable.ArraySeq
+
+// String interpolators
+val bin1: ArraySeq[Byte]     = binary"11011110101000011110000110101101"
+val hex1: ArraySeq[Byte]     = hex"ade1a1de"
+val base32_1: ArraySeq[Byte] = base32"VXQ2DXQ="
+val base64_1: ArraySeq[Byte] = base64"reGh3g=="
+
+// Extension methods for parsing
+val bin2: ArraySeq[Byte]     = "11011110101000011110000110101101".parseBinaryUnsafe
+val hex2: ArraySeq[Byte]     = "ade1a1de".parseHexUnsafe
+val base32_2: ArraySeq[Byte] = "VXQ2DXQ=".parseHexUnsafe
+val base64_2: ArraySeq[Byte] = "reGh3g==".parseBase64Unsafe
 ```
+
+#### Hashing
+
+TODO
+
+<br/><br/>
+
+## Collections
+
+A couple of utilities and collections:
+
+* `DupelessSeq`, which is an ordered sequence with a constant-time contains check, but (unlike [`ListSet`](https://www.scala-lang.org/api/current/scala/collection/immutable/ListSet.html))
+  considers order for equality checking.
+* `Flyweight`, which is a very simple in-memory cache
+* `IteratorUtils`, which adds a couple of extension methods to `Iterator`
+
+<br/><br/>
+
+## Testing
+
+* `JreVersionDependentFlatSpec`, which provides utilities for ignoring tests based on the Java version
+* `NeedsCleanDirectory`, which provides an empty directory for every test
