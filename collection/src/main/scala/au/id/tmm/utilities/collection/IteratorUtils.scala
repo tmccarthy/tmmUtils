@@ -8,7 +8,7 @@ object IteratorUtils {
 
     /**
       * Reads either the next `n` elements of the iterator, or to its end, whichever comes first. This method differs
-      * from [[scala.collection.Iterator.take]], in that it simply reads the elements from the underlying iterator,
+      * from `scala.collection.Iterator.take`, in that it simply reads the elements from the underlying iterator,
       * leaving it free for continued use after the invocation.
       * @return the elements read from the iterator
       */
@@ -24,7 +24,7 @@ object IteratorUtils {
 
     /**
       * Reads until the given condition is satisfied, or until the end of the iterator. This method differs from
-      * [[scala.collection.Iterable.dropWhile]], in that it simply reads the elements from the underlying iterator,
+      * `scala.collection.Iterable.dropWhile`, in that it simply reads the elements from the underlying iterator,
       * leaving it free for continued use after the invocation.
       * @return the elements read before the condition is met or the iterator is exhausted
       */
