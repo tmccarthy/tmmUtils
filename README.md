@@ -40,9 +40,24 @@ val base32_2: ArraySeq[Byte] = "VXQ2DXQ=".parseHexUnsafe
 val base64_2: ArraySeq[Byte] = "reGh3g==".parseBase64Unsafe
 ```
 
-#### Hashing
+#### Message digests
 
-TODO
+```scala
+import au.id.tmm.utilities.codec.binarycodecs._
+import au.id.tmm.utilities.codec.digest._
+
+import scala.collection.immutable.ArraySeq
+
+val bytes: ArraySeq[Byte] = hex"ade1a1de"
+
+val md5 = bytes.md5
+val sha256 = bytes.sha256
+val sha512 = bytes.sha512
+
+// SHA 3 only works with Java 9 or later
+val sha3_256 = bytes.sha3_256
+val sha3_512 = bytes.sha3_512
+```
 
 <br/><br/>
 
