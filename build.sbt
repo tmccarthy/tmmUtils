@@ -1,6 +1,8 @@
 
 
-val settingsHelper = ProjectSettingsHelper("au.id.tmm","tmm-utils")()
+val settingsHelper = ProjectSettingsHelper("au.id.tmm","tmm-utils")(
+  githubProjectName = "tmmUtils",
+)
 
 settingsHelper.settingsForBuild
 
