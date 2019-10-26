@@ -1,15 +1,18 @@
 package au.id.tmm.utilities.collection
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable.{IndexedSeq, Vector}
-import scala.collection.{AbstractSeq, SeqFactory, mutable}
+import scala.collection.immutable.{AbstractSeq, ArraySeq, IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps}
+import scala.collection.{IterableFactoryDefaults, SeqFactory, mutable}
 
 /**
   * A sequence without duplicates, and a constant-time `contains` lookup.
   */
-class DupelessSeq[+A] private (private val iterationOrder: Vector[A], private val elements: Set[A @uncheckedVariance])
+class DupelessSeq[+A] private (private val iterationOrder: ArraySeq[A], private val elements: Set[A @uncheckedVariance])
     extends AbstractSeq[A]
-    with IndexedSeq[A] {
+    with IndexedSeq[A]
+    with IndexedSeqOps[A, DupelessSeq, DupelessSeq[A]]
+    with StrictOptimizedSeqOps[A, DupelessSeq, DupelessSeq[A]]
+    with IterableFactoryDefaults[A, DupelessSeq] {
 
   override def iterableFactory: SeqFactory[DupelessSeq] = DupelessSeq
 
@@ -107,20 +110,21 @@ class DupelessSeq[+A] private (private val iterationOrder: Vector[A], private va
 
   override def toSet[B >: A]: Set[B] = this.elements.asInstanceOf[Set[B]]
 
-  override def toVector: Vector[A] = this.iterationOrder
+  def toArraySeq: ArraySeq[A] = this.iterationOrder
 
   override protected[this] def className: String = "DupelessSeq"
 
 }
 
 object DupelessSeq extends SeqFactory[DupelessSeq] {
-  private val EMPTY: DupelessSeq[Any] = new DupelessSeq(Vector.empty, Set.empty)
+  private val EMPTY: DupelessSeq[Any] = new DupelessSeq(ArraySeq.empty, Set.empty)
 
   override def empty[A]: DupelessSeq[A] = EMPTY.asInstanceOf[DupelessSeq[A]]
 
   def apply[A](): DupelessSeq[A] = empty
 
-  override def apply[A](elems: A*): DupelessSeq[A] = new DupelessSeq(elems.distinct.toVector, elems.toSet)
+  override def apply[A](elems: A*): DupelessSeq[A] =
+    new DupelessSeq(elems.distinct.to(ArraySeq.untagged), elems.toSet)
 
   override def newBuilder[A]: DupelessSeqBuilder[A] = new DupelessSeqBuilder()
 
@@ -146,7 +150,7 @@ object DupelessSeq extends SeqFactory[DupelessSeq] {
       if (set.isEmpty) {
         DupelessSeq.empty
       } else {
-        new DupelessSeq[A](iterationOrder.toVector, set.toSet)
+        new DupelessSeq[A](iterationOrder.to(ArraySeq.untagged), set.toSet)
       }
 
     override def sizeHint(size: Int): Unit = {
