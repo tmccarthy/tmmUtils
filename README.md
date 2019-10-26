@@ -76,3 +76,4 @@ A couple of utilities and collections:
 
 * `JreVersionDependentFlatSpec`, which provides utilities for ignoring tests based on the Java version
 * `NeedsCleanDirectory`, which provides an empty directory for every test
+* `au.id.tmm.utilities.testing.syntax`, which provides syntax to replace the old `right.get` method on `Either`
