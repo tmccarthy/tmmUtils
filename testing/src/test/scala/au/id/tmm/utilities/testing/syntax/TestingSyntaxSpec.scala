@@ -14,6 +14,14 @@ class TestingSyntaxSpec extends FlatSpec {
     assert(assertionError.getMessage === "Expected Right, but was Left(abc)")
   }
 
+  it should "throw an assertion error with the left value as the cause if the left is throwable" in {
+    val cause = new Exception()
+
+    val assertionError = intercept[AssertionError](Left(cause).get)
+
+    assert(assertionError.getCause === cause)
+  }
+
   "getLeft on Either" should "return the left value" in {
     assert(Left("abc").leftGet === "abc")
   }

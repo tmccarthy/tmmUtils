@@ -4,8 +4,9 @@ package object syntax {
 
   implicit class TestingEitherOps[L, R](either: Either[L, R]) {
     def get: R = either match {
-      case Right(r)       => r
-      case left @ Left(_) => throw new AssertionError(s"Expected Right, but was $left")
+      case Right(r)                  => r
+      case left @ Left(t: Throwable) => throw new AssertionError(s"Expected Right, but was $left", t)
+      case left @ Left(_)            => throw new AssertionError(s"Expected Right, but was $left")
     }
 
     def leftGet: L = either match {
