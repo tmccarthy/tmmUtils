@@ -77,3 +77,22 @@ A couple of utilities and collections:
 * `JreVersionDependentFlatSpec`, which provides utilities for ignoring tests based on the Java version
 * `NeedsCleanDirectory`, which provides an empty directory for every test
 * `au.id.tmm.utilities.testing.syntax`, which provides syntax to replace the old `right.get` method on `Either`
+
+## Syntax
+
+Some general syntax extensions.
+
+#### Tuple syntax
+
+```scala
+
+import au.id.tmm.utilities.syntax.tuples._
+
+val tuple: String -> Int = "hello" -> 5
+
+val tuples: List[String -> Int] = List(
+  "hello" -> 1,
+  "world" -> 2,
+)
+
+```
