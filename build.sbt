@@ -13,6 +13,7 @@ lazy val root = project
   .aggregate(
     collection,
     codec,
+    syntax,
     testing,
   )
 
@@ -26,6 +27,11 @@ lazy val codec = project
   .settings(
     libraryDependencies += "commons-codec" % "commons-codec" % "1.13",
   )
+  .dependsOn(testing % "test->compile")
+
+lazy val syntax = project
+  .in(file("syntax"))
+  .settings(settingsHelper.settingsForSubprojectCalled("syntax"))
   .dependsOn(testing % "test->compile")
 
 lazy val testing = project
