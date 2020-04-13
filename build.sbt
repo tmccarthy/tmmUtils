@@ -20,6 +20,7 @@ lazy val root = project
 lazy val collection = project
   .in(file("collection"))
   .settings(settingsHelper.settingsForSubprojectCalled("collection"))
+  .dependsOn(testing % "test->compile")
 
 lazy val codec = project
   .in(file("codec"))
