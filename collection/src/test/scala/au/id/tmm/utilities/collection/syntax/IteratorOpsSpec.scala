@@ -1,9 +1,8 @@
-package au.id.tmm.utilities.collection
+package au.id.tmm.utilities.collection.syntax
 
-import au.id.tmm.utilities.collection.IteratorUtils.ImprovedIterator
 import org.scalatest.{FlatSpec, OneInstancePerTest}
 
-class IteratorUtilsSpec extends FlatSpec with OneInstancePerTest {
+class IteratorOpsSpec extends FlatSpec with OneInstancePerTest {
 
   private val data     = List("the", "quick", "brown", "fox")
   private val iterator = data.iterator
@@ -55,4 +54,5 @@ class IteratorUtilsSpec extends FlatSpec with OneInstancePerTest {
 
     assert(List("fox") === iterator.toList)
   }
+
 }
