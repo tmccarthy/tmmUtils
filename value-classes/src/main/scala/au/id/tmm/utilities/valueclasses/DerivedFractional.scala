@@ -1,10 +1,8 @@
 package au.id.tmm.utilities.valueclasses
 
-private[valueclasses] class DerivedFractional[A, F : Fractional](
-  asFractional: A => F,
-  makeA: F => A,
-) extends Fractional[A] {
-  private val fractionalForF: Fractional[F]                = implicitly
+private[valueclasses] class DerivedFractional[A, F : Fractional](asFractional: A => F, makeA: F => A)
+    extends Fractional[A] {
+  private val fractionalForF: Fractional[F] = implicitly
 
   @inline override def div(x: A, y: A): A                  = makeA(fractionalForF.div(asFractional(x), asFractional(y)))
   @inline override def plus(x: A, y: A): A                 = makeA(fractionalForF.plus(asFractional(x), asFractional(y)))

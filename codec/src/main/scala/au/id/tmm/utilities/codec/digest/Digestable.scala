@@ -13,9 +13,10 @@ trait SafeDigestible[-A] {
 }
 
 object SafeDigestible {
-  implicit val forArray: SafeDigestible[Array[Byte]]       = (utils, array) => utils.digest(array)
-  implicit val forString: SafeDigestible[String]           = (utils, string) => utils.digest(string)
-  implicit val forByteArray: SafeDigestible[ArraySeq[Byte]]     = (utils, array) => utils.digest(array.unsafeArray.asInstanceOf[Array[Byte]])
+  implicit val forArray: SafeDigestible[Array[Byte]] = (utils, array) => utils.digest(array)
+  implicit val forString: SafeDigestible[String]     = (utils, string) => utils.digest(string)
+  implicit val forByteArray: SafeDigestible[ArraySeq[Byte]] = (utils, array) =>
+    utils.digest(array.unsafeArray.asInstanceOf[Array[Byte]])
   implicit val forIterable: SafeDigestible[Iterable[Byte]] = (utils, iterable) => utils.digest(iterable.toArray)
 }
 

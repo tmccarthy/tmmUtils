@@ -2,7 +2,11 @@ package au.id.tmm.utilities.collection.syntax
 
 import scala.collection.BuildFrom
 
-final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (iterable: C[A])(implicit buildFrom: BuildFrom[C[A], A, C[A]]) {
+final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
+  iterable: C[A],
+)(implicit
+  buildFrom: BuildFrom[C[A], A, C[A]],
+) {
 
   def atMostOneOr[E](error: => E): Either[E, Option[A]] = {
     if (iterable.isEmpty) return Right(None)
@@ -36,4 +40,3 @@ final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (iterable: C[A])
   private def describeIterable: String = s"Iterable was $iterable"
 
 }
-

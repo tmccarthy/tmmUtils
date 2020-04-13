@@ -8,7 +8,8 @@ package object errors {
 
   object ExceptionOr {
     def catchIn[A](block: => A): ExceptionOr[A] =
-      try Right(block) catch {
+      try Right(block)
+      catch {
         case e: Exception => Left(e)
       }
   }
@@ -17,7 +18,8 @@ package object errors {
 
   object ThrowableOr {
     def catchNonFatal[A](block: => A): ThrowableOr[A] =
-      try Right(block) catch {
+      try Right(block)
+      catch {
         case NonFatal(t) => Left(t)
       }
   }

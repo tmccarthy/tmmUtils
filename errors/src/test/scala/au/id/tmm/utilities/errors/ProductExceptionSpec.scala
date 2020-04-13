@@ -10,7 +10,8 @@ class ProductExceptionSpec extends FlatSpec {
   }
 
   "an exception with a cause that is a product type" should "have a message from its toString" in {
-    assert(MessageExceptionWithCause("hello", new Exception()).getMessage === "MessageExceptionWithCause(hello,java.lang.Exception)")
+    assert(
+      MessageExceptionWithCause("hello", new Exception()).getMessage === "MessageExceptionWithCause(hello,java.lang.Exception)")
   }
 
   it should "have a cause" in {
@@ -25,5 +26,6 @@ class ProductExceptionSpec extends FlatSpec {
 
 object ProductExceptionSpec {
   final case class MessageException(message: String) extends ProductException
-  final case class MessageExceptionWithCause(message: String, cause: Exception) extends ProductException.WithCause(cause)
+  final case class MessageExceptionWithCause(message: String, cause: Exception)
+      extends ProductException.WithCause(cause)
 }

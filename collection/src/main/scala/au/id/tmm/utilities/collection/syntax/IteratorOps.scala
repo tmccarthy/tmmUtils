@@ -4,6 +4,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 
 final class IteratorOps[+A] private[syntax] (iterator: Iterator[A]) {
+
   /**
     * Reads either the next `n` elements of the iterator, or to its end, whichever comes first. This method differs
     * from `scala.collection.Iterator.take`, in that it simply reads the elements from the underlying iterator,

@@ -1,9 +1,6 @@
 package au.id.tmm.utilities.valueclasses
 
-private[valueclasses] class DerivedIntegral[A, I : Integral](
-  asIntegral: A => I,
-  makeA: I => A,
-) extends Integral[A] {
+private[valueclasses] class DerivedIntegral[A, I : Integral](asIntegral: A => I, makeA: I => A) extends Integral[A] {
   private val integralForI: Integral[I] = implicitly
 
   @inline override def quot(x: A, y: A): A                 = makeA(integralForI.quot(asIntegral(x), asIntegral(y)))
