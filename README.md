@@ -6,11 +6,14 @@ A bunch of Scala utilities I've found myself writing that I haven't (yet) decide
 their own projects.
 
 ```scala
-val tmmUtilsVersion = "0.3.1"
+val tmmUtilsVersion = "0.4.0"
 
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-codec"      % tmmUtilsVersion          // Codecs and hashing
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection" % tmmUtilsVersion          // Collections
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing"    % tmmUtilsVersion % "test" // Test utilities
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-codec"         % tmmUtilsVersion          // Codecs and hashing
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection"    % tmmUtilsVersion          // Collections
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-errors"        % tmmUtilsVersion          // Errors
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-syntax"        % tmmUtilsVersion          // Syntax utils
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-value-classes" % tmmUtilsVersion          // Value class utils
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing"       % tmmUtilsVersion % "test" // Test utilities
 ```
 
 <br/>
