@@ -12,6 +12,7 @@ lazy val root = project
   .settings(console := (console in Compile in collection).value)
   .aggregate(
     collection,
+    errors,
     codec,
     syntax,
     testing,
@@ -20,6 +21,11 @@ lazy val root = project
 lazy val collection = project
   .in(file("collection"))
   .settings(settingsHelper.settingsForSubprojectCalled("collection"))
+  .dependsOn(testing % "test->compile")
+
+lazy val errors = project
+  .in(file("errors"))
+  .settings(settingsHelper.settingsForSubprojectCalled("errors"))
   .dependsOn(testing % "test->compile")
 
 lazy val codec = project

@@ -72,6 +72,10 @@ A couple of utilities and collections:
 
 <br/>
 
+## Errors
+
+Some type aliases and extension methods for dealing with types like `Either[Throwable, A]`.
+
 ## Testing
 
 * `JreVersionDependentFlatSpec`, which provides utilities for ignoring tests based on the Java version
