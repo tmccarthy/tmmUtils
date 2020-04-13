@@ -15,6 +15,7 @@ lazy val root = project
     errors,
     codec,
     syntax,
+    valueClasses,
     testing,
   )
 
@@ -39,6 +40,11 @@ lazy val codec = project
 lazy val syntax = project
   .in(file("syntax"))
   .settings(settingsHelper.settingsForSubprojectCalled("syntax"))
+  .dependsOn(testing % "test->compile")
+
+lazy val valueClasses = project
+  .in(file("value-classes"))
+  .settings(settingsHelper.settingsForSubprojectCalled("value-classes"))
   .dependsOn(testing % "test->compile")
 
 lazy val testing = project

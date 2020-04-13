@@ -76,6 +76,10 @@ A couple of utilities and collections:
 
 Some type aliases and extension methods for dealing with types like `Either[Throwable, A]`.
 
+## Value classes
+
+Some utilities for deriving typeclass (`Numeric` and `Ordering`) instances for value classes.
+
 ## Testing
 
 * `JreVersionDependentFlatSpec`, which provides utilities for ignoring tests based on the Java version
