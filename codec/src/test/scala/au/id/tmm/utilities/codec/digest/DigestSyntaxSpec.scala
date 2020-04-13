@@ -4,16 +4,17 @@ import java.io.{ByteArrayInputStream, InputStream}
 import java.nio.ByteBuffer
 import java.nio.file.Files
 
-import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation.ByteArray
 import au.id.tmm.utilities.codec.binarycodecs._
 import au.id.tmm.utilities.testing.JreVersionDependentFlatSpec
 import org.scalatest.FlatSpec
+
+import scala.collection.immutable.ArraySeq
 
 class DigestSyntaxSpec extends FlatSpec with JreVersionDependentFlatSpec {
 
   private val string     = "hello world"
   private def array      = "hello world".getBytes
-  private val byteArray  = ByteArray.wrapUnsafe(array)
+  private val byteArray  = ArraySeq.unsafeWrapArray(array)
   private val byteVector = array.toVector
 
   private def byteBuffer               = ByteBuffer.wrap(array)

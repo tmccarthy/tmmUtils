@@ -4,8 +4,9 @@ import java.io.{File, IOException, InputStream}
 import java.nio.ByteBuffer
 import java.nio.file.Path
 
-import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation._
 import org.apache.commons.codec.digest.DigestUtils
+
+import scala.collection.immutable.ArraySeq
 
 trait SafeDigestible[-A] {
   protected[digest] def digest(digestUtils: DigestUtils, a: A): Array[Byte]
@@ -14,7 +15,7 @@ trait SafeDigestible[-A] {
 object SafeDigestible {
   implicit val forArray: SafeDigestible[Array[Byte]]       = (utils, array) => utils.digest(array)
   implicit val forString: SafeDigestible[String]           = (utils, string) => utils.digest(string)
-  implicit val forByteArray: SafeDigestible[ByteArray]     = (utils, array) => utils.digest(ByteArray.unwrapUnsafe(array))
+  implicit val forByteArray: SafeDigestible[ArraySeq[Byte]]     = (utils, array) => utils.digest(array.unsafeArray.asInstanceOf[Array[Byte]])
   implicit val forIterable: SafeDigestible[Iterable[Byte]] = (utils, iterable) => utils.digest(iterable.toArray)
 }
 

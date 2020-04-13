@@ -1,13 +1,14 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
-import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation._
 import org.apache.commons.codec.DecoderException
 import org.scalatest.FlatSpec
+
+import scala.collection.immutable.ArraySeq
 
 class HexSyntaxSpec extends FlatSpec {
 
   private val validHexString = "ADE1A1DE"
-  private val bytes          = ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
+  private val bytes          = ArraySeq[Byte](0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
 
   private val invalidHexString = "ZZZZ"
 
@@ -48,7 +49,7 @@ class HexSyntaxSpec extends FlatSpec {
   }
 
   "the hex array ops" should "encode an array to hex" in {
-    assert(ByteArray.unwrapUnsafe(bytes).asHexString === validHexString.toLowerCase)
+    assert(bytes.unsafeArray.asInstanceOf[Array[Byte]].asHexString === validHexString.toLowerCase)
   }
 
 }

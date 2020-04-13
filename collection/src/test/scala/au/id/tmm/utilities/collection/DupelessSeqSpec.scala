@@ -2,6 +2,8 @@ package au.id.tmm.utilities.collection
 
 import org.scalatest.FlatSpec
 
+import scala.collection.immutable.ArraySeq
+
 class DupelessSeqSpec extends FlatSpec {
 
   "a DupelessSeq" should "retain the order of the earliest element when initialised" in {
@@ -222,6 +224,18 @@ class DupelessSeqSpec extends FlatSpec {
     builder += 3
 
     assert(builder.result() === DupelessSeq(1, 3))
+  }
+
+  it can "be converted to an ArraySeq" in {
+    assert(DupelessSeq(1, 2, 3).toArraySeq === ArraySeq(1, 2, 3))
+  }
+
+  it should "allow appending an element" in {
+    assert((DupelessSeq(1, 2, 3).appended(4): DupelessSeq[Int]) === DupelessSeq(1, 2, 3, 4))
+  }
+
+  it should "allow appending a list" in {
+    assert((DupelessSeq(1, 2, 3).appendedAll(List(4, 5, 6)): DupelessSeq[Int]) === DupelessSeq(1, 2, 3, 4, 5, 6))
   }
 
 }

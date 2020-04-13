@@ -1,20 +1,21 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
-import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation.ByteArray
 import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.{Base64 => CommonsBase64}
+
+import scala.collection.immutable.ArraySeq
 
 object Base64 {
 
   def asBase64String(bytes: Array[Byte]): String    = CommonsBase64.encodeBase64String(bytes)
-  def asBase64String(bytes: ByteArray): String      = asBase64String(ByteArray.unwrapUnsafe(bytes))
+  def asBase64String(bytes: ArraySeq[Byte]): String = asBase64String(bytes.unsafeArray.asInstanceOf[Array[Byte]])
   def asBase64String(bytes: Iterable[Byte]): String = asBase64String(bytes.toArray)
 
   private def decodeToBytes(string: String): Array[Byte] =
     if (CommonsBase64.isBase64(string)) CommonsBase64.decodeBase64(string)
     else throw new DecoderException("Invalid base64")
-  def parseBase64OrThrow(string: String): ByteArray = ByteArray.wrapUnsafe(decodeToBytes(string))
-  def parseBase64(string: String): Either[DecoderException, ByteArray] =
+  def parseBase64OrThrow(string: String): ArraySeq[Byte] = ArraySeq.unsafeWrapArray(decodeToBytes(string))
+  def parseBase64(string: String): Either[DecoderException, ArraySeq[Byte]] =
     try Right(parseBase64OrThrow(string))
     catch {
       case e: DecoderException => Left(e)
@@ -23,16 +24,16 @@ object Base64 {
   trait Syntax {
 
     implicit class Base64StringContext(private val stringContext: StringContext) {
-      def base64(subs: Any*): ByteArray = parseBase64OrThrow(stringContext.s(subs: _*))
+      def base64(subs: Any*): ArraySeq[Byte] = parseBase64OrThrow(stringContext.s(subs: _*))
     }
 
     implicit class Base64StringOps(private val s: String) {
-      def parseBase64: Either[DecoderException, ByteArray] = Base64.parseBase64(s)
+      def parseBase64: Either[DecoderException, ArraySeq[Byte]] = Base64.parseBase64(s)
 
-      def parseBase64Unsafe: ByteArray = parseBase64OrThrow(s)
+      def parseBase64Unsafe: ArraySeq[Byte] = parseBase64OrThrow(s)
     }
 
-    implicit class Base64ByteArrayOps(private val bytes: ByteArray) {
+    implicit class Base64ByteArrayOps(private val bytes: ArraySeq[Byte]) {
       def asBase64String: String = Base64.asBase64String(bytes)
     }
 

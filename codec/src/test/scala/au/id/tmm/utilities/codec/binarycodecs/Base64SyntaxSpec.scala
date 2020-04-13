@@ -1,13 +1,14 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
-import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation.ByteArray
 import org.apache.commons.codec.DecoderException
 import org.scalatest.FlatSpec
+
+import scala.collection.immutable.ArraySeq
 
 class Base64SyntaxSpec extends FlatSpec {
 
   private val validBase64String = "reGh3g=="
-  private val bytes             = ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
+  private val bytes             = ArraySeq[Byte](0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
 
   private val invalidBase64String = "ابتث"
 
@@ -48,7 +49,7 @@ class Base64SyntaxSpec extends FlatSpec {
   }
 
   "the base64 array ops" should "encode an array to base64" in {
-    assert(ByteArray.unwrapUnsafe(bytes).asBase64String === validBase64String)
+    assert(bytes.unsafeArray.asInstanceOf[Array[Byte]].asBase64String === validBase64String)
   }
 
 }

@@ -1,13 +1,14 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
-import au.id.tmm.utilities.codec.ScalaVersionDependentBytesRepresentation.ByteArray
 import org.apache.commons.codec.DecoderException
 import org.scalatest.FlatSpec
+
+import scala.collection.immutable.ArraySeq
 
 class Base32SyntaxSpec extends FlatSpec {
 
   private val validBase32String = "VXQ2DXQ="
-  private val bytes             = ByteArray(0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
+  private val bytes             = ArraySeq[Byte](0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)
 
   private val invalidBase32String = "ابتث"
 
@@ -48,7 +49,7 @@ class Base32SyntaxSpec extends FlatSpec {
   }
 
   "the base32 array ops" should "encode an array to base32" in {
-    assert(ByteArray.unwrapUnsafe(bytes).asBase32String === validBase32String)
+    assert(bytes.unsafeArray.asInstanceOf[Array[Byte]].asBase32String === validBase32String)
   }
 
 }
