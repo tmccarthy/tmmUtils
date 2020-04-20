@@ -45,7 +45,7 @@ final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
     iterable.asInstanceOf[Iterable[A]].foreach { a =>
       builder.updateWith(a) {
         case Some(previousCount) => Some(previousCount + 1)
-        case None => Some(1)
+        case None                => Some(1)
       }
     }
 
