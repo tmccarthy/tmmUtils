@@ -37,4 +37,12 @@ class IterableOpsSpec extends FlatSpec {
     assert(LazyList.continually(0).onlyElementOrException.isLeft)
   }
 
+  "count occurrences" should "count the occurances of each element" in {
+    assert(List(1, 1, 1, 2, 2, 3).countOccurrences === Map(1 -> 3, 2 -> 2, 3 -> 1))
+  }
+
+  it should "return an empty map for an empty collection" in {
+    assert(List.empty[Int].countOccurrences === Map.empty[Int, Int])
+  }
+
 }

@@ -1,6 +1,6 @@
 package au.id.tmm.utilities.collection.syntax
 
-import scala.collection.BuildFrom
+import scala.collection.{BuildFrom, mutable}
 
 final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
   iterable: C[A],
@@ -38,5 +38,18 @@ final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
     onlyElementOr(new Exception(s"Expected exactly one element. $describeIterable"))
 
   private def describeIterable: String = s"Iterable was $iterable"
+
+  def countOccurrences: Map[A, Int] = {
+    val builder: mutable.Map[A, Int] = mutable.Map[A, Int]()
+
+    iterable.asInstanceOf[Iterable[A]].foreach { a =>
+      builder.updateWith(a) {
+        case Some(previousCount) => Some(previousCount + 1)
+        case None => Some(1)
+      }
+    }
+
+    builder.toMap
+  }
 
 }
