@@ -2,10 +2,11 @@ package au.id.tmm.utilities.collection.syntax
 
 import scala.collection.{BuildFrom, mutable}
 
-final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
+final class IterableOps[C[_], A] private[syntax] (
   iterable: C[A],
 )(implicit
   buildFrom: BuildFrom[C[A], A, C[A]],
+  ev: C[A] <:< Iterable[A],
 ) {
 
   def atMostOneOr[E](error: => E): Either[E, Option[A]] = {
@@ -14,7 +15,7 @@ final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
     val first2Elements = iterable.take(2)
 
     if (first2Elements.size == 1)
-      Right(Some(first2Elements.head.asInstanceOf[A]))
+      Right(Some(first2Elements.head))
     else
       Left(error)
   }
@@ -26,7 +27,7 @@ final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
     val first2Elements = iterable.take(2)
 
     if (first2Elements.size == 1)
-      Some(first2Elements.head.asInstanceOf[A])
+      Some(first2Elements.head)
     else
       None
   }
@@ -42,7 +43,7 @@ final class IterableOps[C[_] <: Iterable[_], A] private[syntax] (
   def countOccurrences: Map[A, Int] = {
     val builder: mutable.Map[A, Int] = mutable.Map[A, Int]()
 
-    iterable.asInstanceOf[Iterable[A]].foreach { a =>
+    iterable.foreach { a =>
       builder.updateWith(a) {
         case Some(previousCount) => Some(previousCount + 1)
         case None                => Some(1)
