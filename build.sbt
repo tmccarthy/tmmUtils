@@ -16,8 +16,11 @@ lazy val root = project
     codec,
     syntax,
     valueClasses,
+    cats,
     testing,
   )
+
+val catsVersion = "2.2.0-M1"
 
 lazy val collection = project
   .in(file("collection"))
@@ -45,6 +48,16 @@ lazy val syntax = project
 lazy val valueClasses = project
   .in(file("value-classes"))
   .settings(settingsHelper.settingsForSubprojectCalled("value-classes"))
+  .dependsOn(testing % "test->compile")
+
+lazy val cats = project
+  .in(file("cats"))
+  .settings(settingsHelper.settingsForSubprojectCalled("cats"))
+  .settings(
+    libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+  )
   .dependsOn(testing % "test->compile")
 
 lazy val testing = project
