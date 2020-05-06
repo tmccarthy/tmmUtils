@@ -45,4 +45,38 @@ class IterableOpsSpec extends FlatSpec {
     assert(List.empty[Int].countOccurrences === Map.empty[Int, Int])
   }
 
+  "groupByKey" should "group by the key for a list of tuples" in {
+    val tuples = List(
+      1 -> "hello",
+      1 -> "world",
+      2 -> "blah",
+    )
+
+    val expectedGrouped = Map(
+      1 -> List("hello", "world"),
+      2 -> List("blah")
+    )
+
+    assert(tuples.groupByKey === expectedGrouped)
+  }
+
+  it should "group by the the key for a Set of tuples" in {
+    val tuples = Set(
+      1 -> "hello",
+      1 -> "world",
+      2 -> "blah",
+    )
+
+    val expectedGrouped = Map(
+      1 -> Set("hello", "world"),
+      2 -> Set("blah")
+    )
+
+    assert(tuples.groupByKey === expectedGrouped)
+  }
+
+  it should "return an empty map for an empty list of tuples" in {
+    assert(List.empty[(Int, String)].groupByKey === Map.empty)
+  }
+
 }

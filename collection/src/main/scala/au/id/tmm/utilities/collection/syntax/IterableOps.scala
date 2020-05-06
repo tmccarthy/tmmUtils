@@ -1,6 +1,7 @@
 package au.id.tmm.utilities.collection.syntax
 
 import scala.collection.{BuildFrom, mutable}
+import scala.unchecked
 
 final class IterableOps[C[_], A] private[syntax] (
   iterable: C[A],
@@ -52,5 +53,18 @@ final class IterableOps[C[_], A] private[syntax] (
 
     builder.toMap
   }
+
+  def groupByKey[K, V](implicit evA: A <:< (K, V)): Map[K, C[V]] =
+    iterable
+      .groupMap[K, V](
+        key = {
+          case (k: K @unchecked, v) => k
+        },
+      )(
+        f = {
+          case (k, v: V @unchecked) => v
+        },
+      )
+      .asInstanceOf[Map[K, C[V]]]
 
 }
