@@ -54,7 +54,7 @@ class IterableOpsSpec extends FlatSpec {
 
     val expectedGrouped = Map(
       1 -> List("hello", "world"),
-      2 -> List("blah")
+      2 -> List("blah"),
     )
 
     assert(tuples.groupByKey === expectedGrouped)
@@ -69,7 +69,7 @@ class IterableOpsSpec extends FlatSpec {
 
     val expectedGrouped = Map(
       1 -> Set("hello", "world"),
-      2 -> Set("blah")
+      2 -> Set("blah"),
     )
 
     assert(tuples.groupByKey === expectedGrouped)
