@@ -60,14 +60,6 @@ lazy val cats = project
   )
   .dependsOn(testing % "test->compile")
 
-// TODO remove this if there's nothing in it
-lazy val cats = project
-  .in(file("cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("cats"))
-  .settings(DependencySettings.catsDependency)
-  .settings(DependencySettings.catsTestKitDependency)
-  .dependsOn(testing % "test->compile")
-
 lazy val testing = project
   .in(file("testing"))
   .settings(settingsHelper.settingsForSubprojectCalled("testing"))
