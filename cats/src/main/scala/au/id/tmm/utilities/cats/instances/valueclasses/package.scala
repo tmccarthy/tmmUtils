@@ -1,6 +1,6 @@
 package au.id.tmm.utilities.cats.instances
 
-import cats.kernel.{Eq, Monoid, Order, Semigroup}
+import cats.kernel.{CommutativeMonoid, Eq, Monoid, Order, Semigroup}
 import cats.{Functor, ~>}
 
 package object valueclasses {
@@ -27,5 +27,10 @@ package object valueclasses {
     unwrap: A => B,
     wrap: B => A,
   ): Monoid[A] = new DerivedMonoid(unwrap, wrap)
+
+  def deriveCommutativeMonoid[A, B : CommutativeMonoid](
+    unwrap: A => B,
+    wrap: B => A,
+  ): CommutativeMonoid[A] = new DerivedCommutativeMonoid(unwrap, wrap)
 
 }
