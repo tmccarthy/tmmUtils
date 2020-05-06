@@ -1,12 +1,15 @@
 package au.id.tmm.utilities.cats.instances
 
 import cats.kernel.{CommutativeMonoid, Eq, Monoid, Order, Semigroup}
-import cats.{Functor, ~>}
+import cats.{Functor, MonoidK, ~>}
 
 package object valueclasses {
 
-  def deriveFunctor[F[_], G[_] : Functor](wrap: G ~> F, unwrap: F ~> G): Functor[F] =
-    new DerivedFunctor(wrap, unwrap)
+  def deriveFunctor[F[_], G[_] : Functor](unwrap: F ~> G, wrap: G ~> F): Functor[F] =
+    new DerivedFunctor(unwrap, wrap)
+
+  def deriveMonoidK[F[_], G[_] : MonoidK](unwrap: F ~> G, wrap: G ~> F): MonoidK[F] =
+    new DerivedMonoidK(unwrap, wrap)
 
   def deriveEq[A, B : Eq](unwrap: A => B): Eq[A] =
     new DerivedEq(unwrap)
