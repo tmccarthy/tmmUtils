@@ -2,7 +2,7 @@ package au.id.tmm.utilities.cats.syntax
 
 import cats.data.NonEmptyVector
 
-final class VectorSyntax[A] private[syntax](vector: Vector[A]) {
+final class VectorSyntax[A] private[syntax] (vector: Vector[A]) {
 
   def groupByNevUniversalEquals[K](f: A => K): Map[K, NonEmptyVector[A]] =
     vector.groupBy(f).map {

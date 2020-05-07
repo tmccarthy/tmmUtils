@@ -2,7 +2,7 @@ package au.id.tmm.utilities.cats.syntax
 
 import cats.data.NonEmptyList
 
-final class ListSyntax[A] private[syntax](list: List[A]) {
+final class ListSyntax[A] private[syntax] (list: List[A]) {
 
   def groupByNelUniversalEquals[K](f: A => K): Map[K, NonEmptyList[A]] =
     list.groupBy(f).map {
