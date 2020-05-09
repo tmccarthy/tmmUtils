@@ -1,5 +1,8 @@
 package au.id.tmm.utilities.errors
 
+import java.io.{ByteArrayOutputStream, PrintStream}
+import java.nio.charset.Charset
+
 import org.scalatest.FlatSpec
 
 import scala.collection.immutable.ArraySeq
@@ -44,6 +47,18 @@ class StructuredExceptionSpec extends FlatSpec {
     )
 
     assert(actualException === expectedException)
+  }
+
+  it should "produce a sensible message" in {
+    val exception = StructuredException(
+      name = "EXCEPTION",
+      "field1" -> "value1",
+      "field2" -> 2,
+    )
+
+    val expectedMessage = "EXCEPTION\n\t\t\tfield1=value1\n\t\t\tfield2=2"
+
+    assert(exception.getMessage === expectedMessage)
   }
 
 }
