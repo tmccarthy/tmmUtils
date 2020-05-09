@@ -1,6 +1,6 @@
 package au.id.tmm.utilities.errors.syntax
 
-import au.id.tmm.utilities.errors.{ErrorMessageOr, ExceptionOr, GenericException}
+import au.id.tmm.utilities.errors.{ErrorMessageOr, ExceptionOr, GenericException, StructuredException}
 import au.id.tmm.utilities.testing.syntax.TestingEitherOps
 import org.scalatest.FlatSpec
 
@@ -30,6 +30,21 @@ class ErrorsSyntaxSpec extends FlatSpec {
     val wrapped = exceptionOrString.wrapExceptionWithMessage("wrapped")
 
     assert(wrapped.leftGet === GenericException("wrapped", cause))
+  }
+
+  it can "wrap an exception with a structured exception" in {
+    val cause = new Exception()
+
+    val exceptionOrString: ExceptionOr[String] = Left(cause)
+
+    val wrapped = exceptionOrString.wrapExceptionWithStructured(name = "wrapper", "field1" -> "value1")
+
+    val expectedException = StructuredException(
+      name = "wrapper",
+      "field1" -> "value1",
+    ).withCause(cause)
+
+    assert(wrapped.leftGet === expectedException)
   }
 
   it can "get the right value" in {
