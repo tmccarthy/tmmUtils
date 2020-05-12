@@ -8,7 +8,7 @@ import cats.{Applicative, CommutativeApplicative, Eval, Hash, Monad, SemigroupK,
 trait NonEmptySetInstances extends NonEmptySetInstances1 {
 
   implicit def catsStdHashForTmmUtilsNonEmptySet[A : Hash]: Hash[NonEmptySet[A]] = new Hash[NonEmptySet[A]] {
-    override def hash(x: NonEmptySet[A]): Int = Hash[Set[A]].hash(x)
+    override def hash(x: NonEmptySet[A]): Int                       = Hash[Set[A]].hash(x)
     override def eqv(x: NonEmptySet[A], y: NonEmptySet[A]): Boolean = Eq[Set[A]].eqv(x.underlying, y.underlying)
   }
 
@@ -18,18 +18,26 @@ trait NonEmptySetInstances extends NonEmptySetInstances1 {
   object unlawful {
     implicit val catsUnlawfulInstancesForTmmUtilsNonEmptySet: Traverse[NonEmptySet] with Monad[NonEmptySet] =
       new Traverse[NonEmptySet] with Monad[NonEmptySet] {
-        override def traverse[G[_], A, B](fa: NonEmptySet[A])(f: A => G[B])(implicit evidence$1: Applicative[G]): G[NonEmptySet[B]] = {
+        override def traverse[G[_], A, B](
+          fa: NonEmptySet[A],
+        )(
+          f: A => G[B],
+        )(implicit
+          evidence$1: Applicative[G],
+        ): G[NonEmptySet[B]] = {
           val unlawfulCommutativeApplicative: CommutativeApplicative[G] = new CommutativeApplicative[G] {
-            override def pure[C](x: C): G[C] = evidence$1.pure(x)
+            override def pure[C](x: C): G[C]                     = evidence$1.pure(x)
             override def ap[C, D](ff: G[C => D])(fa: G[C]): G[D] = evidence$1.ap(ff)(fa)
           }
 
-          NonEmptySetInstances.this.catsStdInstancesForNonEmptySet.unorderedTraverse(fa)(f)(unlawfulCommutativeApplicative)
+          NonEmptySetInstances.this.catsStdInstancesForNonEmptySet
+            .unorderedTraverse(fa)(f)(unlawfulCommutativeApplicative)
         }
 
         override def foldLeft[A, B](fa: NonEmptySet[A], b: B)(f: (B, A) => B): B = fa.foldLeft(b)(f)
 
-        override def foldRight[A, B](fa: NonEmptySet[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = fa.foldRight(lb)(f)
+        override def foldRight[A, B](fa: NonEmptySet[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+          fa.foldRight(lb)(f)
 
         override def flatMap[A, B](fa: NonEmptySet[A])(f: A => NonEmptySet[B]): NonEmptySet[B] =
           fa.flatMap(f)
@@ -50,7 +58,13 @@ private[instances] trait NonEmptySetInstances1 {
     new SemigroupK[NonEmptySet] with UnorderedTraverse[NonEmptySet] {
       override def combineK[A](x: NonEmptySet[A], y: NonEmptySet[A]): NonEmptySet[A] = x concat y
 
-      override def unorderedTraverse[G[_], A, B](sa: NonEmptySet[A])(f: A => G[B])(implicit evidence$1: CommutativeApplicative[G]): G[NonEmptySet[B]] =
+      override def unorderedTraverse[G[_], A, B](
+        sa: NonEmptySet[A],
+      )(
+        f: A => G[B],
+      )(implicit
+        evidence$1: CommutativeApplicative[G],
+      ): G[NonEmptySet[B]] =
         UnorderedTraverse[Set].unorderedTraverse(sa.underlying)(f).map(NonEmptySet.fromSetUnsafe)
 
       override def unorderedFoldMap[A, B](fa: NonEmptySet[A])(f: A => B)(implicit evidence$1: CommutativeMonoid[B]): B =

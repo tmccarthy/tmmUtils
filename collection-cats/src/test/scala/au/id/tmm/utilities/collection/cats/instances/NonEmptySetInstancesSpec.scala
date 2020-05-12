@@ -15,7 +15,7 @@ class NonEmptySetInstancesSpec extends AnyFlatSpec {
   }
 
   "the traverse for a NonEmptySet" should "traverse the set" in {
-    val set = NonEmptySet.of(1, 2, 3)
+    val set       = NonEmptySet.of(1, 2, 3)
     val traversed = set.traverse(Some(_): Option[Int])
     assert(traversed === Some(NonEmptySet.of(1, 2, 3)))
   }

@@ -14,6 +14,8 @@ class NonEmptySetInstancesLawsSpec extends CatsSuite {
   checkAll("Hash for tmmUtils NonEmptySet", HashTests[NonEmptySet[Int]](catsStdHashForTmmUtilsNonEmptySet).hash)
   checkAll("Semilattice for tmmUtils NonEmptySet", SemilatticeTests[NonEmptySet[Int]].semilattice)
   checkAll("SemigroupK for tmmUtils NonEmptySet", SemigroupKTests[NonEmptySet].semigroupK[Int])
-  checkAll("UnorderedTraverse for tmmUtils NonEmptySet", UnorderedTraverseTests[NonEmptySet].unorderedTraverse[Int, Int, Int, Validated[Int, *], Option])
+  checkAll(
+    "UnorderedTraverse for tmmUtils NonEmptySet",
+    UnorderedTraverseTests[NonEmptySet].unorderedTraverse[Int, Int, Int, Validated[Int, *], Option])
 
 }
