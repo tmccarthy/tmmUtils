@@ -47,4 +47,28 @@ class NonEmptySetSpec extends FlatSpec {
     assert(NonEmptySet.of(1, 2).toString === "NonEmptySet(1, 2)")
   }
 
+  it can "be constructed from a non-empty iterable" in {
+    assert(NonEmptySet.fromIterable(List(1)) === Some(NonEmptySet.of(1)))
+  }
+
+  it can "be constructed from a non-empty iterable which is a Set" in {
+    assert(NonEmptySet.fromIterable(Set(1)) === Some(NonEmptySet.of(1)))
+  }
+
+  it can "not be constructed from an empty iterable" in {
+    assert(NonEmptySet.fromIterable(List.empty[Int]) === None)
+  }
+
+  it can "be constructed unsafely from a non-empty iterable" in {
+    assert(NonEmptySet.fromIterableUnsafe(List(1)) === NonEmptySet.of(1))
+  }
+
+  it can "not be constructed unsafely from an empty iterable" in {
+    intercept[IllegalArgumentException](NonEmptySet.fromIterableUnsafe(List.empty))
+  }
+
+  it can "be constructed from cons" in {
+    assert(NonEmptySet.fromCons(::(1, Nil)) === NonEmptySet.of(1))
+  }
+
 }

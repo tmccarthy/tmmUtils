@@ -59,13 +59,15 @@ final class NonEmptySet[A] private (val underlying: Set[A]) extends AbstractSet[
 
 object NonEmptySet {
 
-  def of[A](head: A, tail: A*): NonEmptySet[A] = {
+  def one[A](head: A): NonEmptySet[A] = new NonEmptySet(Set(head))
+
+  def fromHeadTail[A](head: A, tail: Iterable[A]): NonEmptySet[A] = {
     val builder = Set.newBuilder[A].addOne(head)
     builder.addAll(tail)
     new NonEmptySet(builder.result())
   }
 
-  def one[A](head: A): NonEmptySet[A] = new NonEmptySet(Set(head))
+  def of[A](head: A, tail: A*): NonEmptySet[A] = fromHeadTail(head, tail)
 
   def fromSet[A](set: Set[A]): Option[NonEmptySet[A]] =
     if (set.isEmpty) None else Some(new NonEmptySet(set))
@@ -75,5 +77,21 @@ object NonEmptySet {
       throw new IllegalArgumentException("Cannot create NonEmptySet from empty set")
     else
       new NonEmptySet(set)
+
+  def fromIterable[A](iterable: IterableOnce[A]): Option[NonEmptySet[A]] =
+    iterable match {
+      case s: Set[A] => fromSet(s)
+      case i: Iterable[A] => {
+        val builder = Set.newBuilder[A]
+        builder.addAll(i)
+        fromSet(builder.result)
+      }
+    }
+
+  def fromIterableUnsafe[A](iterable: IterableOnce[A]): NonEmptySet[A] =
+    fromIterable(iterable).getOrElse(throw new IllegalArgumentException("Cannot create NonEmptySet from empty set"))
+
+  def fromCons[A](cons: ::[A]): NonEmptySet[A] =
+    fromHeadTail(cons.head, cons.tail)
 
 }
