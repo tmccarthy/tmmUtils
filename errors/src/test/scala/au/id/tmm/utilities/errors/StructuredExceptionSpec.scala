@@ -1,8 +1,5 @@
 package au.id.tmm.utilities.errors
 
-import java.io.{ByteArrayOutputStream, PrintStream}
-import java.nio.charset.Charset
-
 import org.scalatest.FlatSpec
 
 import scala.collection.immutable.ArraySeq
