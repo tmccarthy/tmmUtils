@@ -13,6 +13,7 @@ lazy val root = project
   .aggregate(
     collection,
     collectionCats,
+    collectionCirce,
     errors,
     codec,
     syntax,
@@ -35,6 +36,14 @@ lazy val collectionCats = project
     libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+  )
+  .dependsOn(collection, testing % "test->compile")
+
+lazy val collectionCirce = project
+  .in(file("collection-circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("collection-circe"))
+  .settings(
+    libraryDependencies += "io.circe" %% "circe-core" % "0.13.0",
   )
   .dependsOn(collection, testing % "test->compile")
 
