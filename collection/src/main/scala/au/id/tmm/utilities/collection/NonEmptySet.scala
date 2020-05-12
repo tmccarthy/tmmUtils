@@ -6,7 +6,7 @@ import scala.collection.immutable.Set
 /**
   * A Set that is guaranteed to be non-empty. Equality of elements is based on universal equality.
   */
-final class NonEmptySet[A] private (underlying: Set[A]) extends AbstractSet[A] with Set[A] with Serializable {
+final class NonEmptySet[A] private (val underlying: Set[A]) extends AbstractSet[A] with Set[A] with Serializable {
 
   override def toSet[B >: A]: Set[B] = underlying.toSet
 
@@ -53,6 +53,8 @@ final class NonEmptySet[A] private (underlying: Set[A]) extends AbstractSet[A] w
   override def sizeCompare(that: Iterable[_]): Int = this.underlying.sizeCompare(that)
 
   override def toString: String = mkString("NonEmptySet(", ", ", ")")
+
+  def flatMap[B](f: A => NonEmptySet[B]): NonEmptySet[B] = ???
 }
 
 object NonEmptySet {
