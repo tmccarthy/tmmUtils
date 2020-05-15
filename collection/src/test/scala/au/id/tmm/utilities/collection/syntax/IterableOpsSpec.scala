@@ -37,6 +37,14 @@ class IterableOpsSpec extends FlatSpec {
     assert(LazyList.continually(0).onlyElementOrException.isLeft)
   }
 
+  "emptyOr" should "return unit for an empty iterable" in {
+    assert(List.empty[Int].emptyOrException.get === ())
+  }
+
+  it should "return an error if the iterable is nonempty" in {
+    assert(List(1).emptyOrException.leftGet.getMessage === "Expected empty iterable. Iterable was List(1)")
+  }
+
   "count occurrences" should "count the occurances of each element" in {
     assert(List(1, 1, 1, 2, 2, 3).countOccurrences === Map(1 -> 3, 2 -> 2, 3 -> 1))
   }

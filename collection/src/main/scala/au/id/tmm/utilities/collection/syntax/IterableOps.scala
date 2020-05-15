@@ -1,7 +1,6 @@
 package au.id.tmm.utilities.collection.syntax
 
 import scala.collection.{BuildFrom, mutable}
-import scala.unchecked
 
 final class IterableOps[C[_], A] private[syntax] (
   iterable: C[A],
@@ -38,6 +37,12 @@ final class IterableOps[C[_], A] private[syntax] (
 
   def onlyElementOrException: Either[Exception, A] =
     onlyElementOr(new Exception(s"Expected exactly one element. $describeIterable"))
+
+  def emptyOr[E](error: => E): Either[E, Unit] =
+    if (iterable.isEmpty) Right(()) else Left(error)
+
+  def emptyOrException: Either[Exception, Unit] =
+    emptyOr(new Exception(s"Expected empty iterable. $describeIterable"))
 
   private def describeIterable: String = s"Iterable was $iterable"
 
