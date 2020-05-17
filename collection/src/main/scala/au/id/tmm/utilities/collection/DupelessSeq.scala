@@ -159,6 +159,10 @@ object DupelessSeq extends SeqFactory[DupelessSeq] {
     }
   }
 
-  override def from[A](source: IterableOnce[A]): DupelessSeq[A] = newBuilder.addAll(source).result()
+  override def from[A](source: IterableOnce[A]): DupelessSeq[A] = source match {
+    case arraySeq: ArraySeq[A] => new DupelessSeq[A](arraySeq, arraySeq.toSet)
+    case set: Set[A] => new DupelessSeq[A](set.to(ArraySeq.untagged), set)
+    case i => newBuilder.addAll(i).result()
+  }
 
 }
