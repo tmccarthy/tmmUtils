@@ -54,7 +54,11 @@ final class NonEmptySet[A] private (val underlying: Set[A]) extends AbstractSet[
 
   override def toString: String = mkString("NonEmptySet(", ", ", ")")
 
-  def flatMap[B](f: A => NonEmptySet[B]): NonEmptySet[B] = ???
+  override def map[B](f: A => B): NonEmptySet[B] = new NonEmptySet[B](underlying.map(f))
+
+  def flatMap[B](f: A => NonEmptySet[B]): NonEmptySet[B] = new NonEmptySet[B](underlying.flatMap(f))
+
+  def flatten[B](implicit ev: A <:< NonEmptySet[B]): NonEmptySet[B] = new NonEmptySet[B](underlying.flatten)
 }
 
 object NonEmptySet {

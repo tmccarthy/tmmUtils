@@ -5,6 +5,8 @@ import cats.kernel.{CommutativeMonoid, Eq, Semilattice}
 import cats.syntax.functor.toFunctorOps
 import cats.{Applicative, CommutativeApplicative, Eval, Hash, Monad, SemigroupK, Show, Traverse, UnorderedTraverse}
 
+import scala.collection.mutable
+
 trait NonEmptySetInstances extends NonEmptySetInstances1 {
 
   implicit def catsStdHashForTmmUtilsNonEmptySet[A : Hash]: Hash[NonEmptySet[A]] = new Hash[NonEmptySet[A]] {
@@ -44,8 +46,19 @@ trait NonEmptySetInstances extends NonEmptySetInstances1 {
         override def flatMap[A, B](fa: NonEmptySet[A])(f: A => NonEmptySet[B]): NonEmptySet[B] =
           fa.flatMap(f)
 
-        // TODO implement 😬
-        override def tailRecM[A, B](a: A)(f: A => NonEmptySet[Either[A, B]]): NonEmptySet[B] = ???
+        override def tailRecM[A, B](a: A)(f: A => NonEmptySet[Either[A, B]]): NonEmptySet[B] = {
+          val resultBuilder = Set.newBuilder[B]
+          val aQueue: mutable.Queue[A] = mutable.Queue(a)
+
+          while (aQueue.nonEmpty) {
+            f(aQueue.dequeue()).foreach {
+              case Right(b) => resultBuilder.addOne(b)
+              case Left(a) => aQueue.addOne(a)
+            }
+          }
+
+          NonEmptySet.fromSetUnsafe(resultBuilder.result())
+        }
 
         override def pure[A](x: A): NonEmptySet[A] = NonEmptySet.one(x)
       }

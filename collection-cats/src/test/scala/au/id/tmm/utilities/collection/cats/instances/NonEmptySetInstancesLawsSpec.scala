@@ -9,7 +9,6 @@ import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.{SemigroupKTests, UnorderedTraverseTests}
 import cats.tests.CatsSuite
 
-// TODO laws check for the "unlawful" monad
 class NonEmptySetInstancesLawsSpec extends CatsSuite {
 
   checkAll("Hash for tmmUtils NonEmptySet", HashTests[NonEmptySet[Int]](catsStdHashForTmmUtilsNonEmptySet).hash)
@@ -17,6 +16,7 @@ class NonEmptySetInstancesLawsSpec extends CatsSuite {
   checkAll("SemigroupK for tmmUtils NonEmptySet", SemigroupKTests[NonEmptySet].semigroupK[Int])
   checkAll(
     "UnorderedTraverse for tmmUtils NonEmptySet",
-    UnorderedTraverseTests[NonEmptySet].unorderedTraverse[Int, Int, Int, Validated[Int, *], Option])
+    UnorderedTraverseTests[NonEmptySet].unorderedTraverse[Int, Int, Int, Validated[Int, *], Option],
+  )
 
 }

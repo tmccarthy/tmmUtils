@@ -71,4 +71,21 @@ class NonEmptySetSpec extends FlatSpec {
     assert(NonEmptySet.fromCons(::(1, Nil)) === NonEmptySet.of(1))
   }
 
+  it can "map" in {
+    assert(NonEmptySet.of("hello", "world").map(_.length) === NonEmptySet.of(5))
+  }
+
+  it can "flatMap" in {
+    assert(NonEmptySet.of("hello", "world").flatMap(s => NonEmptySet.of(s.length)) === NonEmptySet.of(5))
+  }
+
+  it can "be flattened" in {
+    val nested: NonEmptySet[NonEmptySet[Int]] = NonEmptySet.of(
+      NonEmptySet.of(1, 2),
+      NonEmptySet.of(3),
+    )
+
+    assert(nested.flatten === NonEmptySet.of(1, 2, 3))
+  }
+
 }
