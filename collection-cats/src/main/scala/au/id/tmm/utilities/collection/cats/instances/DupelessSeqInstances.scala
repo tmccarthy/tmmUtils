@@ -16,28 +16,11 @@ trait DupelessSeqInstances extends DupelessSeqInstances1 {
   implicit def catsStdShowForDupelessSeq[A : Show]: Show[DupelessSeq[A]] =
     s => s.iterator.map(Show[A].show).mkString("DupelessSeq(", ", ", ")")
 
-  object unlawful {
-    implicit val catsUnlawfulInstancesForDupelessSeq: Monad[DupelessSeq] = new Monad[DupelessSeq] {
-      override def flatMap[A, B](fa: DupelessSeq[A])(f: A => DupelessSeq[B]): DupelessSeq[B] =
-        fa.flatMap(f)
+  implicit def catsStdMonoidForDupelessSeq[A]: Monoid[DupelessSeq[A]] = new Monoid[DupelessSeq[A]] {
+    override def empty: DupelessSeq[A] = DupelessSeq.empty
 
-      // TODO implement
-      override def tailRecM[A, B](a: A)(f: A => DupelessSeq[Either[A, B]]): DupelessSeq[B] = ???
-
-      override def pure[A](x: A): DupelessSeq[A] = DupelessSeq(x)
-    }
+    override def combine(x: DupelessSeq[A], y: DupelessSeq[A]): DupelessSeq[A] = x.appendedAll(y)
   }
-
-}
-
-private[instances] trait DupelessSeqInstances1 {
-
-  implicit def catsStdMonoidAndBandForDupelessSeq[A]: Monoid[DupelessSeq[A]] with Band[DupelessSeq[A]] =
-    new Monoid[DupelessSeq[A]] with Band[DupelessSeq[A]] {
-      override def empty: DupelessSeq[A] = DupelessSeq.empty
-
-      override def combine(x: DupelessSeq[A], y: DupelessSeq[A]): DupelessSeq[A] = x concat y
-    }
 
   implicit val catsStdInstancesForDupelessSeq: MonoidK[DupelessSeq] with Traverse[DupelessSeq] =
     new MonoidK[DupelessSeq] with Traverse[DupelessSeq] {
@@ -55,7 +38,25 @@ private[instances] trait DupelessSeqInstances1 {
       override def combineK[A](x: DupelessSeq[A], y: DupelessSeq[A]): DupelessSeq[A] =
         x concat y
 
-      override def algebra[A]: Monoid[DupelessSeq[A]] = catsStdMonoidAndBandForDupelessSeq
+      override def algebra[A]: Monoid[DupelessSeq[A]] = catsStdMonoidForDupelessSeq
     }
+
+  object unlawful {
+    implicit val catsUnlawfulInstancesForDupelessSeq: Monad[DupelessSeq] = new Monad[DupelessSeq] {
+      override def flatMap[A, B](fa: DupelessSeq[A])(f: A => DupelessSeq[B]): DupelessSeq[B] =
+        fa.flatMap(f)
+
+      // TODO implement
+      override def tailRecM[A, B](a: A)(f: A => DupelessSeq[Either[A, B]]): DupelessSeq[B] = ???
+
+      override def pure[A](x: A): DupelessSeq[A] = DupelessSeq(x)
+    }
+  }
+
+}
+
+private[instances] trait DupelessSeqInstances1 {
+
+  implicit def catsStdBandForDupelessSeq[A]: Band[DupelessSeq[A]] = _ appendedAll _
 
 }
