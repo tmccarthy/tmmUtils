@@ -6,6 +6,7 @@ import cats.syntax.functor.toFunctorOps
 import cats.{Applicative, Eval, Monad, MonoidK, Show, Traverse}
 
 import scala.collection.immutable.ArraySeq
+import scala.collection.mutable
 
 trait DupelessSeqInstances extends DupelessSeqInstances1 {
 
@@ -47,8 +48,19 @@ trait DupelessSeqInstances extends DupelessSeqInstances1 {
       override def flatMap[A, B](fa: DupelessSeq[A])(f: A => DupelessSeq[B]): DupelessSeq[B] =
         fa.flatMap(f)
 
-      // TODO implement
-      override def tailRecM[A, B](a: A)(f: A => DupelessSeq[Either[A, B]]): DupelessSeq[B] = ???
+      override def tailRecM[A, B](a: A)(f: A => DupelessSeq[Either[A, B]]): DupelessSeq[B] = {
+        val resultBuilder: DupelessSeq.DupelessSeqBuilder[B] = DupelessSeq.newBuilder[B]
+        val aQueue: mutable.Queue[A] = mutable.Queue(a)
+
+        while(aQueue.nonEmpty) {
+          f(aQueue.dequeue()) foreach {
+            case Right(b) => resultBuilder.addOne(b)
+            case Left(a) => aQueue.append(a)
+          }
+        }
+
+        resultBuilder.result()
+      }
 
       override def pure[A](x: A): DupelessSeq[A] = DupelessSeq(x)
     }
