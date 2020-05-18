@@ -114,6 +114,18 @@ class DupelessSeq[+A] private (private val iterationOrder: ArraySeq[A], private 
 
   override protected[this] def className: String = "DupelessSeq"
 
+  override def canEqual(other: Any): Boolean = other.isInstanceOf[DupelessSeq[_]]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: DupelessSeq[_] =>
+      super.equals(that) &&
+        (that canEqual this) &&
+        iterationOrder == that.iterationOrder &&
+        elements == that.elements
+    case _ => false
+  }
+
+  override def hashCode(): Int = (iterationOrder, elements).hashCode()
 }
 
 object DupelessSeq extends SeqFactory[DupelessSeq] {
@@ -161,8 +173,8 @@ object DupelessSeq extends SeqFactory[DupelessSeq] {
 
   override def from[A](source: IterableOnce[A]): DupelessSeq[A] = source match {
     case arraySeq: ArraySeq[A] => new DupelessSeq[A](arraySeq, arraySeq.toSet)
-    case set: Set[A] => new DupelessSeq[A](set.to(ArraySeq.untagged), set)
-    case i => newBuilder.addAll(i).result()
+    case set: Set[A]           => new DupelessSeq[A](set.to(ArraySeq.untagged), set)
+    case i                     => newBuilder.addAll(i).result()
   }
 
 }

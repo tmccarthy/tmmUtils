@@ -150,8 +150,20 @@ class DupelessSeqSpec extends FlatSpec {
     assert(DupelessSeq(1, 2, 3).toVector === Vector(1, 2, 3))
   }
 
-  it should "be equal to a list with the same elements" in {
-    assert(DupelessSeq(1, 2, 3) === List(1, 2, 3))
+  it should "be equal to a DupelessSeq with the same elements and order" in {
+    assert(DupelessSeq(1, 2, 3) === DupelessSeq(1, 2, 3))
+  }
+
+  it should "not be equal to a DupelessSeq with the same elements and a different order" in {
+    assert(DupelessSeq(1, 2, 3) !== DupelessSeq(2, 3, 1))
+  }
+
+  it should "not be equal to a DupelessSeq with different elements" in {
+    assert(DupelessSeq(1, 2, 3) !== DupelessSeq(1, 2, 4))
+  }
+
+  it should "not be equal to a list with the same elements" in {
+    assert(DupelessSeq(1, 2, 3) !== List(1, 2, 3))
   }
 
   it should "not be equal to a list with duplicated elements" in {
