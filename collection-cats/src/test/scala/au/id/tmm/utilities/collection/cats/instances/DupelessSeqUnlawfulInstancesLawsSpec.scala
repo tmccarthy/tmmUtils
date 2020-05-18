@@ -8,7 +8,8 @@ import cats.tests.CatsSuite
 
 class DupelessSeqUnlawfulInstancesLawsSpec extends CatsSuite {
 
-  private implicit val dupelessSeqIsomorphism: SemigroupalTests.Isomorphisms[DupelessSeq] = null // TODO
+  private implicit val dupelessSeqIsomorphism: SemigroupalTests.Isomorphisms[DupelessSeq] =
+    SemigroupalTests.Isomorphisms.invariant[DupelessSeq](catsStdInstancesForDupelessSeq)
 
   checkAll(
     "Monad for DupelessSeq",
