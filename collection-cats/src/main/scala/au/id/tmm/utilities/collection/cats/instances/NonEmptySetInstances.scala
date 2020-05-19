@@ -3,7 +3,7 @@ package au.id.tmm.utilities.collection.cats.instances
 import au.id.tmm.utilities.collection.NonEmptySet
 import cats.kernel.{CommutativeMonoid, Eq, Semilattice}
 import cats.syntax.functor.toFunctorOps
-import cats.{Applicative, CommutativeApplicative, Eval, Hash, Monad, SemigroupK, Show, Traverse, UnorderedTraverse}
+import cats.{Apply, CommutativeApplicative, Eval, Hash, Monad, NonEmptyTraverse, SemigroupK, Show, UnorderedTraverse}
 
 import scala.collection.mutable
 
@@ -18,27 +18,32 @@ trait NonEmptySetInstances extends NonEmptySetInstances1 {
     s => s.iterator.map(Show[A].show).mkString("NonEmptySet(", ", ", ")")
 
   object unlawful {
-    // TODO should be a non-empty traverse
-    implicit val catsUnlawfulInstancesForTmmUtilsNonEmptySet: Traverse[NonEmptySet] with Monad[NonEmptySet] =
-      new Traverse[NonEmptySet] with Monad[NonEmptySet] {
-        override def traverse[G[_], A, B](
-          fa: NonEmptySet[A],
-        )(
-          f: A => G[B],
-        )(implicit
-          evidence$1: Applicative[G],
-        ): G[NonEmptySet[B]] = {
-          // TODO find some way of extracting this
-          val unlawfulCommutativeApplicative: CommutativeApplicative[G] = new CommutativeApplicative[G] {
-            override def pure[C](x: C): G[C]                     = evidence$1.pure(x)
-            override def ap[C, D](ff: G[C => D])(fa: G[C]): G[D] = evidence$1.ap(ff)(fa)
-          }
 
-          NonEmptySetInstances.this.catsStdInstancesForNonEmptySet
-            .unorderedTraverse(fa)(f)(unlawfulCommutativeApplicative)
+    implicit val catsUnlawfulInstancesForTmmUtilsNonEmptySet: NonEmptyTraverse[NonEmptySet] with Monad[NonEmptySet] = {
+      new NonEmptyTraverse[NonEmptySet] with Monad[NonEmptySet] {
+
+        override def nonEmptyTraverse[G[_], A, B](fa: NonEmptySet[A])(f: A => G[B])(implicit G: Apply[G]): G[NonEmptySet[B]] = {
+
+          reduceRightTo[A, G[NonEmptySet[B]]](fa)(a => G.map[B, NonEmptySet[B]](f(a))(NonEmptySet.one)) {
+            case (a, evalGNesB) => {
+              G.map2Eval[B, NonEmptySet[B], NonEmptySet[B]](f(a), evalGNesB) {
+                case (b, nesB) => nesB.incl(b)
+              }
+            }
+          }
+            .value
         }
 
-        override def foldLeft[A, B](fa: NonEmptySet[A], b: B)(f: (B, A) => B): B = fa.foldLeft(b)(f)
+        override def reduceLeftTo[A, B](fa: NonEmptySet[A])(f: A => B)(g: (B, A) => B): B =
+          fa.tail.foldRight[B](f(fa.head)) {
+            case (a, b) => g(b, a)
+          }
+
+        override def reduceRightTo[A, B](fa: NonEmptySet[A])(f: A => B)(g: (A, Eval[B]) => Eval[B]): Eval[B] =
+          fa.init.foldRight[Eval[B]](Eval.now[A](fa.last).map(f))(g)
+
+        override def foldLeft[A, B](fa: NonEmptySet[A], b: B)(f: (B, A) => B): B =
+          fa.foldLeft(b)(f)
 
         override def foldRight[A, B](fa: NonEmptySet[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
           fa.foldRight(lb)(f)
@@ -47,13 +52,13 @@ trait NonEmptySetInstances extends NonEmptySetInstances1 {
           fa.flatMap(f)
 
         override def tailRecM[A, B](a: A)(f: A => NonEmptySet[Either[A, B]]): NonEmptySet[B] = {
-          val resultBuilder = Set.newBuilder[B]
+          val resultBuilder            = Set.newBuilder[B]
           val aQueue: mutable.Queue[A] = mutable.Queue(a)
 
           while (aQueue.nonEmpty) {
             f(aQueue.dequeue()).foreach {
               case Right(b) => resultBuilder.addOne(b)
-              case Left(a) => aQueue.addOne(a)
+              case Left(a)  => aQueue.addOne(a)
             }
           }
 
@@ -62,6 +67,7 @@ trait NonEmptySetInstances extends NonEmptySetInstances1 {
 
         override def pure[A](x: A): NonEmptySet[A] = NonEmptySet.one(x)
       }
+    }
   }
 
 }

@@ -42,6 +42,8 @@ final class NonEmptySet[A] private (val underlying: Set[A]) extends AbstractSet[
 
   override def headOption: Option[A] = Some(this.underlying.head)
 
+  override def tail: Set[A] = this.underlying.tail
+
   override def last: A = this.underlying.last
 
   override def lastOption: Option[A] = Some(this.underlying.last)
