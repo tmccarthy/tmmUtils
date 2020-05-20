@@ -91,14 +91,23 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A]) extends A
         (new NonEmptyDupelessSeq[A1](left), new NonEmptyDupelessSeq[A2](centre), new NonEmptyDupelessSeq[A3](right))
     }
 
+  override def map[B](f: A => B): NonEmptyDupelessSeq[B] =
+    new NonEmptyDupelessSeq[B](underlying.map(f))
+
+  def flatMap[B](f: A => NonEmptyDupelessSeq[B]): NonEmptyDupelessSeq[B] =
+    new NonEmptyDupelessSeq[B](underlying.flatMap(f))
+
   override def flatMap[B](f: A => IterableOnce[B]): DupelessSeq[B] =
     underlying.flatMap(f)
 
-  override def collect[B](pf: PartialFunction[A, B]): DupelessSeq[B] =
-    underlying.collect(pf)
+  def flatten[B](implicit ev: A <:< NonEmptyDupelessSeq[B]): NonEmptyDupelessSeq[B] =
+    new NonEmptyDupelessSeq[B](underlying.flatten)
 
   override def flatten[B](implicit toIterableOnce: A => IterableOnce[B]): DupelessSeq[B] =
     underlying.flatten
+
+  override def collect[B](pf: PartialFunction[A, B]): DupelessSeq[B] =
+    underlying.collect(pf)
 
   override def filter(pred: A => Boolean): DupelessSeq[A] =
     underlying.filter(pred)
