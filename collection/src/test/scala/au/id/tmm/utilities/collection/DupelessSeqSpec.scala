@@ -182,8 +182,16 @@ class DupelessSeqSpec extends FlatSpec {
     assert((DupelessSeq(1, 2, 3) ++ List(4, 5, 6): DupelessSeq[Int]) === DupelessSeq(1, 2, 3, 4, 5, 6))
   }
 
+  it can "be converted to a NonEmptyDupelessSeq if it is nonEmpty" in {
+    assert(DupelessSeq(1, 2, 3).toNonEmptyDupelessSeq === Some(NonEmptyDupelessSeq.of(1, 2, 3)))
+  }
+
   "the empty DupelessSeq" should "be a singleton" in {
     assert(DupelessSeq() eq DupelessSeq())
+  }
+
+  it can "not be converted to a NonEmptyDupelessSeq" in {
+    assert(DupelessSeq().toNonEmptyDupelessSeq === None)
   }
 
   "the DupelessSeq builder" should "build the empty seq" in {

@@ -4,8 +4,13 @@ import org.scalatest.FlatSpec
 
 class NonEmptyDupelessSeqSpec extends FlatSpec {
 
-  "a non-empty duplessseq" can "not be split" in {
-    intercept[UnsupportedOperationException](NonEmptyDupelessSeq.of(1).splitAt(1))
+  "a non-empty dupelessSeq" can "be flattened" in {
+    val neds: NonEmptyDupelessSeq[NonEmptyDupelessSeq[Int]] = NonEmptyDupelessSeq.of(
+      NonEmptyDupelessSeq.of(1),
+      NonEmptyDupelessSeq.of(2, 3),
+    )
+
+    assert(neds.flatten === NonEmptyDupelessSeq.of(1, 2, 3))
   }
 
 }

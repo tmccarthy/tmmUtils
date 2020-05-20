@@ -14,6 +14,9 @@ class DupelessSeq[+A] private (private val iterationOrder: ArraySeq[A], private 
     with StrictOptimizedSeqOps[A, DupelessSeq, DupelessSeq[A]]
     with IterableFactoryDefaults[A, DupelessSeq] {
 
+  def toNonEmptyDupelessSeq: Option[NonEmptyDupelessSeq[A]] =
+    if (nonEmpty) Some(NonEmptyDupelessSeq.fromDupelessSeqUnsafe(this)) else None
+
   override def iterableFactory: SeqFactory[DupelessSeq] = DupelessSeq
 
   override def length: Int = iterationOrder.length

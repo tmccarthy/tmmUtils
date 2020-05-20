@@ -103,9 +103,6 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A]) extends A
   def flatten[B](implicit ev: A <:< NonEmptyDupelessSeq[B]): NonEmptyDupelessSeq[B] =
     new NonEmptyDupelessSeq[B](underlying.flatten)
 
-  override def flatten[B](implicit toIterableOnce: A => IterableOnce[B]): DupelessSeq[B] =
-    underlying.flatten
-
   override def collect[B](pf: PartialFunction[A, B]): DupelessSeq[B] =
     underlying.collect(pf)
 
