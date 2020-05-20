@@ -1,6 +1,6 @@
 package au.id.tmm.utilities.collection.cats.instances
 
-import au.id.tmm.utilities.collection.NonEmptySet
+import au.id.tmm.utilities.collection.{NonEmptyDupelessSeq, NonEmptySet}
 import org.scalacheck.{Arbitrary, Cogen, Gen}
 
 object ScalacheckInstances {
@@ -12,5 +12,13 @@ object ScalacheckInstances {
 
   implicit def cogenNonEmptySet[A : Cogen : Ordering]: Cogen[NonEmptySet[A]] =
     Cogen.cogenSet[A].contramap(_.toSet)
+
+  implicit def arbitraryNonEmptyDupelessSeq[A : Arbitrary]: Arbitrary[NonEmptyDupelessSeq[A]] =
+    Arbitrary {
+      Gen.nonEmptyBuildableOf[List[A], A](Arbitrary.arbitrary[A]).map(NonEmptyDupelessSeq.fromIterableUnsafe)
+    }
+
+  implicit def cogenNonEmptyDupelessSeq[A : Cogen : Ordering]: Cogen[NonEmptyDupelessSeq[A]] =
+    Cogen.cogenList[A].contramap(_.toList)
 
 }
