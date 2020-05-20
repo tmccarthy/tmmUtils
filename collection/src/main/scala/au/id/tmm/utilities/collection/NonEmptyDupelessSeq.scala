@@ -1,10 +1,10 @@
 package au.id.tmm.utilities.collection
 
+import com.github.ghik.silencer.silent
+
 import scala.collection.immutable.{AbstractSeq, ArraySeq, IndexedSeq}
 
-class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
-    extends AbstractSeq[A]
-    with IndexedSeq[A] {
+class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A]) extends AbstractSeq[A] with IndexedSeq[A] {
 
   override def apply(i: Int): A = underlying.apply(i)
 
@@ -82,9 +82,13 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
       case (left, right) => (new NonEmptyDupelessSeq[A1](left), new NonEmptyDupelessSeq[A2](right))
     }
 
-  override def unzip3[A1, A2, A3](implicit asTriple: A => (A1, A2, A3)): (NonEmptyDupelessSeq[A1], NonEmptyDupelessSeq[A2], NonEmptyDupelessSeq[A3]) =
+  override def unzip3[A1, A2, A3](
+    implicit
+    asTriple: A => (A1, A2, A3),
+  ): (NonEmptyDupelessSeq[A1], NonEmptyDupelessSeq[A2], NonEmptyDupelessSeq[A3]) =
     underlying.unzip3[A1, A2, A3](asTriple) match {
-      case (left, centre, right) => (new NonEmptyDupelessSeq[A1](left), new NonEmptyDupelessSeq[A2](centre), new NonEmptyDupelessSeq[A3](right))
+      case (left, centre, right) =>
+        (new NonEmptyDupelessSeq[A1](left), new NonEmptyDupelessSeq[A2](centre), new NonEmptyDupelessSeq[A3](right))
     }
 
   override def flatMap[B](f: A => IterableOnce[B]): DupelessSeq[B] =
@@ -115,9 +119,11 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
 
   override def head: A = underlying.head
 
+  @silent("overrides concrete")
   @deprecated("Use .head")
   override def headOption: Option[A] = Some(head)
 
+  @silent("overrides concrete")
   @deprecated("Use .last")
   override def lastOption: Option[A] = Some(last)
 
@@ -154,6 +160,7 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   override def reduce[B >: A](op: (B, B) => B): B =
     underlying.reduce(op)
 
+  @silent("overrides concrete")
   @deprecated("Use .reduce")
   override def reduceOption[B >: A](op: (B, B) => B): Option[B] =
     Some(reduce(op))
@@ -164,10 +171,12 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   override def reduceRight[B >: A](op: (A, B) => B): B =
     underlying.reduceRight(op)
 
+  @silent("overrides concrete")
   @deprecated("Use .reduceLeft")
   override def reduceLeftOption[B >: A](op: (B, A) => B): Option[B] =
     Some(reduceLeft(op))
 
+  @silent("overrides concrete")
   @deprecated("Use .reduceRight")
   override def reduceRightOption[B >: A](op: (A, B) => B): Option[B] =
     Some(reduceRight(op))
@@ -175,6 +184,7 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   override def min[B >: A](implicit ord: Ordering[B]): A =
     underlying.min(ord)
 
+  @silent("overrides concrete")
   @deprecated("Use .min")
   override def minOption[B >: A](implicit ord: Ordering[B]): Option[A] =
     Some(underlying.min(ord))
@@ -182,6 +192,7 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   override def max[B >: A](implicit ord: Ordering[B]): A =
     underlying.max(ord)
 
+  @silent("overrides concrete")
   @deprecated("Use .max")
   override def maxOption[B >: A](implicit ord: Ordering[B]): Option[A] =
     Some(underlying.max(ord))
@@ -189,6 +200,7 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   override def maxBy[B](f: A => B)(implicit cmp: Ordering[B]): A =
     underlying.maxBy(f)
 
+  @silent("overrides concrete")
   @deprecated("Use .maxBy")
   override def maxByOption[B](f: A => B)(implicit cmp: Ordering[B]): Option[A] =
     Some(underlying.maxBy(f))
@@ -196,6 +208,7 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   override def minBy[B](f: A => B)(implicit cmp: Ordering[B]): A =
     underlying.minBy(f)
 
+  @silent("overrides concrete")
   @deprecated("Use .minBy")
   override def minByOption[B](f: A => B)(implicit cmp: Ordering[B]): Option[A] =
     Some(underlying.minBy(f))
@@ -228,12 +241,13 @@ object NonEmptyDupelessSeq {
       case i: Iterable[A] => {
         val builder = DupelessSeq.newBuilder[A]
         builder.addAll(i)
-        fromDupelessSeq(builder.result)
+        fromDupelessSeq(builder.result())
       }
     }
 
   def fromIterableUnsafe[A](iterable: IterableOnce[A]): NonEmptyDupelessSeq[A] =
-    fromIterable(iterable).getOrElse(throw new IllegalArgumentException("Cannot create NonEmptyDupelessSeq from empty set"))
+    fromIterable(iterable).getOrElse(
+      throw new IllegalArgumentException("Cannot create NonEmptyDupelessSeq from empty set"))
 
   def fromCons[A](cons: ::[A]): NonEmptyDupelessSeq[A] =
     fromHeadTail(cons.head, cons.tail)
