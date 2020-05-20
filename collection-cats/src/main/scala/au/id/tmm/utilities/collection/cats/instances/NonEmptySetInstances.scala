@@ -22,17 +22,20 @@ trait NonEmptySetInstances extends NonEmptySetInstances1 {
     implicit val catsUnlawfulInstancesForTmmUtilsNonEmptySet: NonEmptyTraverse[NonEmptySet] with Monad[NonEmptySet] = {
       new NonEmptyTraverse[NonEmptySet] with Monad[NonEmptySet] {
 
-        override def nonEmptyTraverse[G[_], A, B](fa: NonEmptySet[A])(f: A => G[B])(implicit G: Apply[G]): G[NonEmptySet[B]] = {
-
+        override def nonEmptyTraverse[G[_], A, B](
+          fa: NonEmptySet[A],
+        )(
+          f: A => G[B],
+        )(implicit
+          G: Apply[G],
+        ): G[NonEmptySet[B]] =
           reduceRightTo[A, G[NonEmptySet[B]]](fa)(a => G.map[B, NonEmptySet[B]](f(a))(NonEmptySet.one)) {
             case (a, evalGNesB) => {
               G.map2Eval[B, NonEmptySet[B], NonEmptySet[B]](f(a), evalGNesB) {
                 case (b, nesB) => nesB.incl(b)
               }
             }
-          }
-            .value
-        }
+          }.value
 
         override def reduceLeftTo[A, B](fa: NonEmptySet[A])(f: A => B)(g: (B, A) => B): B =
           fa.tail.foldRight[B](f(fa.head)) {

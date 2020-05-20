@@ -26,7 +26,6 @@ class NonEmptySetUnlawfulInstancesLawsSpec extends CatsSuite with AdHocTestIgnor
 
   override protected val ignoredTestNames: Set[String] = Set(
     "NonEmptyTraverse for NonEmptySet.nonEmptyTraverse.traverse order consistency",
-
     // TODO these should probably pass
     "NonEmptyTraverse for NonEmptySet.nonEmptyTraverse.forall is lazy",
     "NonEmptyTraverse for NonEmptySet.nonEmptyTraverse.foldRight is lazy",

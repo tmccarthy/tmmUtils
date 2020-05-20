@@ -11,7 +11,7 @@ import scala.collection.mutable
 trait DupelessSeqInstances extends DupelessSeqInstances1 {
 
   implicit def catsStdHashForDupelessSeq[A : Hash]: Hash[DupelessSeq[A]] = new Hash[DupelessSeq[A]] {
-    override def hash(x: DupelessSeq[A]): Int = Hash.hash((x.toArraySeq, x.toSet))
+    override def hash(x: DupelessSeq[A]): Int                       = Hash.hash((x.toArraySeq, x.toSet))
     override def eqv(x: DupelessSeq[A], y: DupelessSeq[A]): Boolean = x == y
   }
 
@@ -28,7 +28,13 @@ trait DupelessSeqInstances extends DupelessSeqInstances1 {
     new MonoidK[DupelessSeq] with Traverse[DupelessSeq] {
       override def empty[A]: DupelessSeq[A] = DupelessSeq.empty
 
-      override def traverse[G[_], A, B](fa: DupelessSeq[A])(f: A => G[B])(implicit evidence$1: Applicative[G]): G[DupelessSeq[B]] =
+      override def traverse[G[_], A, B](
+        fa: DupelessSeq[A],
+      )(
+        f: A => G[B],
+      )(implicit
+        evidence$1: Applicative[G],
+      ): G[DupelessSeq[B]] =
         Traverse[ArraySeq].traverse(fa.toArraySeq)(f).map(arraySeq => DupelessSeq.from(arraySeq))
 
       override def foldLeft[A, B](fa: DupelessSeq[A], b: B)(f: (B, A) => B): B =
@@ -50,12 +56,12 @@ trait DupelessSeqInstances extends DupelessSeqInstances1 {
 
       override def tailRecM[A, B](a: A)(f: A => DupelessSeq[Either[A, B]]): DupelessSeq[B] = {
         val resultBuilder: DupelessSeq.DupelessSeqBuilder[B] = DupelessSeq.newBuilder[B]
-        val aQueue: mutable.Queue[A] = mutable.Queue(a)
+        val aQueue: mutable.Queue[A]                         = mutable.Queue(a)
 
-        while(aQueue.nonEmpty) {
+        while (aQueue.nonEmpty) {
           f(aQueue.dequeue()) foreach {
             case Right(b) => resultBuilder.addOne(b)
-            case Left(a) => aQueue.append(a)
+            case Left(a)  => aQueue.append(a)
           }
         }
 
