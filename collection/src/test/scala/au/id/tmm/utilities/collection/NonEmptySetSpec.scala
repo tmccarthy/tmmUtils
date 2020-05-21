@@ -12,8 +12,8 @@ class NonEmptySetSpec extends FlatSpec {
     assert(NonEmptySet.of(1, 2, 3).toList === List(1, 2, 3))
   }
 
-  it should "be equal to another set with a different implementation but same elements" in {
-    assert(NonEmptySet.of(1, 2, 3) === Set(1, 2, 3))
+  it should "not be equal to another set with a different implementation but same elements" in {
+    assert(NonEmptySet.of(1, 2, 3) !== Set(1, 2, 3))
   }
 
   it can "be constructed from a non-empty set" in {

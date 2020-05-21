@@ -32,8 +32,6 @@ final class NonEmptySet[A] private (val underlying: Set[A]) extends AbstractSet[
 
   override def intersect(that: collection.Set[A]): Set[A] = this.underlying.intersect(that)
 
-  override def concat(that: IterableOnce[A]): NonEmptySet[A] = new NonEmptySet(this.underlying.concat(that))
-
   override def isTraversableAgain: Boolean = this.underlying.isTraversableAgain
 
   override def head: A = this.underlying.head
@@ -73,10 +71,7 @@ final class NonEmptySet[A] private (val underlying: Set[A]) extends AbstractSet[
     case _ => false
   }
 
-  override def hashCode(): Int = {
-    val state = Seq(super.hashCode(), underlying)
-    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
+  override def hashCode(): Int = underlying.hashCode()
 
   override def filter(pred: A => Boolean): Set[A] = underlying.filter(pred)
 
