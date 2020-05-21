@@ -6,17 +6,18 @@ A bunch of Scala utilities I've found myself writing that I haven't (yet) decide
 their own projects.
 
 ```scala
-val tmmUtilsVersion = "0.4.0"
+val tmmUtilsVersion = "0.4.6"
 
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-codec"         % tmmUtilsVersion          // Codecs and hashing
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection"    % tmmUtilsVersion          // Collections
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-errors"        % tmmUtilsVersion          // Errors
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-syntax"        % tmmUtilsVersion          // Syntax utils
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-value-classes" % tmmUtilsVersion          // Value class utils
-libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing"       % tmmUtilsVersion % "test" // Test utilities
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-cats"             % tmmUtilsVersion          // Cats utilities
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-codec"            % tmmUtilsVersion          // Codecs and hashing
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection"       % tmmUtilsVersion          // Collections
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection-cats"  % tmmUtilsVersion          // Cats interop for collections
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-collection-circe" % tmmUtilsVersion          // Circe interop for collections
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-errors"           % tmmUtilsVersion          // Errors
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-syntax"           % tmmUtilsVersion          // Syntax utils
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-value-classes"    % tmmUtilsVersion          // Value class utils
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-testing"          % tmmUtilsVersion % "test" // Test utilities
 ```
-
-<br/>
 
 ## Codec
 
@@ -62,18 +63,26 @@ val sha3_256 = bytes.sha3_256
 val sha3_512 = bytes.sha3_512
 ```
 
-<br/>
-
 ## Collections
 
 A couple of utilities and collections:
 
 * `DupelessSeq`, which is an ordered sequence with a constant-time contains check, but (unlike [`ListSet`](https://www.scala-lang.org/api/current/scala/collection/immutable/ListSet.html))
   considers order for equality checking.
+* `NonEmptyDupelessSeq`, which is a non-empty implementation of the above
+* `NonEmptySet`, which is a non-empty set that (unlike the [cats version](https://typelevel.org/cats/api/cats/data/NonEmptySetOps.html)) uses universal equality 
+  and so does not require a `cats.Order` instance.
 * `Flyweight`, which is a very simple in-memory cache
 * `IteratorUtils`, which adds a couple of extension methods to `Iterator`
 
-<br/>
+The collections library has two companions:
+
+* `tmm-utils-collection-cats` which provides lawful and unlawful instances for the collections above, and
+* `tmm-utils-collection-circe` which provides Circe encoders and decoders for the collections above.
+
+## Cats
+
+Some utilities for interaction with the [`cats-core`](https://github.com/typelevel/cats) library
 
 ## Errors
 
