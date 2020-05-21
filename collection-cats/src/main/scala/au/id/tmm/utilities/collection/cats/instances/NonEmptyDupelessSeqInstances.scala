@@ -28,7 +28,8 @@ trait NonEmptyDupelessSeqInstances {
     )(implicit
       G: Apply[G],
     ): G[NonEmptyDupelessSeq[B]] =
-      reduceRightTo[A, G[NonEmptyDupelessSeq[B]]](fa)(a => G.map[B, NonEmptyDupelessSeq[B]](f(a))(NonEmptyDupelessSeq.one)) {
+      reduceRightTo[A, G[NonEmptyDupelessSeq[B]]](fa)(a =>
+        G.map[B, NonEmptyDupelessSeq[B]](f(a))(NonEmptyDupelessSeq.one)) {
         case (a, evalGNesB) => {
           G.map2Eval[B, NonEmptyDupelessSeq[B], NonEmptyDupelessSeq[B]](f(a), evalGNesB) {
             case (b, nesB) => nesB.prepended(b)

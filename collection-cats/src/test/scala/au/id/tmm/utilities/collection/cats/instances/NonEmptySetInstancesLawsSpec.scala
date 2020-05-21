@@ -7,7 +7,13 @@ import au.id.tmm.utilities.testing.AdHocTestIgnore
 import cats.data.Validated
 import cats.kernel.laws.discipline.{HashTests, SemilatticeTests}
 import cats.laws.discipline.arbitrary._
-import cats.laws.discipline.{MonadTests, NonEmptyTraverseTests, SemigroupKTests, SemigroupalTests, UnorderedTraverseTests}
+import cats.laws.discipline.{
+  MonadTests,
+  NonEmptyTraverseTests,
+  SemigroupKTests,
+  SemigroupalTests,
+  UnorderedTraverseTests,
+}
 import cats.tests.CatsSuite
 
 class NonEmptySetInstancesLawsSpec extends CatsSuite with AdHocTestIgnore {
