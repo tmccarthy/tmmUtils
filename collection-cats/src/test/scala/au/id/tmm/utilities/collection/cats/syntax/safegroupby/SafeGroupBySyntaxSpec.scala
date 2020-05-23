@@ -7,11 +7,22 @@ import org.scalatest.flatspec.AnyFlatSpec
 class SafeGroupBySyntaxSpec extends AnyFlatSpec {
 
   "safe group by for Set" should "work" in {
-    val groupedBy = Set("apple", "apricot", "banana").safeGroupBy(_.head).toMap
+    val groupedBy = Set("apple", "apricot", "banana").safeGroupBy(_.head)
 
     val expected = Map(
       'a' -> NonEmptySet.of("apple", "apricot"),
       'b' -> NonEmptySet.of("banana"),
+    )
+
+    assert(groupedBy === expected)
+  }
+
+  it should "work for groupMap" in {
+    val groupedBy = Set("apple", "apricot", "banana").safeGroupMap(_.head)(_.toUpperCase)
+
+    val expected = Map(
+      'a' -> NonEmptySet.of("APPLE", "APRICOT"),
+      'b' -> NonEmptySet.of("BANANA"),
     )
 
     assert(groupedBy === expected)
@@ -29,7 +40,7 @@ class SafeGroupBySyntaxSpec extends AnyFlatSpec {
       2 -> NonEmptySet.of("testing"),
     )
 
-    assert(set.safeGroupByKey.toMap === expected)
+    assert(set.safeGroupByKey === expected)
   }
 
 }
