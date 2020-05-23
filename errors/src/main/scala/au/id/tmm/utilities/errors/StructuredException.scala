@@ -10,20 +10,23 @@ final case class StructuredException(
 
   def withCause(cause: Throwable): StructuredException = this.copy(cause = Some(cause))
 
-  override def getMessage: String = {
-    val fieldsRendered: String =
-      fields
-        .map {
-          case (key, value) => s"$key=$value"
-        }
-        .mkString(
-          start = "\t\t\t",
-          sep = "\n\t\t\t",
-          end = "",
-        )
+  override def getMessage: String =
+    if (fields.isEmpty) {
+      name
+    } else {
+      val fieldsRendered: String =
+        fields
+          .map {
+            case (key, value) => s"$key=$value"
+          }
+          .mkString(
+            start = "\t\t\t",
+            sep = "\n\t\t\t",
+            end = "",
+          )
 
-    name + "\n" + fieldsRendered
-  }
+      name + "\n" + fieldsRendered
+    }
 
 }
 

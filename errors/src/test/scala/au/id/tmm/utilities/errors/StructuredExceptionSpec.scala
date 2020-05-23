@@ -58,4 +58,14 @@ class StructuredExceptionSpec extends FlatSpec {
     assert(exception.getMessage === expectedMessage)
   }
 
+  it should "produce a sensible message when there are no fields" in {
+    val exception = StructuredException(
+      name = "EXCEPTION",
+    )
+
+    val expectedMessage = "EXCEPTION"
+
+    assert(exception.getMessage === expectedMessage)
+  }
+
 }
