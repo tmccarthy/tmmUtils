@@ -6,15 +6,24 @@ import cats.~>
 
 package object safegroupby {
 
-  object list extends SafeGroupBySyntax[List, NonEmptyList](λ[List ~> NonEmptyList](NonEmptyList.fromListUnsafe(_)))
+  object list
+      extends SafeGroupBySyntax[List, NonEmptyList](
+        λ[List ~> NonEmptyList](NonEmptyList.fromListUnsafe(_)),
+      )
+
   object vector
-      extends SafeGroupBySyntax[Vector, NonEmptyVector](λ[Vector ~> NonEmptyVector](NonEmptyVector.fromVectorUnsafe(_)))
+      extends SafeGroupBySyntax[Vector, NonEmptyVector](
+        λ[Vector ~> NonEmptyVector](NonEmptyVector.fromVectorUnsafe(_)),
+      )
+
   object dupelessSeq
       extends SafeGroupBySyntax[DupelessSeq, NonEmptyDupelessSeq](
-        λ[DupelessSeq ~> NonEmptyDupelessSeq](NonEmptyDupelessSeq.fromDupelessSeqUnsafe(_)))
+        λ[DupelessSeq ~> NonEmptyDupelessSeq](NonEmptyDupelessSeq.fromDupelessSeqUnsafe(_)),
+      )
 
   object set
       extends SafeGroupBySyntax[Set, TmmUtilsNonEmptySet](
-        λ[Set ~> TmmUtilsNonEmptySet](TmmUtilsNonEmptySet.fromSetUnsafe(_)))
+        λ[Set ~> TmmUtilsNonEmptySet](TmmUtilsNonEmptySet.fromSetUnsafe(_)),
+      )
 
 }
