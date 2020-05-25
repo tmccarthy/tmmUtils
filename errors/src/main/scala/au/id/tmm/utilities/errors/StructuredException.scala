@@ -43,6 +43,16 @@ object StructuredException {
       cause = None,
     )
 
-  private def renderValue(value: Any): String = value.toString
+  private def renderValue(value: Any): String =
+    value match {
+      case s: CharSequence => s.toString
+      case i: Iterable[_] => {
+        println(value)
+        i.mkString("XXX(\n\t\t\t\t", ",\n\t\t\t\t", ",\n\t\t\t")
+      }
+      case a: Any => a.toString
+    }
+
+  private def indent(string: String): String = ???
 
 }
