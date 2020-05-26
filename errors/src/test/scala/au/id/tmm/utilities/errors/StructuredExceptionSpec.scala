@@ -53,7 +53,10 @@ class StructuredExceptionSpec extends FlatSpec {
       "field2" -> 2,
     )
 
-    val expectedMessage = "EXCEPTION\n\t\t\tfield1=value1\n\t\t\tfield2=2"
+    val expectedMessage =
+      """EXCEPTION
+        |			field1=value1
+        |			field2=2""".stripMargin
 
     assert(exception.getMessage === expectedMessage)
   }

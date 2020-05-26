@@ -1,5 +1,7 @@
 package au.id.tmm.utilities.errors
 
+import au.id.tmm.utilities.errors.StructuredException.indent
+
 import scala.collection.immutable.ArraySeq
 
 final case class StructuredException(
@@ -17,15 +19,13 @@ final case class StructuredException(
       val fieldsRendered: String =
         fields
           .map {
-            case (key, value) => s"$key=$value"
+            case (key, value) => s"$key=${indent(value, 0)}"
           }
           .mkString(
-            start = "\t\t\t",
-            sep = "\n\t\t\t",
-            end = "",
+            sep = "\n",
           )
 
-      name + "\n" + fieldsRendered
+      name + indent("\n" + fieldsRendered, 3)
     }
 
 }
@@ -47,12 +47,22 @@ object StructuredException {
     value match {
       case s: CharSequence => s.toString
       case i: Iterable[_] => {
-        println(value)
-        i.mkString("XXX(\n\t\t\t\t", ",\n\t\t\t\t", ",\n\t\t\t")
+        i.mkString(s"${iterableClassName(i)}(\n\t", ",\n\t", ",\n)")
       }
       case a: Any => a.toString
     }
 
-  private def indent(string: String): String = ???
+  private val emptyIterableStringPattern = """(\w+)\(\)""".r
+
+  private def iterableClassName(iterable: Iterable[_]): String =
+    iterable.iterableFactory.empty.toString match {
+      case emptyIterableStringPattern(className) => className
+      case _                                     => iterable.getClass.getName
+    }
+
+  private def indent(string: String, numIndents: Int): String = {
+    val indent = "\t" * numIndents
+    string.replaceAllLiterally("\n", s"\n$indent")
+  }
 
 }
