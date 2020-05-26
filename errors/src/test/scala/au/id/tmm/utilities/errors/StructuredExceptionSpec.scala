@@ -80,6 +80,21 @@ class StructuredExceptionSpec extends FlatSpec {
     assert(exception.getMessage === expectedMessage)
   }
 
+  it should "produce a sensible message when one value is an empty iterable" in {
+    val exception = StructuredException(
+      name = "EXCEPTION",
+      "field1" -> "value1",
+      "field2" -> List(),
+    )
+
+    val expectedMessage =
+      """EXCEPTION
+        |			field1=value1
+        |			field2=List()""".stripMargin
+
+    assert(exception.getMessage === expectedMessage)
+  }
+
   it should "produce a sensible message when there are no fields" in {
     val exception = StructuredException(
       name = "EXCEPTION",

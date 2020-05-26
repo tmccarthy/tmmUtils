@@ -47,7 +47,10 @@ object StructuredException {
     value match {
       case s: CharSequence => s.toString
       case i: Iterable[_] => {
-        i.mkString(s"${iterableClassName(i)}(\n\t", ",\n\t", ",\n)")
+        if (i.isEmpty)
+          i.toString()
+        else
+          i.mkString(s"${iterableClassName(i)}(\n\t", ",\n\t", ",\n)")
       }
       case a: Any => a.toString
     }
