@@ -9,21 +9,21 @@ trait NonEmptySeqOps[C[X] <: SeqOps[X, C, C[X]], NEC[_], A] extends NonEmptyIter
 
   def prepended[B >: A](elem: B): NEC[B] = constructor(underlying.prepended(elem))
 
-  @`inline` final def +: [B >: A](elem: B): NEC[B] = prepended(elem)
+  @inline final def +:[B >: A](elem: B): NEC[B] = prepended(elem)
 
   def appended[B >: A](elem: B): NEC[B] = constructor(underlying.appended(elem))
 
-  @`inline` final def :+ [B >: A](elem: B): NEC[B] = appended(elem)
+  @inline final def :+[B >: A](elem: B): NEC[B] = appended(elem)
 
   def prependedAll[B >: A](prefix: IterableOnce[B]): NEC[B] = constructor(underlying.prependedAll(prefix))
 
-  @`inline` final def ++: [B >: A](prefix: IterableOnce[B]): NEC[B] = prependedAll(prefix)
+  @inline final def ++:[B >: A](prefix: IterableOnce[B]): NEC[B] = prependedAll(prefix)
 
   def appendedAll[B >: A](suffix: IterableOnce[B]): NEC[B] = constructor(underlying.appendedAll(suffix))
 
-  @`inline` final def :++ [B >: A](suffix: IterableOnce[B]): NEC[B] = appendedAll(suffix)
+  @inline final def :++[B >: A](suffix: IterableOnce[B]): NEC[B] = appendedAll(suffix)
 
-  @`inline` final override def concat[B >: A](suffix: IterableOnce[B]): NEC[B] = appendedAll(suffix)
+  @inline override final def concat[B >: A](suffix: IterableOnce[B]): NEC[B] = appendedAll(suffix)
 
   def distinct: NEC[A] = constructor(underlying.distinct)
 
@@ -95,12 +95,22 @@ trait NonEmptySeqOps[C[X] <: SeqOps[X, C, C[X]], NEC[_], A] extends NonEmptyIter
 
   def intersect[B >: A](that: collection.Seq[B]): C[A] = underlying.intersect(that)
 
-  def patch[B >: A](from: Int, other: IterableOnce[B], replaced: Int): C[B] = underlying.patch(from, other, replaced)
+  def patch[B >: A](
+    from: Int,
+    other: IterableOnce[B],
+    replaced: Int,
+  ): C[B] = underlying.patch(from, other, replaced)
 
   def updated[B >: A](index: Int, elem: B): NEC[B] = constructor(underlying.updated(index, elem))
 
   def search[B >: A](elem: B)(implicit ord: Ordering[B]): Searching.SearchResult = underlying.search(elem)
 
-  def search[B >: A](elem: B, from: Int, to: Int)(implicit ord: Ordering[B]): Searching.SearchResult = underlying.search(elem, from, to)
+  def search[B >: A](
+    elem: B,
+    from: Int,
+    to: Int,
+  )(implicit
+    ord: Ordering[B],
+  ): Searching.SearchResult = underlying.search(elem, from, to)
 
 }

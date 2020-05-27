@@ -9,7 +9,7 @@ trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
   protected def unwrap[X](necX: NEC[X]): C[X]
   def companion: NonEmptyIterableCompanion[C, NEC]
 
-  protected def constructor[X](cx: C[X]): NEC[X] = companion.constructor(cx)
+  protected def constructor[X](cx: C[X]): NEC[X]                 = companion.constructor(cx)
   def nonEmptyIterableFactory: NonEmptyIterableCompanion[C, NEC] = companion
 
   protected def className: String = companion.className
@@ -66,7 +66,8 @@ trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
 
   def groupMap[K, B](key: A => K)(f: A => B): Map[K, C[B]] = underlying.groupMap(key)(f)
 
-  def groupMapReduce[K, B](key: A => K)(f: A => B)(reduce: (B, B) => B): Map[K, B] = underlying.groupMapReduce(key)(f)(reduce)
+  def groupMapReduce[K, B](key: A => K)(f: A => B)(reduce: (B, B) => B): Map[K, B] =
+    underlying.groupMapReduce(key)(f)(reduce)
 
   def scan[B >: A](z: B)(op: (B, B) => B): NEC[B] = constructor(underlying.scan(z)(op))
 
@@ -96,7 +97,11 @@ trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
 
   def zipWithIndex: NEC[(A, Int)] = constructor(underlying.zipWithIndex)
 
-  def zipAll[A1 >: A, B](that: Iterable[B], thisElem: A1, thatElem: B): NEC[(A1, B)] =
+  def zipAll[A1 >: A, B](
+    that: Iterable[B],
+    thisElem: A1,
+    thatElem: B,
+  ): NEC[(A1, B)] =
     constructor(underlying.zipAll(that, thisElem, thatElem))
 
   def unzip[A1, A2](implicit asPair: A <:< (A1, A2)): (NEC[A1], NEC[A2]) = underlying.unzip match {
@@ -151,7 +156,11 @@ trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
 
   def copyToArray[B >: A](xs: Array[B], start: Int): Int = underlying.copyToArray(xs, start)
 
-  def copyToArray[B >: A](xs: Array[B], start: Int, len: Int): Int = underlying.copyToArray(xs, start, len)
+  def copyToArray[B >: A](
+    xs: Array[B],
+    start: Int,
+    len: Int,
+  ): Int = underlying.copyToArray(xs, start, len)
 
   def sum[B >: A](implicit num: Numeric[B]): B = underlying.sum[B]
 
@@ -173,12 +182,12 @@ trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
 
   def to[C1](factory: Factory[A, C1]): C1 = underlying.to(factory)
 
-  def toList: List[A] = underlying.toList
-  def toVector: Vector[A] = underlying.toVector
+  def toList: List[A]                                   = underlying.toList
+  def toVector: Vector[A]                               = underlying.toVector
   def toMap[K, V](implicit ev: A <:< (K, V)): Map[K, V] = underlying.toMap
-  def toSet[B >: A]: Set[B] = underlying.toSet
-  def toSeq: Seq[A] = underlying.toSeq
-  def toIndexedSeq: IndexedSeq[A] = underlying.toIndexedSeq
+  def toSet[B >: A]: Set[B]                             = underlying.toSet
+  def toSeq: Seq[A]                                     = underlying.toSeq
+  def toIndexedSeq: IndexedSeq[A]                       = underlying.toIndexedSeq
 
   def toArray[B >: A](implicit evidence$2: ClassTag[B]): Array[B] = underlying.toArray[B]
 
