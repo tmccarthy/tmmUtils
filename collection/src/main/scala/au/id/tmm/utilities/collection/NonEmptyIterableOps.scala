@@ -83,8 +83,6 @@ trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] {
 
   def flatten[B](implicit asNec: A <:< NEC[B]): NEC[B] = ???
 
-  def flatten[B](implicit asIterable: A <:< IterableOnce[B]): C[B] = underlying.flatten
-
   def collect[B](pf: PartialFunction[A, B]): C[B] = underlying.collect(pf)
 
   def partitionMap[A1, A2](f: A => Either[A1, A2]): (C[A1], C[A2]) = underlying.partitionMap(f)
@@ -177,8 +175,6 @@ trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] {
   def collectFirst[B](pf: PartialFunction[A, B]): Option[B] = underlying.collectFirst(pf)
 
   def corresponds[B](that: IterableOnce[B])(p: (A, B) => Boolean): Boolean = underlying.corresponds(that)(p)
-
-  def to[NEC1[+_]](factory: NonEmptyIterableCompanion[C, NEC1]): NEC1[A] = factory.fromIterableUnsafe(underlying)
 
   def to[C1](factory: Factory[A, C1]): C1 = underlying.to(factory)
 

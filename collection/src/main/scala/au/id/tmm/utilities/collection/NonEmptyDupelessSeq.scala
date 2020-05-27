@@ -15,7 +15,9 @@ class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
   def -[A1 >: A](elem: A1): DupelessSeq[A] =
     underlying.-(elem)
 
-  override def toSet[B >: A]: NonEmptySet[B] = NonEmptySet.fromSetUnsafe(underlying.toSet)
+  override def toSet[B >: A]: Set[B] = underlying.toSet
+
+  def toNonEmptySet[B >: A]: NonEmptySet[B] = NonEmptySet.fromSetUnsafe(underlying.toSet)
 
   def toArraySeq: ArraySeq[A] = underlying.toArraySeq
 
