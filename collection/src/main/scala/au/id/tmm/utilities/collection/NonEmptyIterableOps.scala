@@ -77,11 +77,11 @@ trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] {
 
   def map[B](f: A => B): NEC[B] = constructor(underlying.map(f))
 
-  def flatMap[B](f: A => NEC[B]): NEC[B] = ???
+  def flatMap[B](f: A => NEC[B]): NEC[B] = constructor(underlying.flatMap(f.andThen(unwrap)))
 
   def flatMap[B](f: A => IterableOnce[B]): C[B] = underlying.flatMap(f)
 
-  def flatten[B](implicit asNec: A <:< NEC[B]): NEC[B] = ???
+  def flatten[B](implicit asNec: A <:< NEC[B]): NEC[B] = constructor(underlying.flatten[B](unwrap(_)))
 
   def collect[B](pf: PartialFunction[A, B]): C[B] = underlying.collect(pf)
 
