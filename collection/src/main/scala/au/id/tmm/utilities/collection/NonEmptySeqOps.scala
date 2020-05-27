@@ -2,7 +2,7 @@ package au.id.tmm.utilities.collection
 
 import scala.collection.{IterableOnce, Searching, SeqOps, SeqView}
 
-trait NonEmptySeqOps[C[X] <: SeqOps[X, C, C[X]], NEC[_], A] extends NonEmptyIterableOps[C, NEC, A] {
+trait NonEmptySeqOps[C[+X] <: SeqOps[X, C, C[X]], NEC[+_], +A] extends NonEmptyIterableOps[C, NEC, A] {
   def apply(i: Int): A = underlying.apply(i)
 
   override def view: SeqView[A] = underlying.view

@@ -3,7 +3,7 @@ package au.id.tmm.utilities.collection
 import scala.collection.{Factory, IterableOps, View, WithFilter, mutable}
 import scala.reflect.ClassTag
 
-trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
+trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] extends NonEmptyIterableOpsLowPriority[C, NEC, A] {
 
   def underlying: C[A]
   protected def unwrap[X](necX: NEC[X]): C[X]
@@ -81,9 +81,9 @@ trait NonEmptyIterableOps[C[X] <: IterableOps[X, C, C[X]], NEC[_], A] {
 
   def flatMap[B](f: A => IterableOnce[B]): C[B] = underlying.flatMap(f)
 
-  def flatten[B](implicit asIterable: A <:< IterableOnce[B]): C[B] = underlying.flatten
-
   def flatten[B](implicit asNec: A <:< NEC[B]): NEC[B] = ???
+
+  def flatten[B](implicit asIterable: A <:< IterableOnce[B]): C[B] = underlying.flatten
 
   def collect[B](pf: PartialFunction[A, B]): C[B] = underlying.collect(pf)
 
