@@ -8,11 +8,12 @@ import scala.collection.mutable
   * A Set that is guaranteed to be non-empty. Equality of elements is based on universal equality.
   */
 final class NonEmptySet[A] private (val underlying: Set[A])
-  extends (A => Boolean) with NonEmptyIterableOps[
-    ({type λ[+ ⍺] = Set[⍺ @uncheckedVariance]})#λ,
-    ({type λ[+ ⍺] = NonEmptySet[⍺ @uncheckedVariance]})#λ,
-    A @uncheckedVariance,
-  ] {
+    extends (A => Boolean)
+    with NonEmptyIterableOps[
+      ({ type λ[+⍺] = Set[⍺ @uncheckedVariance] })#λ,
+      ({ type λ[+⍺] = NonEmptySet[⍺ @uncheckedVariance] })#λ,
+      A @uncheckedVariance,
+    ] {
 
   override protected def constructor[X](cx: Set[X]): NonEmptySet[X] = new NonEmptySet[X](cx)
 
@@ -84,7 +85,7 @@ object NonEmptySet extends NonEmptyIterableCompanion[Set, NonEmptySet] {
 
   override def fromIterable[A](iterable: IterableOnce[A]): Option[NonEmptySet[A]] =
     iterable match {
-      case s: Set[A] => fromSet(s)
+      case s: Set[A]      => fromSet(s)
       case i: Iterable[A] => super.fromIterable(i)
     }
 

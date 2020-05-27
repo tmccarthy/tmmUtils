@@ -4,7 +4,7 @@ import scala.collection.immutable.ArraySeq
 import scala.collection.mutable
 
 class NonEmptyDupelessSeq[+A] private (val underlying: DupelessSeq[A])
-  extends NonEmptySeqOps[DupelessSeq, NonEmptyDupelessSeq, A] {
+    extends NonEmptySeqOps[DupelessSeq, NonEmptyDupelessSeq, A] {
 
   override protected def constructor[X](cx: DupelessSeq[X]): NonEmptyDupelessSeq[X] = new NonEmptyDupelessSeq[X](cx)
 
@@ -35,7 +35,8 @@ object NonEmptyDupelessSeq extends NonEmptyIterableCompanion[DupelessSeq, NonEmp
 
   override protected[collection] def className: String = "NonEmptyDupelessSeq"
 
-  override protected[collection] def constructor[A](ca: DupelessSeq[A]): NonEmptyDupelessSeq[A] = new NonEmptyDupelessSeq[A](ca)
+  override protected[collection] def constructor[A](ca: DupelessSeq[A]): NonEmptyDupelessSeq[A] =
+    new NonEmptyDupelessSeq[A](ca)
 
   override protected def newUnderlyingBuilder[A]: mutable.Builder[A, DupelessSeq[A]] = DupelessSeq.newBuilder
 
@@ -48,7 +49,7 @@ object NonEmptyDupelessSeq extends NonEmptyIterableCompanion[DupelessSeq, NonEmp
   override def fromIterable[A](iterable: IterableOnce[A]): Option[NonEmptyDupelessSeq[A]] =
     iterable match {
       case s: DupelessSeq[A] => fromDupelessSeq(s)
-      case i: Iterable[A] => super.fromIterable(i)
+      case i: Iterable[A]    => super.fromIterable(i)
     }
 
 }
