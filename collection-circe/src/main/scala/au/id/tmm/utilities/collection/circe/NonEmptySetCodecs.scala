@@ -5,7 +5,7 @@ import io.circe.{Decoder, Encoder}
 
 import scala.collection.immutable.ArraySeq
 
-trait NonEmptySetCodecs {
+trait NonEmptySetCodecs extends NonEmptySetCodecs1 {
 
   /**
     * Provide an encoder for the special case where elements are ordered, so that the encoded Json is stable.

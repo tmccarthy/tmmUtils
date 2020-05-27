@@ -10,7 +10,7 @@ import scala.collection.mutable
 trait NonEmptySetInstances extends NonEmptySetInstances1 {
 
   implicit def catsStdHashForTmmUtilsNonEmptySet[A : Hash]: Hash[NonEmptySet[A]] = new Hash[NonEmptySet[A]] {
-    override def hash(x: NonEmptySet[A]): Int                       = Hash[Set[A]].hash(x)
+    override def hash(x: NonEmptySet[A]): Int                       = Hash[Set[A]].hash(x.underlying)
     override def eqv(x: NonEmptySet[A], y: NonEmptySet[A]): Boolean = Eq[Set[A]].eqv(x.underlying, y.underlying)
   }
 

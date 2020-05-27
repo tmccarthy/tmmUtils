@@ -13,13 +13,13 @@ trait NonEmptyDupelessSeqInstances {
   implicit def catsStdShowForNonEmptyDupelessSeq[A : Show]: Show[NonEmptyDupelessSeq[A]] =
     s => s"NonEmpty${s.underlying.show}"
 
-  implicit def catsStdSemigroupForNonEmptyDupelessSeq[A]: Band[NonEmptyDupelessSeq[A]] = _ appendedAll _
+  implicit def catsStdSemigroupForNonEmptyDupelessSeq[A]: Band[NonEmptyDupelessSeq[A]] = _ concat _
 
   implicit val catsStdInstancesForNonEmptyDupelessSeq
     : SemigroupK[NonEmptyDupelessSeq] with NonEmptyTraverse[NonEmptyDupelessSeq] = new SemigroupK[NonEmptyDupelessSeq]
   with NonEmptyTraverse[NonEmptyDupelessSeq] {
     override def combineK[A](x: NonEmptyDupelessSeq[A], y: NonEmptyDupelessSeq[A]): NonEmptyDupelessSeq[A] =
-      x appendedAll y
+      x concat y
 
     override def nonEmptyTraverse[G[_], A, B](
       fa: NonEmptyDupelessSeq[A],

@@ -17,13 +17,23 @@ trait NonEmptySeqOps[C[+X] <: SeqOps[X, C, C[X]], NEC[+_], +A] extends NonEmptyI
 
   def prependedAll[B >: A](prefix: IterableOnce[B]): NEC[B] = constructor(underlying.prependedAll(prefix))
 
+  def prependedAll[B >: A](prefix: NEC[B]): NEC[B] = constructor(underlying.prependedAll(unwrap(prefix)))
+
   @inline final def ++:[B >: A](prefix: IterableOnce[B]): NEC[B] = prependedAll(prefix)
+
+  @inline final def ++:[B >: A](prefix: NEC[B]): NEC[B] = prependedAll(prefix)
 
   def appendedAll[B >: A](suffix: IterableOnce[B]): NEC[B] = constructor(underlying.appendedAll(suffix))
 
+  def appendedAll[B >: A](suffix: NEC[B]): NEC[B] = constructor(underlying.appendedAll(unwrap(suffix)))
+
   @inline final def :++[B >: A](suffix: IterableOnce[B]): NEC[B] = appendedAll(suffix)
 
+  @inline final def :++[B >: A](suffix: NEC[B]): NEC[B] = appendedAll(suffix)
+
   @inline override final def concat[B >: A](suffix: IterableOnce[B]): NEC[B] = appendedAll(suffix)
+
+  @inline override final def concat[B >: A](suffix: NEC[B]): NEC[B] = appendedAll(suffix)
 
   def distinct: NEC[A] = constructor(underlying.distinct)
 
@@ -93,7 +103,11 @@ trait NonEmptySeqOps[C[+X] <: SeqOps[X, C, C[X]], NEC[+_], +A] extends NonEmptyI
 
   def diff[B >: A](that: collection.Seq[B]): C[A] = underlying.diff(that)
 
+  def diff[B >: A](that: NEC[B]): C[A] = underlying.diff[B](unwrap(that).toSeq)
+
   def intersect[B >: A](that: collection.Seq[B]): C[A] = underlying.intersect(that)
+
+  def intersect[B >: A](that: NEC[B]): C[A] = underlying.intersect[B](unwrap(that).toSeq)
 
   def patch[B >: A](
     from: Int,

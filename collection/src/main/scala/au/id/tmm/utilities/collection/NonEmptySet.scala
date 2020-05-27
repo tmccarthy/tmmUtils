@@ -34,6 +34,8 @@ final class NonEmptySet[A] private (val underlying: Set[A])
 
   def --(that: IterableOnce[A]): Set[A] = underlying.--(that)
 
+  def --(that: NonEmptySet[A]): Set[A] = underlying.--(that.underlying)
+
   def -(elem: A): Set[A] = underlying.-(elem)
 
   def incl(elem: A): NonEmptySet[A] = constructor(underlying.incl(elem))
@@ -42,11 +44,17 @@ final class NonEmptySet[A] private (val underlying: Set[A])
 
   def removedAll(that: IterableOnce[A]): Set[A] = underlying.removedAll(that)
 
+  def removedAll(that: NonEmptySet[A]): Set[A] = underlying.removedAll(that.underlying)
+
   def concat(that: IterableOnce[A]): NonEmptySet[A] = constructor(underlying.concat(that))
+
+  def concat(that: NonEmptySet[A]): NonEmptySet[A] = constructor(underlying.concat(that.underlying))
 
   def +(elem: A): NonEmptySet[A] = constructor(underlying.+(elem))
 
   def ++(that: IterableOnce[A]): NonEmptySet[A] = concat(that)
+
+  def ++(that: NonEmptySet[A]): NonEmptySet[A] = concat(that)
 
   override def apply(a: A): Boolean = contains(a)
 

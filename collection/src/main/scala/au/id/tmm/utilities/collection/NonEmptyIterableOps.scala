@@ -89,6 +89,8 @@ trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] {
 
   def concat[B >: A](suffix: IterableOnce[B]): NEC[B] = constructor(underlying.concat(suffix))
 
+  def concat[B >: A](suffix: NEC[B]): NEC[B] = constructor(underlying.concat(unwrap(suffix)))
+
   def zip[B](that: NEC[B]): NEC[(A, B)] = constructor(underlying zip unwrap(that))
 
   def zip[B](that: IterableOnce[B]): C[(A, B)] = underlying.zip(that)
