@@ -3,7 +3,7 @@ package au.id.tmm.utilities.collection
 import scala.collection.{Factory, IterableOps, View, WithFilter, mutable}
 import scala.reflect.ClassTag
 
-trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] extends NonEmptyIterableOpsLowPriority[C, NEC, A] {
+trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] {
 
   def underlying: C[A]
   protected def unwrap[X](necX: NEC[X]): C[X]
@@ -178,7 +178,7 @@ trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] extends
 
   def corresponds[B](that: IterableOnce[B])(p: (A, B) => Boolean): Boolean = underlying.corresponds(that)(p)
 
-  def to[NEC1[_]](factory: NonEmptyIterableCompanion[C, NEC1]): NEC1[A] = factory.fromIterableUnsafe(underlying)
+  def to[NEC1[+_]](factory: NonEmptyIterableCompanion[C, NEC1]): NEC1[A] = factory.fromIterableUnsafe(underlying)
 
   def to[C1](factory: Factory[A, C1]): C1 = underlying.to(factory)
 
