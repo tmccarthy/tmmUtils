@@ -9,11 +9,13 @@ import scala.collection.mutable
   */
 final class NonEmptySet[A] private (val underlying: Set[A])
     extends (A => Boolean)
+    // format: off
     with NonEmptyIterableOps[
-      ({ type λ[+⍺] = Set[⍺ @uncheckedVariance] })#λ,
-      ({ type λ[+⍺] = NonEmptySet[⍺ @uncheckedVariance] })#λ,
+      ({ type λ[+ ⍺] = Set[⍺ @uncheckedVariance] })#λ,
+      ({ type λ[+ ⍺] = NonEmptySet[⍺ @uncheckedVariance] })#λ,
       A @uncheckedVariance,
     ] {
+  // format: on
 
   override protected def constructor[X](cx: Set[X]): NonEmptySet[X] = new NonEmptySet[X](cx)
 
