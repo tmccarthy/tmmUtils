@@ -5,6 +5,7 @@ package object instances {
   object nonEmptySet         extends NonEmptySetInstances
   object dupelessSeq         extends DupelessSeqInstances
   object nonEmptyDupelessSeq extends NonEmptyDupelessSeqInstances
+  object nonEmptyArraySeq    extends NonEmptyArraySeqInstances
   object list                extends ListInstances
   object vector              extends VectorInstances
 
