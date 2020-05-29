@@ -1,7 +1,9 @@
 package au.id.tmm.utilities.collection.cats.syntax.safegroupby
 
 import au.id.tmm.utilities.collection.NonEmptySet
-import au.id.tmm.utilities.collection.cats.syntax.safegroupby.set._
+import au.id.tmm.utilities.collection.syntax.toSafeGroupByOps
+import au.id.tmm.utilities.collection.cats.instances.list._
+import cats.data.NonEmptyList
 import org.scalatest.flatspec.AnyFlatSpec
 
 class SafeGroupBySyntaxSpec extends AnyFlatSpec {
@@ -41,6 +43,21 @@ class SafeGroupBySyntaxSpec extends AnyFlatSpec {
     )
 
     assert(set.safeGroupByKey === expected)
+  }
+
+  "safe group by for List" should "work for a list of tuples" in {
+    val l = List(
+      "a" -> 1,
+      "a" -> 2,
+      "b" -> 3,
+    )
+
+    val expectedGrouped = Map(
+      "a" -> NonEmptyList.of(1, 2),
+      "b" -> NonEmptyList.of(3),
+    )
+
+    assert(l.safeGroupByKey === expectedGrouped)
   }
 
 }

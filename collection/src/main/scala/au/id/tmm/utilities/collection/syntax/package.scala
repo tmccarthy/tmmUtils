@@ -1,8 +1,10 @@
 package au.id.tmm.utilities.collection
 
+import au.id.tmm.utilities.collection.typeclasses.SafeGroupBy
+
 import scala.collection.BuildFrom
 
-package object syntax {
+package object syntax extends SafeGroupBy.ToSafeGroupByOps {
 
   implicit def iteratorOps[A](iterator: Iterator[A]): IteratorOps[A] = new IteratorOps[A](iterator)
 
