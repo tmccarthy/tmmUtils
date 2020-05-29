@@ -14,13 +14,11 @@ trait NonEmptySetCodecs extends NonEmptySetCodecs1 {
     Encoder.encodeIterable[A, NonEmptySet](Encoder[A], _.to(ArraySeq.untagged).sorted)
 
   implicit def nonEmptySetDecoder[A : Decoder]: Decoder[NonEmptySet[A]] =
-    Decoder.decodeSet[A].emap { s =>
-      NonEmptySet.fromSet(s).toRight("Empty array cannot be decoded to NonEmptySet")
-    }
+    NonEmptyCollectionCodecs.decoderFor("NonEmptySet", NonEmptySet.fromSet)
 
 }
 
 private[circe] trait NonEmptySetCodecs1 {
   implicit def nonEmptySetEncoder[A : Encoder]: Encoder[NonEmptySet[A]] =
-    Encoder.encodeSet[A].contramap(_.underlying)
+    NonEmptyCollectionCodecs.encoderFor(_.underlying)
 }
