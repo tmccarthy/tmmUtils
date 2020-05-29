@@ -16,7 +16,9 @@ class NonEmptyArraySeqInstancesLawsSpec extends CatsSuite {
   checkAll("Bimonad for NonEmptyArraySeq", BimonadTests[NonEmptyArraySeq].bimonad[Int, Int, Int])
   checkAll("SemigroupK for NonEmptyArraySeq", SemigroupKTests[NonEmptyArraySeq].semigroupK[Int])
   checkAll("Align for NonEmptyArraySeq", AlignTests[NonEmptyArraySeq].align[Int, Int, Int, Int])
-  checkAll("NonEmptyTraverse for NonEmptyArraySeq", NonEmptyTraverseTests[NonEmptyArraySeq].nonEmptyTraverse[Option, Int, Int, Int, Int, Option, Validated[Unit, *]])
+  checkAll(
+    "NonEmptyTraverse for NonEmptyArraySeq",
+    NonEmptyTraverseTests[NonEmptyArraySeq].nonEmptyTraverse[Option, Int, Int, Int, Int, Option, Validated[Unit, *]])
   checkAll("Semigroup for NonEmptyArraySeq", SemigroupTests[NonEmptyArraySeq[Int]].semigroup)
 
 }

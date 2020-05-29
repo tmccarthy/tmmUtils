@@ -21,11 +21,15 @@ trait NonEmptyArraySeqInstances extends NonEmptyArraySeqInstances1 {
   implicit val catsStdInstancesForTmmUtilsNonEmptyArraySeq: NonEmptyTraverse[NonEmptyArraySeq]
     with Bimonad[NonEmptyArraySeq]
     with SemigroupK[NonEmptyArraySeq]
-    with Align[NonEmptyArraySeq] = new NonEmptyTraverse[NonEmptyArraySeq]
-    with Bimonad[NonEmptyArraySeq]
-    with SemigroupK[NonEmptyArraySeq]
-    with Align[NonEmptyArraySeq] {
-    override def nonEmptyTraverse[G[_], A, B](fa: NonEmptyArraySeq[A])(f: A => G[B])(implicit evidence$1: Apply[G]): G[NonEmptyArraySeq[B]] = ???
+    with Align[NonEmptyArraySeq] = new NonEmptyTraverse[NonEmptyArraySeq] with Bimonad[NonEmptyArraySeq]
+  with SemigroupK[NonEmptyArraySeq] with Align[NonEmptyArraySeq] {
+    override def nonEmptyTraverse[G[_], A, B](
+      fa: NonEmptyArraySeq[A],
+    )(
+      f: A => G[B],
+    )(implicit
+      evidence$1: Apply[G],
+    ): G[NonEmptyArraySeq[B]] = ???
 
     override def combineK[A](x: NonEmptyArraySeq[A], y: NonEmptyArraySeq[A]): NonEmptyArraySeq[A] = ???
 

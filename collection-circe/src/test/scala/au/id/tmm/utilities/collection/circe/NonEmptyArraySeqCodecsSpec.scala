@@ -12,8 +12,7 @@ class NonEmptyArraySeqCodecsSpec extends FlatSpec {
   }
 
   "the nonEmptyArraySeqDecoder" should "decode an array" in {
-    assert(
-      Json.arr(1.asJson, 2.asJson, 3.asJson).as[NonEmptyArraySeq[Int]] === Right(NonEmptyArraySeq.of(1, 2, 3)))
+    assert(Json.arr(1.asJson, 2.asJson, 3.asJson).as[NonEmptyArraySeq[Int]] === Right(NonEmptyArraySeq.of(1, 2, 3)))
   }
 
   it should "error if decoding an empty array" in {
