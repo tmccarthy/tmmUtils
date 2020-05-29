@@ -27,31 +27,41 @@ object NelConversions {
 
   class CatsNonEmptyListOps[A](nel: NonEmptyList[A]) {
     def to[NEC[_]](implicit nelConversions: NelConversions[NEC]): NEC[A] = nelConversions.fromNel(nel)
-    def toSpecialised[NEC[_]](implicit nelConversions: NelConversions.Specialised[NEC], classTag: ClassTag[A]): NEC[A] = nelConversions.fromNelSpecialised(nel)
+    def toSpecialised[NEC[_]](implicit nelConversions: NelConversions.Specialised[NEC], classTag: ClassTag[A]): NEC[A] =
+      nelConversions.fromNelSpecialised(nel)
   }
 
   trait ToNelConversionsOps {
-    implicit def toNelConversionsOps[NEC[_]: NelConversions, A](nec: NEC[A]): Ops[NEC, A] = new Ops(nec)
+    implicit def toNelConversionsOps[NEC[_] : NelConversions, A](nec: NEC[A]): Ops[NEC, A] = new Ops(nec)
   }
 
   trait ToFromNelConversionsOps {
     implicit def toFromNelConversionsOps[A](nel: NonEmptyList[A]): CatsNonEmptyListOps[A] = new CatsNonEmptyListOps(nel)
   }
 
-  implicit val nelConversionsForNonEmptyDupelessSeq: NelConversions[NonEmptyDupelessSeq] = new NelConversions[collection.NonEmptyDupelessSeq] {
-    override def toNel[A](nec: collection.NonEmptyDupelessSeq[A]): NonEmptyList[A] = NonEmptyList.fromListUnsafe(nec.toList)
-    override def fromNel[A](nel: NonEmptyList[A]): collection.NonEmptyDupelessSeq[A] = NonEmptyDupelessSeq.fromHeadTail(nel.head, nel.tail)
-  }
+  implicit val nelConversionsForNonEmptyDupelessSeq: NelConversions[NonEmptyDupelessSeq] =
+    new NelConversions[collection.NonEmptyDupelessSeq] {
+      override def toNel[A](nec: collection.NonEmptyDupelessSeq[A]): NonEmptyList[A] =
+        NonEmptyList.fromListUnsafe(nec.toList)
+      override def fromNel[A](nel: NonEmptyList[A]): collection.NonEmptyDupelessSeq[A] =
+        NonEmptyDupelessSeq.fromHeadTail(nel.head, nel.tail)
+    }
 
-  implicit val nelConversionsForTmmUtilsNonEmptySet: NelConversions[NonEmptySet] = new NelConversions[collection.NonEmptySet] {
-    override def toNel[A](nec: collection.NonEmptySet[A]): NonEmptyList[A] = NonEmptyList.fromListUnsafe(nec.toList)
-    override def fromNel[A](nel: NonEmptyList[A]): collection.NonEmptySet[A] = NonEmptySet.fromHeadTail(nel.head, nel.tail)
-  }
+  implicit val nelConversionsForTmmUtilsNonEmptySet: NelConversions[NonEmptySet] =
+    new NelConversions[collection.NonEmptySet] {
+      override def toNel[A](nec: collection.NonEmptySet[A]): NonEmptyList[A] = NonEmptyList.fromListUnsafe(nec.toList)
+      override def fromNel[A](nel: NonEmptyList[A]): collection.NonEmptySet[A] =
+        NonEmptySet.fromHeadTail(nel.head, nel.tail)
+    }
 
-  implicit val nelConversionsForTmmUtilsNonEmptyArraySeq: NelConversions.Specialised[NonEmptyArraySeq] = new NelConversions.Specialised[collection.NonEmptyArraySeq] {
-    override def toNel[A](nec: collection.NonEmptyArraySeq[A]): NonEmptyList[A] = NonEmptyList.fromListUnsafe(nec.toList)
-    override def fromNel[A](nel: NonEmptyList[A]): collection.NonEmptyArraySeq[A] = NonEmptyArraySeq.untagged.fromHeadTail(nel.head, nel.tail)
-    override def fromNelSpecialised[A: ClassTag](nel: NonEmptyList[A]): NonEmptyArraySeq[A] = NonEmptyArraySeq.fromHeadTail(nel.head, nel.tail)
-  }
+  implicit val nelConversionsForTmmUtilsNonEmptyArraySeq: NelConversions.Specialised[NonEmptyArraySeq] =
+    new NelConversions.Specialised[collection.NonEmptyArraySeq] {
+      override def toNel[A](nec: collection.NonEmptyArraySeq[A]): NonEmptyList[A] =
+        NonEmptyList.fromListUnsafe(nec.toList)
+      override def fromNel[A](nel: NonEmptyList[A]): collection.NonEmptyArraySeq[A] =
+        NonEmptyArraySeq.untagged.fromHeadTail(nel.head, nel.tail)
+      override def fromNelSpecialised[A : ClassTag](nel: NonEmptyList[A]): NonEmptyArraySeq[A] =
+        NonEmptyArraySeq.fromHeadTail(nel.head, nel.tail)
+    }
 
 }

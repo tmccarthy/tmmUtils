@@ -27,31 +27,43 @@ object NevConversions {
 
   class CatsNonEmptyVectorOps[A](nev: NonEmptyVector[A]) {
     def to[NEC[_]](implicit nevConversions: NevConversions[NEC]): NEC[A] = nevConversions.fromNev(nev)
-    def toSpecialised[NEC[_]](implicit nevConversions: NevConversions.Specialised[NEC], classTag: ClassTag[A]): NEC[A] = nevConversions.fromNevSpecialised(nev)
+    def toSpecialised[NEC[_]](implicit nevConversions: NevConversions.Specialised[NEC], classTag: ClassTag[A]): NEC[A] =
+      nevConversions.fromNevSpecialised(nev)
   }
 
   trait ToNevConversionsOps {
-    implicit def toNevConversionsOps[NEC[_]: NevConversions, A](nec: NEC[A]): Ops[NEC, A] = new Ops(nec)
+    implicit def toNevConversionsOps[NEC[_] : NevConversions, A](nec: NEC[A]): Ops[NEC, A] = new Ops(nec)
   }
 
   trait ToFromNevConversionsOps {
-    implicit def toFromNevConversionsOps[A](nev: NonEmptyVector[A]): CatsNonEmptyVectorOps[A] = new CatsNonEmptyVectorOps(nev)
+    implicit def toFromNevConversionsOps[A](nev: NonEmptyVector[A]): CatsNonEmptyVectorOps[A] =
+      new CatsNonEmptyVectorOps(nev)
   }
 
-  implicit val nevConversionsForNonEmptyDupelessSeq: NevConversions[NonEmptyDupelessSeq] = new NevConversions[collection.NonEmptyDupelessSeq] {
-    override def toNev[A](nec: collection.NonEmptyDupelessSeq[A]): NonEmptyVector[A] = NonEmptyVector.fromVectorUnsafe(nec.toVector)
-    override def fromNev[A](nev: NonEmptyVector[A]): collection.NonEmptyDupelessSeq[A] = NonEmptyDupelessSeq.fromHeadTail(nev.head, nev.tail)
-  }
+  implicit val nevConversionsForNonEmptyDupelessSeq: NevConversions[NonEmptyDupelessSeq] =
+    new NevConversions[collection.NonEmptyDupelessSeq] {
+      override def toNev[A](nec: collection.NonEmptyDupelessSeq[A]): NonEmptyVector[A] =
+        NonEmptyVector.fromVectorUnsafe(nec.toVector)
+      override def fromNev[A](nev: NonEmptyVector[A]): collection.NonEmptyDupelessSeq[A] =
+        NonEmptyDupelessSeq.fromHeadTail(nev.head, nev.tail)
+    }
 
-  implicit val nevConversionsForTmmUtilsNonEmptySet: NevConversions[NonEmptySet] = new NevConversions[collection.NonEmptySet] {
-    override def toNev[A](nec: collection.NonEmptySet[A]): NonEmptyVector[A] = NonEmptyVector.fromVectorUnsafe(nec.toVector)
-    override def fromNev[A](nev: NonEmptyVector[A]): collection.NonEmptySet[A] = NonEmptySet.fromHeadTail(nev.head, nev.tail)
-  }
+  implicit val nevConversionsForTmmUtilsNonEmptySet: NevConversions[NonEmptySet] =
+    new NevConversions[collection.NonEmptySet] {
+      override def toNev[A](nec: collection.NonEmptySet[A]): NonEmptyVector[A] =
+        NonEmptyVector.fromVectorUnsafe(nec.toVector)
+      override def fromNev[A](nev: NonEmptyVector[A]): collection.NonEmptySet[A] =
+        NonEmptySet.fromHeadTail(nev.head, nev.tail)
+    }
 
-  implicit val nevConversionsForTmmUtilsNonEmptyArraySeq: NevConversions.Specialised[NonEmptyArraySeq] = new NevConversions.Specialised[collection.NonEmptyArraySeq] {
-    override def toNev[A](nec: collection.NonEmptyArraySeq[A]): NonEmptyVector[A] = NonEmptyVector.fromVectorUnsafe(nec.toVector)
-    override def fromNev[A](nev: NonEmptyVector[A]): collection.NonEmptyArraySeq[A] = NonEmptyArraySeq.untagged.fromHeadTail(nev.head, nev.tail)
-    override def fromNevSpecialised[A: ClassTag](nev: NonEmptyVector[A]): NonEmptyArraySeq[A] = NonEmptyArraySeq.fromHeadTail(nev.head, nev.tail)
-  }
+  implicit val nevConversionsForTmmUtilsNonEmptyArraySeq: NevConversions.Specialised[NonEmptyArraySeq] =
+    new NevConversions.Specialised[collection.NonEmptyArraySeq] {
+      override def toNev[A](nec: collection.NonEmptyArraySeq[A]): NonEmptyVector[A] =
+        NonEmptyVector.fromVectorUnsafe(nec.toVector)
+      override def fromNev[A](nev: NonEmptyVector[A]): collection.NonEmptyArraySeq[A] =
+        NonEmptyArraySeq.untagged.fromHeadTail(nev.head, nev.tail)
+      override def fromNevSpecialised[A : ClassTag](nev: NonEmptyVector[A]): NonEmptyArraySeq[A] =
+        NonEmptyArraySeq.fromHeadTail(nev.head, nev.tail)
+    }
 
 }
