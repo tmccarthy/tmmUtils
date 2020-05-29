@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.collection.typeclasses
+package au.id.tmm.utilities.collection.classes
 
 import au.id.tmm.utilities.collection.NonEmptySet
 import org.scalatest.FlatSpec

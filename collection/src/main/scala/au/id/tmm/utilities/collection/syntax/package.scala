@@ -1,6 +1,6 @@
 package au.id.tmm.utilities.collection
 
-import au.id.tmm.utilities.collection.typeclasses.SafeGroupBy
+import au.id.tmm.utilities.collection.classes.SafeGroupBy
 
 import scala.collection.BuildFrom
 

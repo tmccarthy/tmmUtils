@@ -15,11 +15,11 @@ class NonEmptySetOpsSpec extends AnyFlatSpec {
   }
 
   "a non-empty list" can "be converted to a tmmUtils NonEmptySet" in {
-    assert(NonEmptyList.of(1, 2, 2).toTmmUtilsNonEmptySet === NonEmptySet.of(1, 2))
+    assert(NonEmptyList.of(1, 2, 2).to[NonEmptySet] === NonEmptySet.of(1, 2))
   }
 
   "a non-empty vector" can "be converted to a tmmUtils NonEmptySet" in {
-    assert(NonEmptyVector.of(1, 2, 2).toTmmUtilsNonEmptySet === NonEmptySet.of(1, 2))
+    assert(NonEmptyVector.of(1, 2, 2).to[NonEmptySet] === NonEmptySet.of(1, 2))
   }
 
 }

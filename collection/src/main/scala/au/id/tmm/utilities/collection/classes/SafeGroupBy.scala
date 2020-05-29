@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.collection.typeclasses
+package au.id.tmm.utilities.collection.classes
 
 import au.id.tmm.utilities.collection.{DupelessSeq, NonEmptyDupelessSeq, NonEmptyIterableCompanion, NonEmptySet}
 
@@ -72,7 +72,7 @@ object SafeGroupBy extends SafeGroupByInstances {
   }
 
   object ForScalaIterable {
-    class UsingTmmUtilsNonEmpty[C[X] <: IterableOps[X, C, C[X]], NEC[_]] private[typeclasses] (
+    class UsingTmmUtilsNonEmpty[C[X] <: IterableOps[X, C, C[X]], NEC[_]] private[classes] (
       necCompanion: NonEmptyIterableCompanion[C, NEC],
     ) extends SafeGroupBy.ForScalaIterable[C, NEC] {
       override def makeNecUnsafe[A](ca: C[A]): NEC[A] = necCompanion.fromIterableUnsafe(ca)

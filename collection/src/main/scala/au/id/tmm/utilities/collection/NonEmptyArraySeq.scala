@@ -4,6 +4,7 @@ import scala.collection.immutable.ArraySeq
 import scala.collection.mutable
 import scala.reflect.ClassTag
 
+// TODO what would this look like as an AnyRef wrapper?
 final class NonEmptyArraySeq[+A] private (val underlying: ArraySeq[A])
     extends NonEmptySeqOps[ArraySeq, NonEmptyArraySeq, A] {
   override protected def constructor[X](cx: ArraySeq[X]): NonEmptyArraySeq[X] = new NonEmptyArraySeq[X](cx)
@@ -11,6 +12,15 @@ final class NonEmptyArraySeq[+A] private (val underlying: ArraySeq[A])
   override protected def unwrap[X](necX: NonEmptyArraySeq[X]): ArraySeq[X] = necX.underlying
 
   override def companion: NonEmptyIterableCompanion[ArraySeq, NonEmptyArraySeq] = NonEmptyArraySeq.untagged
+
+  override def equals(other: Any): Boolean = other match {
+    case that: NonEmptyArraySeq[_] =>
+      this.underlying == that.underlying
+    case _ => false
+  }
+
+  override def hashCode(): Int = underlying.hashCode()
+
 }
 
 object NonEmptyArraySeq {
