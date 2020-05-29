@@ -3,7 +3,7 @@ package au.id.tmm.utilities.collection
 import scala.collection.{Factory, IterableOps, View, WithFilter, mutable}
 import scala.reflect.ClassTag
 
-trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] {
+trait NonEmptyIterableOps[C[+X] <: IterableOps[X, C, C[X]], NEC[+_], +A] extends IterableOnce[A] {
 
   def underlying: C[A]
   protected def unwrap[X](necX: NEC[X]): C[X]
