@@ -51,9 +51,11 @@ trait NonEmptyArraySeqInstances extends NonEmptyArraySeqInstances1 {
 
     override def foldLeft[A, B](fa: NonEmptyArraySeq[A], b: B)(f: (B, A) => B): B = fa.foldLeft(b)(f)
 
-    override def foldRight[A, B](fa: NonEmptyArraySeq[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = fa.foldRight(lb)(f)
+    override def foldRight[A, B](fa: NonEmptyArraySeq[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      fa.foldRight(lb)(f)
 
-    override def flatMap[A, B](fa: NonEmptyArraySeq[A])(f: A => NonEmptyArraySeq[B]): NonEmptyArraySeq[B] = fa.flatMap(f)
+    override def flatMap[A, B](fa: NonEmptyArraySeq[A])(f: A => NonEmptyArraySeq[B]): NonEmptyArraySeq[B] =
+      fa.flatMap(f)
 
     override def tailRecM[A, B](a: A)(f: A => NonEmptyArraySeq[Either[A, B]]): NonEmptyArraySeq[B] =
       NonEmptyArraySeq.untagged.fromArraySeqUnsafe(Monad[ArraySeq].tailRecM(a)(f.andThen(_.underlying)))
@@ -61,7 +63,8 @@ trait NonEmptyArraySeqInstances extends NonEmptyArraySeqInstances1 {
     override def pure[A](x: A): NonEmptyArraySeq[A] = NonEmptyArraySeq.untagged.one(x)
 
     override def coflatMap[A, B](fa: NonEmptyArraySeq[A])(f: NonEmptyArraySeq[A] => B): NonEmptyArraySeq[B] =
-      NonEmptyArraySeq.untagged.fromArraySeqUnsafe(CoflatMap[ArraySeq].coflatMap(fa.underlying)(f.compose(NonEmptyArraySeq.untagged.fromArraySeqUnsafe[A])))
+      NonEmptyArraySeq.untagged.fromArraySeqUnsafe(
+        CoflatMap[ArraySeq].coflatMap(fa.underlying)(f.compose(NonEmptyArraySeq.untagged.fromArraySeqUnsafe[A])))
 
     override def reduceLeftTo[A, B](fa: NonEmptyArraySeq[A])(f: A => B)(g: (B, A) => B): B =
       fa.tail.foldLeft[B](f(fa.head))(g)
