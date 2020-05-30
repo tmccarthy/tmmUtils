@@ -38,9 +38,7 @@ trait NonEmptyDupelessSeqInstances {
       }.value
 
     override def reduceLeftTo[A, B](fa: NonEmptyDupelessSeq[A])(f: A => B)(g: (B, A) => B): B =
-      fa.tail.foldRight[B](f(fa.head)) {
-        case (a, b) => g(b, a)
-      }
+      fa.tail.foldLeft[B](f(fa.head))(g)
 
     override def reduceRightTo[A, B](fa: NonEmptyDupelessSeq[A])(f: A => B)(g: (A, Eval[B]) => Eval[B]): Eval[B] =
       fa.init.foldRight[Eval[B]](Eval.now[A](fa.last).map(f))(g)

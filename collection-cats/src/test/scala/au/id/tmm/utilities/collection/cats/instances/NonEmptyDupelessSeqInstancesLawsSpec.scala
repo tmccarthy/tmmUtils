@@ -7,7 +7,7 @@ import au.id.tmm.utilities.testing.AdHocTestIgnore
 import cats.data.Validated
 import cats.kernel.laws.discipline.{BandTests, HashTests}
 import cats.laws.discipline.arbitrary._
-import cats.laws.discipline.{MonadTests, NonEmptyTraverseTests, SemigroupKTests, SemigroupalTests, TraverseTests}
+import cats.laws.discipline.{MonadTests, NonEmptyTraverseTests, SemigroupKTests, SemigroupalTests}
 import cats.tests.CatsSuite
 
 class NonEmptyDupelessSeqInstancesLawsSpec extends CatsSuite with AdHocTestIgnore {
@@ -16,19 +16,12 @@ class NonEmptyDupelessSeqInstancesLawsSpec extends CatsSuite with AdHocTestIgnor
   checkAll("Band for NonEmptyDupelessSeq", BandTests[NonEmptyDupelessSeq[Int]].band)
   checkAll("SemigroupK for NonEmptyDupelessSeq", SemigroupKTests[NonEmptyDupelessSeq].semigroupK[Int])
   checkAll(
-    "Traverse for NonEmptyDupelessSeq",
-    TraverseTests[NonEmptyDupelessSeq].traverse[Int, Int, Int, Set[Int], Validated[Int, *], Option],
-  )
-  checkAll(
     "NonEmptyTraverse for NonEmptyDupelessSeq",
     NonEmptyTraverseTests[NonEmptyDupelessSeq].nonEmptyTraverse[Option, Int, Int, Int, Int, Option, Validated[Unit, *]],
   )
 
   override protected val ignoredTestNames: Set[String] = Set(
     // TODO these should probably pass
-    "Traverse for NonEmptyDupelessSeq.traverse.forall is lazy",
-    "Traverse for NonEmptyDupelessSeq.traverse.foldRight is lazy",
-    "Traverse for NonEmptyDupelessSeq.traverse.exists is lazy",
     "NonEmptyTraverse for NonEmptyDupelessSeq.nonEmptyTraverse.forall is lazy",
     "NonEmptyTraverse for NonEmptyDupelessSeq.nonEmptyTraverse.foldRight is lazy",
     "NonEmptyTraverse for NonEmptyDupelessSeq.nonEmptyTraverse.exists is lazy",
