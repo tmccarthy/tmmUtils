@@ -9,11 +9,8 @@ settingsHelper.settingsForBuild
 lazy val root = project
   .in(file("."))
   .settings(settingsHelper.settingsForRootProject)
-  .settings(console := (console in Compile in collection).value)
+  .settings(console := (console in Compile in syntax).value)
   .aggregate(
-    collection,
-    collectionCats,
-    collectionCirce,
     errors,
     codec,
     syntax,
@@ -23,29 +20,6 @@ lazy val root = project
   )
 
 val catsVersion = "2.2.0-M1"
-
-lazy val collection = project
-  .in(file("collection"))
-  .settings(settingsHelper.settingsForSubprojectCalled("collection"))
-  .dependsOn(testing % "test->compile")
-
-lazy val collectionCats = project
-  .in(file("collection-cats"))
-  .settings(settingsHelper.settingsForSubprojectCalled("collection-cats"))
-  .settings(
-    libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
-    libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
-  )
-  .dependsOn(collection, testing % "test->compile")
-
-lazy val collectionCirce = project
-  .in(file("collection-circe"))
-  .settings(settingsHelper.settingsForSubprojectCalled("collection-circe"))
-  .settings(
-    libraryDependencies += "io.circe" %% "circe-core" % "0.13.0",
-  )
-  .dependsOn(collection, testing % "test->compile")
 
 lazy val errors = project
   .in(file("errors"))
