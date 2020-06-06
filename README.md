@@ -6,7 +6,7 @@ A bunch of Scala utilities I've found myself writing that I haven't (yet) decide
 their own projects.
 
 ```scala
-val tmmUtilsVersion = "0.4.6"
+val tmmUtilsVersion = "0.5.0"
 
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-cats"             % tmmUtilsVersion          // Cats utilities
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-codec"            % tmmUtilsVersion          // Codecs and hashing
