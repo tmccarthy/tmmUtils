@@ -1,7 +1,7 @@
 package au.id.tmm.utilities.cats.instances
 
 import cats.kernel.{CommutativeMonoid, Eq, Monoid, Order, Semigroup}
-import cats.{Functor, MonoidK, ~>}
+import cats.{Functor, MonoidK, SemigroupK, ~>}
 
 package object valueclasses {
 
@@ -10,6 +10,9 @@ package object valueclasses {
 
   def deriveMonoidK[F[_], G[_] : MonoidK](unwrap: F ~> G, wrap: G ~> F): MonoidK[F] =
     new DerivedMonoidK(unwrap, wrap)
+
+  def deriveSemigroupK[F[_], G[_] : SemigroupK](unwrap: F ~> G, wrap: G ~> F): SemigroupK[F] =
+    new DerivedSemigroupK(unwrap, wrap)
 
   def deriveEq[A, B : Eq](unwrap: A => B): Eq[A] =
     new DerivedEq(unwrap)
