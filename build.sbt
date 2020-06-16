@@ -16,10 +16,12 @@ lazy val root = project
     syntax,
     valueClasses,
     cats,
+    circe,
     testing,
   )
 
 val catsVersion = "2.2.0-M1"
+val circeVersion = "0.14.0-M1"
 
 lazy val errors = project
   .in(file("errors"))
@@ -50,6 +52,16 @@ lazy val cats = project
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+  )
+  .dependsOn(testing % "test->compile")
+
+lazy val circe = project
+  .in(file("circe"))
+  .settings(settingsHelper.settingsForSubprojectCalled("circe"))
+  .settings(
+    libraryDependencies += "io.circe" %% "circe-core"              % circeVersion,
+    libraryDependencies += "io.circe" %% "circe-testing" % circeVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
   )
   .dependsOn(testing % "test->compile")
