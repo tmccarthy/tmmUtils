@@ -1,11 +1,11 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
 import org.apache.commons.codec.DecoderException
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class BinarySyntaxSpec extends FlatSpec {
+class BinarySyntaxSpec extends AnyFlatSpec {
 
   private val validBinaryString = "11011110101000011110000110101101"
   private val bytes             = ArraySeq[Byte](0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)

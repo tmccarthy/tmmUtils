@@ -2,9 +2,9 @@ package au.id.tmm.utilities.errors.syntax
 
 import au.id.tmm.utilities.errors.{ErrorMessageOr, ExceptionOr, GenericException, StructuredException}
 import au.id.tmm.utilities.testing.syntax.TestingEitherOps
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ErrorsSyntaxSpec extends FlatSpec {
+class ErrorsSyntaxSpec extends AnyFlatSpec {
 
   "an error message or string" can "be converted to an exception" in {
     val errorMessageOrString: ErrorMessageOr[String] = Left("error message")

@@ -65,7 +65,7 @@ object StructuredException {
 
   private def indent(string: String, numIndents: Int): String = {
     val indent = "\t" * numIndents
-    string.replaceAllLiterally("\n", s"\n$indent")
+    string.replace("\n", s"\n$indent")
   }
 
 }

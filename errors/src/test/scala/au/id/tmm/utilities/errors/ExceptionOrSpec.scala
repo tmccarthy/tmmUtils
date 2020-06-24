@@ -1,11 +1,11 @@
 package au.id.tmm.utilities.errors
 
 import au.id.tmm.utilities.testing.syntax.TestingEitherOps
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.util.control.ControlThrowable
 
-class ExceptionOrSpec extends FlatSpec {
+class ExceptionOrSpec extends AnyFlatSpec {
 
   "ExceptionOr.catchIn" should "return success" in {
     val exceptionOrString = ExceptionOr.catchIn("hello")

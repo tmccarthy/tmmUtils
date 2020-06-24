@@ -1,8 +1,8 @@
 package au.id.tmm.utilities.syntax.tuples
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class TupleSyntaxSpec extends FlatSpec {
+class TupleSyntaxSpec extends AnyFlatSpec {
 
   "the tuple type syntax" should "work in a collection" in {
     List(

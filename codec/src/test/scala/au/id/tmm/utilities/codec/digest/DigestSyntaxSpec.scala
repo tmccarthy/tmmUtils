@@ -6,11 +6,11 @@ import java.nio.file.Files
 
 import au.id.tmm.utilities.codec.binarycodecs._
 import au.id.tmm.utilities.testing.JreVersionDependentFlatSpec
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class DigestSyntaxSpec extends FlatSpec with JreVersionDependentFlatSpec {
+class DigestSyntaxSpec extends AnyFlatSpec with JreVersionDependentFlatSpec {
 
   private val string     = "hello world"
   private def array      = "hello world".getBytes

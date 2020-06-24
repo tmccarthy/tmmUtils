@@ -1,11 +1,11 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
 import org.apache.commons.codec.DecoderException
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class Base32SyntaxSpec extends FlatSpec {
+class Base32SyntaxSpec extends AnyFlatSpec {
 
   private val validBase32String = "VXQ2DXQ="
   private val bytes             = ArraySeq[Byte](0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)

@@ -1,11 +1,11 @@
 package au.id.tmm.utilities.codec.binarycodecs
 
 import org.apache.commons.codec.DecoderException
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class HexSyntaxSpec extends FlatSpec {
+class HexSyntaxSpec extends AnyFlatSpec {
 
   private val validHexString = "ADE1A1DE"
   private val bytes          = ArraySeq[Byte](0xAD.toByte, 0xE1.toByte, 0xA1.toByte, 0xDE.toByte)

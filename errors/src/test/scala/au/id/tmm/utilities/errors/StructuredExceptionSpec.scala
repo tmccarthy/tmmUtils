@@ -1,10 +1,10 @@
 package au.id.tmm.utilities.errors
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.immutable.ArraySeq
 
-class StructuredExceptionSpec extends FlatSpec {
+class StructuredExceptionSpec extends AnyFlatSpec {
 
   "A structured exception" can "be created without a cause" in {
     val actualException = StructuredException(

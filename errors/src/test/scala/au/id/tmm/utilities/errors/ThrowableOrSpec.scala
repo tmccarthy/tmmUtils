@@ -1,11 +1,11 @@
 package au.id.tmm.utilities.errors
 
 import au.id.tmm.utilities.testing.syntax.TestingEitherOps
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.util.control.ControlThrowable
 
-class ThrowableOrSpec extends FlatSpec {
+class ThrowableOrSpec extends AnyFlatSpec {
 
   "ThrowableOr.catchNonFatal" should "return success" in {
     val throwableOrString = ThrowableOr.catchNonFatal("hello")

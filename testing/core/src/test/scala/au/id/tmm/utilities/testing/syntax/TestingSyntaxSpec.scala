@@ -1,8 +1,8 @@
 package au.id.tmm.utilities.testing.syntax
 
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class TestingSyntaxSpec extends FlatSpec {
+class TestingSyntaxSpec extends AnyFlatSpec {
 
   "get on Either" should "return the right value" in {
     assert(Right("abc").get === "abc")

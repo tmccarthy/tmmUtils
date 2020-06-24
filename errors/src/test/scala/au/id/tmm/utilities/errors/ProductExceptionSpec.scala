@@ -1,9 +1,9 @@
 package au.id.tmm.utilities.errors
 
 import au.id.tmm.utilities.errors.ProductExceptionSpec._
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class ProductExceptionSpec extends FlatSpec {
+class ProductExceptionSpec extends AnyFlatSpec {
 
   "an exception that is a product type" should "have a message from its toString" in {
     assert(MessageException("hello").getMessage === "MessageException(hello)")
