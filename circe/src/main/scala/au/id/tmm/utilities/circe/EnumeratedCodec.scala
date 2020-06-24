@@ -5,7 +5,7 @@ import io.circe.{Codec, Decoder, Encoder, HCursor, Json}
 
 import scala.reflect.ClassTag
 
-object SpecialValueCodec {
+object EnumeratedCodec {
 
   def apply[T : ClassTag, A : Encoder : Decoder : ClassTag](mappings: (T, A)*): Codec[T] = new Codec[T] {
     private val unwrap: T => A = mappings.toMap // TODO this is unsafe

@@ -3,6 +3,7 @@ package au.id.tmm.utilities.cats.instances
 import cats.kernel.{CommutativeMonoid, Eq, Monoid, Order, Semigroup}
 import cats.{Functor, MonoidK, SemigroupK, ~>}
 
+// TODO remove these. This can be achieved by Invariant
 package object valueclasses {
 
   def deriveFunctor[F[_], G[_] : Functor](unwrap: F ~> G, wrap: G ~> F): Functor[F] =

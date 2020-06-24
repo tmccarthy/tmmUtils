@@ -1,6 +1,4 @@
-
-
-val settingsHelper = ProjectSettingsHelper("au.id.tmm","tmm-utils")(
+val settingsHelper = ProjectSettingsHelper("au.id.tmm", "tmm-utils")(
   githubProjectName = "tmmUtils",
 )
 
@@ -20,7 +18,7 @@ lazy val root = project
     testing,
   )
 
-val catsVersion = "2.2.0-M1"
+val catsVersion  = "2.2.0-M1"
 val circeVersion = "0.14.0-M1"
 
 lazy val errors = project
@@ -52,7 +50,7 @@ lazy val cats = project
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1" % Test,
   )
   .dependsOn(testing % "test->compile")
 
@@ -60,9 +58,9 @@ lazy val circe = project
   .in(file("circe"))
   .settings(settingsHelper.settingsForSubprojectCalled("circe"))
   .settings(
-    libraryDependencies += "io.circe" %% "circe-core"              % circeVersion,
-    libraryDependencies += "io.circe" %% "circe-testing" % circeVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+    libraryDependencies += "io.circe"      %% "circe-core"             % circeVersion,
+    libraryDependencies += "io.circe"      %% "circe-testing"          % circeVersion % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1" % Test,
   )
   .dependsOn(testing % "test->compile")
 
@@ -70,8 +68,8 @@ lazy val testing = project
   .in(file("testing"))
   .settings(settingsHelper.settingsForSubprojectCalled("testing"))
   .settings(
-    libraryDependencies += "org.scalatest" %% "scalatest"  % "3.0.8",
-    libraryDependencies += "commons-io"    %  "commons-io" % "2.6",
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8",
+    libraryDependencies += "commons-io"    % "commons-io" % "2.6",
   )
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
