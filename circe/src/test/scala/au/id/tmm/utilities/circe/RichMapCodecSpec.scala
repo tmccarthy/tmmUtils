@@ -20,7 +20,7 @@ class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalates
 
   "a rich map encoder" should "encode as expected" in {
     val map: Map[Set[Fruit], Fruit] = Map(
-      (Set(Fruit.Apple, Fruit.Banana): Set[Fruit]) -> Fruit.Apple,
+      (Set(Fruit.Apple, Fruit.Banana): Set[Fruit])         -> Fruit.Apple,
       (Set(Fruit.Watermelon, Fruit.Raspberry): Set[Fruit]) -> Fruit.Raspberry,
     )
 
@@ -31,7 +31,7 @@ class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalates
       ),
       Json.obj(
         "fruits" := Set("Watermelon", "Raspberry"),
-        "winner" :=  "Raspberry",
+        "winner" := "Raspberry",
       ),
     )
 
@@ -46,12 +46,12 @@ class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalates
       ),
       Json.obj(
         "fruits" := Set("Watermelon", "Raspberry"),
-        "winner" :=  "Raspberry",
+        "winner" := "Raspberry",
       ),
     )
 
     val expectedMap: Map[Set[Fruit], Fruit] = Map(
-      (Set(Fruit.Apple, Fruit.Banana): Set[Fruit]) -> Fruit.Apple,
+      (Set(Fruit.Apple, Fruit.Banana): Set[Fruit])         -> Fruit.Apple,
       (Set(Fruit.Watermelon, Fruit.Raspberry): Set[Fruit]) -> Fruit.Raspberry,
     )
 

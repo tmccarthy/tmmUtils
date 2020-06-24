@@ -7,7 +7,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 class AdtDecoderSpec extends AnyFlatSpec {
 
   private implicit val intWrapperDecoder: Decoder[MyAdt.IntWrapper] = Decoder[Int].map(MyAdt.IntWrapper.apply)
-  private implicit val stringWrapperDecoder: Decoder[MyAdt.StringWrapper] = Decoder[String].map(MyAdt.StringWrapper.apply)
+  private implicit val stringWrapperDecoder: Decoder[MyAdt.StringWrapper] =
+    Decoder[String].map(MyAdt.StringWrapper.apply)
 
   private implicit val sut: Decoder[MyAdt] = AdtDecoder.decodes[MyAdt].forSum2[MyAdt.IntWrapper, MyAdt.StringWrapper]
 
@@ -29,7 +30,7 @@ object AdtDecoderSpec {
   sealed trait MyAdt
 
   object MyAdt {
-    case class IntWrapper(int: Int) extends MyAdt
+    case class IntWrapper(int: Int)          extends MyAdt
     case class StringWrapper(string: String) extends MyAdt
   }
 }

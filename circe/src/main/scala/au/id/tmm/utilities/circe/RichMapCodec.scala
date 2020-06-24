@@ -8,7 +8,10 @@ object RichMapCodec {
 
   // TODO could probably find a way to make this more generic (an iterable of tuples)
   // TODO should be an encoder/decoder
-  def apply[K : Encoder : Decoder, V : Encoder : Decoder](describeKey: String, describeValue: String): Codec[Map[K, V]] =
+  def apply[K : Encoder : Decoder, V : Encoder : Decoder](
+    describeKey: String,
+    describeValue: String,
+  ): Codec[Map[K, V]] =
     Codec.from(decoder(describeKey, describeValue), encoder(describeKey, describeValue))
 
   def decoder[K : Decoder, V : Decoder](describeKey: String, describeValue: String): Decoder[Map[K, V]] = {
@@ -23,13 +26,16 @@ object RichMapCodec {
     Encoder.encodeIterable[(K, V), Iterable].contramap(_.toIterable)
   }
 
-  private def richTupleEncoder[K : Encoder, V : Encoder](describeKey: String, describeValue: String): Encoder[(K, V)] =
-    {
-      case (k, v) => Json.obj(
-        describeKey -> k.asJson,
+  private def richTupleEncoder[K : Encoder, V : Encoder](
+    describeKey: String,
+    describeValue: String,
+  ): Encoder[(K, V)] = {
+    case (k, v) =>
+      Json.obj(
+        describeKey   -> k.asJson,
         describeValue -> v.asJson,
       )
-    }
+  }
 
   private def richTupleDecoder[K : Decoder, V : Decoder](describeKey: String, describeValue: String): Decoder[(K, V)] =
     Applicative[Decoder].map2[K, V, (K, V)](c => c.get[K](describeKey), c => c.get[V](describeValue))((k, v) => (k, v))

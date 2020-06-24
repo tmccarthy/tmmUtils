@@ -12,9 +12,10 @@ final class ThrowableOrOps[E <: Throwable, +A] private[syntax] (throwableOrA: Ei
   def wrapExceptionWithStructured(name: String, fields: (String, Any)*): Either[StructuredException, A] =
     wrapException(t => StructuredException(name, fields: _*).withCause(t))
 
-  def getOrThrow: A = throwableOrA match {
-    case Right(a) => a
-    case Left(t)  => throw t
-  }
+  def getOrThrow: A =
+    throwableOrA match {
+      case Right(a) => a
+      case Left(t)  => throw t
+    }
 
 }

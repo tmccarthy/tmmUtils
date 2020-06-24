@@ -9,11 +9,12 @@ import scala.collection.immutable.ArraySeq
 
 object Digest {
 
-  def digest[A : SafeDigestible](algorithm: String)(a: A): ArraySeq[Byte] = ArraySeq.unsafeWrapArray {
-    val utils = new DigestUtils(algorithm)
+  def digest[A : SafeDigestible](algorithm: String)(a: A): ArraySeq[Byte] =
+    ArraySeq.unsafeWrapArray {
+      val utils = new DigestUtils(algorithm)
 
-    implicitly[SafeDigestible[A]].digest(utils, a)
-  }
+      implicitly[SafeDigestible[A]].digest(utils, a)
+    }
 
   def digestOrError[A : UnsafeDigestible](algorithm: String)(a: A): Either[IOException, ArraySeq[Byte]] = {
     val utils = new DigestUtils(algorithm)

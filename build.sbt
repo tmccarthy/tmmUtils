@@ -51,7 +51,7 @@ lazy val cats = project
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1" % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
   )
   .dependsOn(testingCore % "test->compile")
 
@@ -61,7 +61,7 @@ lazy val circe = project
   .settings(
     libraryDependencies += "io.circe"      %% "circe-core"             % circeVersion,
     libraryDependencies += "io.circe"      %% "circe-testing"          % circeVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1" % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"      % Test,
   )
   .dependsOn(testingCore % "test->compile")
 
@@ -69,8 +69,8 @@ lazy val testingCore = project
   .in(file("testing/core"))
   .settings(settingsHelper.settingsForSubprojectCalled("testing-core"))
   .settings(
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8",
-    libraryDependencies += "commons-io"    % "commons-io" % "2.6",
+    libraryDependencies += "org.scalatest" %% "scalatest"  % "3.0.8",
+    libraryDependencies += "commons-io"     % "commons-io" % "2.6",
   )
 
 lazy val testingScalacheck = project

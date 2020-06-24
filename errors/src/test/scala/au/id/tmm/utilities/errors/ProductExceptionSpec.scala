@@ -11,7 +11,11 @@ class ProductExceptionSpec extends AnyFlatSpec {
 
   "an exception with a cause that is a product type" should "have a message from its toString" in {
     assert(
-      MessageExceptionWithCause("hello", new Exception()).getMessage === "MessageExceptionWithCause(hello,java.lang.Exception)")
+      MessageExceptionWithCause(
+        "hello",
+        new Exception(),
+      ).getMessage === "MessageExceptionWithCause(hello,java.lang.Exception)",
+    )
   }
 
   it should "have a cause" in {
