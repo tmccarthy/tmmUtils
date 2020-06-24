@@ -15,7 +15,8 @@ lazy val root = project
     valueClasses,
     cats,
     circe,
-    testing,
+    testingCore,
+    testingScalacheck,
   )
 
 val catsVersion  = "2.2.0-M1"
@@ -24,7 +25,7 @@ val circeVersion = "0.14.0-M1"
 lazy val errors = project
   .in(file("errors"))
   .settings(settingsHelper.settingsForSubprojectCalled("errors"))
-  .dependsOn(testing % "test->compile")
+  .dependsOn(testingCore % "test->compile")
 
 lazy val codec = project
   .in(file("codec"))
@@ -32,17 +33,17 @@ lazy val codec = project
   .settings(
     libraryDependencies += "commons-codec" % "commons-codec" % "1.13",
   )
-  .dependsOn(testing % "test->compile")
+  .dependsOn(testingCore % "test->compile")
 
 lazy val syntax = project
   .in(file("syntax"))
   .settings(settingsHelper.settingsForSubprojectCalled("syntax"))
-  .dependsOn(testing % "test->compile")
+  .dependsOn(testingCore % "test->compile")
 
 lazy val valueClasses = project
   .in(file("value-classes"))
   .settings(settingsHelper.settingsForSubprojectCalled("value-classes"))
-  .dependsOn(testing % "test->compile")
+  .dependsOn(testingCore % "test->compile")
 
 lazy val cats = project
   .in(file("cats"))
@@ -52,7 +53,7 @@ lazy val cats = project
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1" % Test,
   )
-  .dependsOn(testing % "test->compile")
+  .dependsOn(testingCore % "test->compile")
 
 lazy val circe = project
   .in(file("circe"))
@@ -62,14 +63,22 @@ lazy val circe = project
     libraryDependencies += "io.circe"      %% "circe-testing"          % circeVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1" % Test,
   )
-  .dependsOn(testing % "test->compile")
+  .dependsOn(testingCore % "test->compile")
 
-lazy val testing = project
-  .in(file("testing"))
-  .settings(settingsHelper.settingsForSubprojectCalled("testing"))
+lazy val testingCore = project
+  .in(file("testing/core"))
+  .settings(settingsHelper.settingsForSubprojectCalled("testing-core"))
   .settings(
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8",
     libraryDependencies += "commons-io"    % "commons-io" % "2.6",
+  )
+
+lazy val testingScalacheck = project
+  .in(file("testing/scalacheck"))
+  .dependsOn(testingCore)
+  .settings(settingsHelper.settingsForSubprojectCalled("testing-scalacheck"))
+  .settings(
+    libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.3",
   )
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
