@@ -1,16 +1,16 @@
 package au.id.tmm.utilities.circe
 
 import au.id.tmm.utilities.testing.Fruit
-import cats.kernel.Eq
+import au.id.tmm.utilities.testing.cats.instances.fruit._
+import au.id.tmm.utilities.testing.scalacheck.instances.fruit._
+import cats.instances.map._
 import io.circe.syntax._
 import io.circe.testing.CodecTests
+import io.circe.testing.instances._
 import io.circe.{Codec, Json}
-import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest
 import org.scalatest.flatspec.AnyFlatSpec
 import org.typelevel.discipline.scalatest.FlatSpecDiscipline
-import io.circe.testing.instances._
-import cats.instances.map._
 
 class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalatest.prop.Configuration {
 
@@ -65,12 +65,6 @@ class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalates
 object RichMapCodecSpec {
 
   implicit val fruitCodec: Codec[Fruit] =
-    Codec.instance[String].iemap[Fruit](s => Fruit.ALL.find(_.toString == s).toRight(s))(_.toString)
-
-  // TODO this should be in a project somewhere
-  implicit val arbitraryFruit: Arbitrary[Fruit] =
-    Arbitrary(Gen.oneOf(Fruit.ALL))
-
-  implicit val eqFruit: Eq[Fruit] = Eq.fromUniversalEquals
+    Codec.instance[String].iemap[Fruit](s => Fruit.ALL.find(_.name == s).toRight(s))(_.name)
 
 }

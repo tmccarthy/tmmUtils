@@ -54,7 +54,7 @@ lazy val cats = project
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
   )
-  .dependsOn(testingCore % "test->compile")
+  .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 
 lazy val circe = project
   .in(file("circe"))
@@ -64,7 +64,7 @@ lazy val circe = project
     libraryDependencies += "io.circe"      %% "circe-testing"          % circeVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"      % Test,
   )
-  .dependsOn(testingCore % "test->compile")
+  .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 
 lazy val testingCore = project
   .in(file("testing/core"))

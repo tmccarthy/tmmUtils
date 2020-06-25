@@ -1,6 +1,6 @@
 package au.id.tmm.utilities.cats.instances.valueclasses
 
-import au.id.tmm.utilities.cats.instances.FruitScalaCheckInstances._
+import au.id.tmm.utilities.testing.scalacheck.instances.fruit._
 import au.id.tmm.utilities.testing.Fruit
 import cats.laws.discipline.FunctorTests
 import cats.tests.CatsSuite
