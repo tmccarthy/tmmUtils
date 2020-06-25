@@ -1,9 +1,25 @@
 package au.id.tmm.utilities.testing
 
-sealed trait Fruit
+import scala.collection.immutable.ArraySeq
+
+sealed trait Fruit {
+  override def hashCode: Int =
+    this match {
+      case Fruit.Apple      => 0
+      case Fruit.Banana     => 1
+      case Fruit.Mango      => 2
+      case Fruit.Peach      => 3
+      case Fruit.Pear       => 4
+      case Fruit.Raspberry  => 5
+      case Fruit.Strawberry => 6
+      case Fruit.Watermelon => 7
+    }
+
+  def name: String = toString
+}
 
 object Fruit {
-  val ALL: List[Fruit] = List(Apple, Banana, Mango, Peach, Pear, Raspberry, Strawberry, Watermelon)
+  val ALL: ArraySeq[Fruit] = ArraySeq(Apple, Banana, Mango, Peach, Pear, Raspberry, Strawberry, Watermelon)
 
   case object Apple      extends Fruit
   case object Banana     extends Fruit
@@ -14,5 +30,5 @@ object Fruit {
   case object Strawberry extends Fruit
   case object Watermelon extends Fruit
 
-  implicit val ordering: Ordering[Fruit] = Ordering.by(_.toString)
+  implicit val ordering: Ordering[Fruit] = Ordering.by(_.hashCode)
 }

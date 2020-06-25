@@ -17,6 +17,7 @@ lazy val root = project
     circe,
     testingCore,
     testingScalacheck,
+    testingCats,
   )
 
 val catsVersion  = "2.2.0-M1"
@@ -69,7 +70,7 @@ lazy val testingCore = project
   .in(file("testing/core"))
   .settings(settingsHelper.settingsForSubprojectCalled("testing-core"))
   .settings(
-    libraryDependencies += "org.scalatest" %% "scalatest"  % "3.0.8",
+    libraryDependencies += "org.scalatest" %% "scalatest"  % DependencySettings.scalatestVersion,
     libraryDependencies += "commons-io"     % "commons-io" % "2.6",
   )
 
@@ -80,5 +81,13 @@ lazy val testingScalacheck = project
   .settings(
     libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.3",
   )
+
+lazy val testingCats = project
+    .in(file("testing/cats"))
+    .dependsOn(testingCore)
+    .settings(settingsHelper.settingsForSubprojectCalled("testing-cats"))
+    .settings(
+      libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
+    )
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")
