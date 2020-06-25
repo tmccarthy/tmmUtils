@@ -1,5 +1,6 @@
 package au.id.tmm.utilities.circe
 
+import au.id.tmm.utilities.circe.syntax._
 import au.id.tmm.utilities.testing.Fruit
 import au.id.tmm.utilities.testing.cats.instances.fruit._
 import au.id.tmm.utilities.testing.scalacheck.instances.fruit._
@@ -12,16 +13,16 @@ import org.scalatest
 import org.scalatest.flatspec.AnyFlatSpec
 import org.typelevel.discipline.scalatest.FlatSpecDiscipline
 
-class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalatest.prop.Configuration {
+class KeyValueCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalatest.prop.Configuration {
 
-  import RichMapCodecSpec._
+  import KeyValueCodecSpec._
 
-  private implicit val sut: Codec[Map[Set[Fruit], Fruit]] = RichMapCodec("fruits", "winner")
+  private implicit val sut: Codec[Map[Set[Fruit], Fruit]] = KeyValueCodec("fruits", "winner")
 
   "a rich map encoder" should "encode as expected" in {
     val map: Map[Set[Fruit], Fruit] = Map(
       (Set(Fruit.Apple, Fruit.Banana): Set[Fruit])         -> Fruit.Apple,
-      (Set(Fruit.Watermelon, Fruit.Raspberry): Set[Fruit]) -> Fruit.Raspberry,
+      (Set(Fruit.Watermelon, Fruit.Pineapple): Set[Fruit]) -> Fruit.Pineapple,
     )
 
     val expectedJson = Json.arr(
@@ -30,8 +31,8 @@ class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalates
         "winner" := "Apple",
       ),
       Json.obj(
-        "fruits" := Set("Watermelon", "Raspberry"),
-        "winner" := "Raspberry",
+        "fruits" := Set("Watermelon", "Pineapple"),
+        "winner" := "Pineapple",
       ),
     )
 
@@ -45,24 +46,39 @@ class RichMapCodecSpec extends AnyFlatSpec with FlatSpecDiscipline with scalates
         "winner" := "Apple",
       ),
       Json.obj(
-        "fruits" := Set("Watermelon", "Raspberry"),
-        "winner" := "Raspberry",
+        "fruits" := Set("Watermelon", "Pineapple"),
+        "winner" := "Pineapple",
       ),
     )
 
     val expectedMap: Map[Set[Fruit], Fruit] = Map(
       (Set(Fruit.Apple, Fruit.Banana): Set[Fruit])         -> Fruit.Apple,
-      (Set(Fruit.Watermelon, Fruit.Raspberry): Set[Fruit]) -> Fruit.Raspberry,
+      (Set(Fruit.Watermelon, Fruit.Pineapple): Set[Fruit]) -> Fruit.Pineapple,
     )
 
     assert(json.as[Map[Set[Fruit], Fruit]] === Right(expectedMap))
+  }
+
+  it should "fail to decode where there are duplicate keys" in {
+    val json = Json.arr(
+      Json.obj(
+        "fruits" := Set("Apple", "Banana"),
+        "winner" := "Apple",
+      ),
+      Json.obj(
+        "fruits" := Set("Apple", "Banana"),
+        "winner" := "Pineapple",
+      ),
+    )
+
+    assert(json.as[Map[Set[Fruit], Fruit]].left.map(_.message) === Left("Duplicate key Set(Apple, Banana)"))
   }
 
   checkAll("RichMapCodec[Map[Set[Fruit], Fruit]", CodecTests[Map[Set[Fruit], Fruit]].codec)
 
 }
 
-object RichMapCodecSpec {
+object KeyValueCodecSpec {
 
   implicit val fruitCodec: Codec[Fruit] =
     Codec.instance[String].iemap[Fruit](s => Fruit.ALL.find(_.name == s).toRight(s))(_.name)

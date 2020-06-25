@@ -9,7 +9,7 @@ trait TrafficLightInstances {
     new Hash[TrafficLight] with Show[TrafficLight] {
       override def hash(x: TrafficLight): Int                     = x.hashCode()
       override def eqv(x: TrafficLight, y: TrafficLight): Boolean = x == y
-      override def show(t: TrafficLight): String                  = t.toString
+      override def show(t: TrafficLight): String                  = t.name
     }
 
 }

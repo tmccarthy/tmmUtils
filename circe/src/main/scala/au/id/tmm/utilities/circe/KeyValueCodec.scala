@@ -4,10 +4,9 @@ import cats.Applicative
 import io.circe.syntax.EncoderOps
 import io.circe.{Codec, Decoder, Encoder, Json}
 
-object RichMapCodec {
+object KeyValueCodec {
 
   // TODO could probably find a way to make this more generic (an iterable of tuples)
-  // TODO should be an encoder/decoder
   def apply[K : Encoder : Decoder, V : Encoder : Decoder](
     describeKey: String,
     describeValue: String,

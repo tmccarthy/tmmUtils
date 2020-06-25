@@ -6,7 +6,14 @@ package object instances {
   object fruit        extends FruitInstances
   object planet       extends PlanetInstances
   object trafficLight extends TrafficLightInstances
+  object coinToss     extends CoinTossInstances
 
-  object all extends AnyRef with AnimalInstances with FruitInstances with PlanetInstances with TrafficLightInstances
+  object all
+      extends AnyRef
+      with AnimalInstances
+      with FruitInstances
+      with PlanetInstances
+      with TrafficLightInstances
+      with CoinTossInstances
 
 }
