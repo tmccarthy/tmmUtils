@@ -7,6 +7,7 @@ package object instances {
   object planet       extends PlanetInstances
   object trafficLight extends TrafficLightInstances
   object coinToss     extends CoinTossInstances
+  object wrapped      extends WrappedInstances
 
   object all
       extends AnyRef
@@ -15,5 +16,6 @@ package object instances {
       with PlanetInstances
       with TrafficLightInstances
       with CoinTossInstances
+      with WrappedInstances
 
 }

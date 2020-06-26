@@ -12,11 +12,11 @@ object EnumeratedCodec {
     * Produces a codec which is a mapping between an enumerated set of values of type `T` and a type `A` for which
     * a codec can be derived.
     *
-   * Note that this is an inherently unsafe codec. This constructor will throw if there are duplicate values of type `T`
+    * Note that this is an inherently unsafe codec. This constructor will throw if there are duplicate values of type `T`
     * or type `A`. More significantly, it will throw while encoding a value of type `T` for which no mapping is defined.
     * `Encoder` should generally not throw, so use this with caution!
     *
-   * @throws IllegalArgumentException if there are duplicate mapping keys or values
+    * @throws java.lang.IllegalArgumentException if there are duplicate mapping keys or values
     */
   def apply[T : ClassTag, A : Encoder : Decoder : ClassTag](
     mappings: (T, A)*,

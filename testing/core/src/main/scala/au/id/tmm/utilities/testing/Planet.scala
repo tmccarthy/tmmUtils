@@ -3,13 +3,7 @@ package au.id.tmm.utilities.testing
 import scala.collection.immutable.ArraySeq
 
 sealed abstract class Planet(
-  /**
-    * In astronomical units
-    */
   val distanceFromSunAU: Double,
-  /**
-    * In Earth equivalents
-    */
   val massE: Double,
 ) {
   override def hashCode(): Int =
