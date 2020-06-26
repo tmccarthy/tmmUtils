@@ -1,7 +1,7 @@
 package au.id.tmm.utilities.circe
 
-import io.circe.Decoder
 import cats.syntax.functor.toFunctorOps
+import io.circe.Decoder
 
 object AdtDecoder {
 
