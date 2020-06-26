@@ -68,15 +68,15 @@ Some utilities for interaction with the [`cats-core`](https://github.com/typelev
 
 Some type aliases and extension methods for dealing with types like `Either[Throwable, A]`.
 
-## Value classes
+## Circe
 
-Some utilities for deriving typeclass (`Numeric` and `Ordering`) instances for value classes.
+Some utilities relating to [`circe`](https://github.com/circe/circe)
 
 ## Testing
 
 * `JreVersionDependentFlatSpec`, which provides utilities for ignoring tests based on the Java version
-* `NeedsCleanDirectory`, which provides an empty directory for every test
 * `au.id.tmm.utilities.testing.syntax`, which provides syntax to replace the old `right.get` method on `Either`
+* A set of ADTs that might be useful as test data (`Animal`, `Fruit`, `CoinToss`, `Planet` and `TrafficLight`)
 
 ## Syntax
 
