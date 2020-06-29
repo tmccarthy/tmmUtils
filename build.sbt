@@ -77,11 +77,13 @@ lazy val testingScalacheck = project
   )
 
 lazy val testingCats = project
-    .in(file("testing/cats"))
-    .dependsOn(testingCore)
-    .settings(settingsHelper.settingsForSubprojectCalled("testing-cats"))
-    .settings(
-      libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
-    )
+  .in(file("testing/cats"))
+  .dependsOn(testingCore, testingScalacheck % "test->compile")
+  .settings(settingsHelper.settingsForSubprojectCalled("testing-cats"))
+  .settings(
+    libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+  )
 
 addCommandAlias("check", ";+test;scalafmtCheckAll")

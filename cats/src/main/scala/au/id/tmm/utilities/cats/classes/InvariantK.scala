@@ -1,6 +1,21 @@
 package au.id.tmm.utilities.cats.classes
 
-import cats.{Alternative, Applicative, Eval, Foldable, Functor, Invariant, Monad, MonadError, Monoid, MonoidK, Semigroup, SemigroupK, Traverse, ~>}
+import cats.{
+  Alternative,
+  Applicative,
+  Eval,
+  Foldable,
+  Functor,
+  Invariant,
+  Monad,
+  MonadError,
+  Monoid,
+  MonoidK,
+  Semigroup,
+  SemigroupK,
+  Traverse,
+  ~>,
+}
 
 trait InvariantK[T[_[_]]] {
 
@@ -154,5 +169,14 @@ object InvariantK {
   }
 
   // format: on
+
+  final class Ops[T[_[_]], F[_]] private[InvariantK] (invariantK: InvariantK[T], tf: T[F]) {
+    def imapK[G[_]](fFG: F ~> G)(fGF: G ~> F): T[G] = invariantK.imapK(tf)(fFG)(fGF)
+  }
+
+  trait ToInvariantKOps {
+    implicit def toInvariantKOps[T[_[_]], F[_]](tf: T[F])(implicit invariantK: InvariantK[T]): InvariantK.Ops[T, F] =
+      new InvariantK.Ops[T, F](invariantK, tf)
+  }
 
 }
