@@ -82,6 +82,7 @@ lazy val testingCats = project
   .settings(settingsHelper.settingsForSubprojectCalled("testing-cats"))
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
+    libraryDependencies += "org.typelevel" %% "cats-laws"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
     libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
   )
