@@ -113,8 +113,8 @@ class InvariantKSpec extends AnyFlatSpec with FlatSpecDiscipline with scalatest.
   ): Eq[Functor[F]] =
     new Eq[Functor[F]] {
       override def eqv(x: Functor[F], y: Functor[F]): Boolean =
-        ExhaustiveCheck[(F[A], A => B)].allValues.forall {
-          case (fa, f) => Eq[F[B]].eqv(x.map(fa)(f), y.map(fa)(f))
+        ExhaustiveCheck[(F[A], A => B)].allValues.forall { case (fa, f) =>
+          Eq[F[B]].eqv(x.map(fa)(f), y.map(fa)(f))
         }
     }
 

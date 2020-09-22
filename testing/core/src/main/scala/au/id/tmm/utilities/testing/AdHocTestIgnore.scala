@@ -11,13 +11,12 @@ trait AdHocTestIgnore extends Suite {
   protected def ignoredTestNames: Set[String]
 
   override def tags: Map[String, Set[String]] =
-    ignoredTestNames.foldLeft(super.tags) {
-      case (tags, ignoredTestName) =>
-        val oldTags: Set[String] = tags.getOrElse(ignoredTestName, Set.empty)
+    ignoredTestNames.foldLeft(super.tags) { case (tags, ignoredTestName) =>
+      val oldTags: Set[String] = tags.getOrElse(ignoredTestName, Set.empty)
 
-        val newTags = oldTags + "org.scalatest.Ignore"
+      val newTags = oldTags + "org.scalatest.Ignore"
 
-        tags.updated(ignoredTestName, newTags)
+      tags.updated(ignoredTestName, newTags)
     }
 
 }

@@ -18,8 +18,8 @@ final case class StructuredException(
     } else {
       val fieldsRendered: String =
         fields
-          .map {
-            case (key, value) => s"$key=${indent(value, 0)}"
+          .map { case (key, value) =>
+            s"$key=${indent(value, 0)}"
           }
           .mkString(
             sep = "\n",
@@ -36,8 +36,8 @@ object StructuredException {
     StructuredException(
       name,
       fields
-        .map {
-          case (key, value) => key -> renderValue(value)
+        .map { case (key, value) =>
+          key -> renderValue(value)
         }
         .to(ArraySeq.untagged),
       cause = None,
