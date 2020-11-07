@@ -9,74 +9,73 @@ import scala.collection.immutable.ArraySeq
 
 object Digest {
 
-  def digest[A : SafeDigestible](algorithm: String)(a: A): ArraySeq[Byte] =
-    ArraySeq.unsafeWrapArray {
-      val utils = new DigestUtils(algorithm)
-
-      implicitly[SafeDigestible[A]].digest(utils, a)
-    }
-
-  def digestOrError[A : UnsafeDigestible](algorithm: String)(a: A): Either[IOException, ArraySeq[Byte]] = {
+  def digest[A : SafeDigestible](algorithm: String)(a: A): ArraySeq.ofByte = {
     val utils = new DigestUtils(algorithm)
 
-    implicitly[UnsafeDigestible[A]].digest(utils, a).map(ArraySeq.unsafeWrapArray)
+    new ArraySeq.ofByte(implicitly[SafeDigestible[A]].digest(utils, a))
   }
 
-  def md2[A : SafeDigestible](a: A): ArraySeq[Byte]    = digest(MD2)(a)
-  def md5[A : SafeDigestible](a: A): ArraySeq[Byte]    = digest(MD5)(a)
-  def sha1[A : SafeDigestible](a: A): ArraySeq[Byte]   = digest(SHA_1)(a)
-  def sha224[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA_224)(a)
-  def sha256[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA_256)(a)
-  def sha384[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA_384)(a)
-  def sha512[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA_512)(a)
+  def digestOrError[A : UnsafeDigestible](algorithm: String)(a: A): Either[IOException, ArraySeq.ofByte] = {
+    val utils = new DigestUtils(algorithm)
+
+    implicitly[UnsafeDigestible[A]].digest(utils, a).map(new ArraySeq.ofByte(_))
+  }
+
+  def md2[A : SafeDigestible](a: A): ArraySeq.ofByte    = digest(MD2)(a)
+  def md5[A : SafeDigestible](a: A): ArraySeq.ofByte    = digest(MD5)(a)
+  def sha1[A : SafeDigestible](a: A): ArraySeq.ofByte   = digest(SHA_1)(a)
+  def sha224[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA_224)(a)
+  def sha256[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA_256)(a)
+  def sha384[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA_384)(a)
+  def sha512[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA_512)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_224[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA3_224)(a)
+  def sha3_224[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA3_224)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_256[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA3_256)(a)
+  def sha3_256[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA3_256)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_384[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA3_384)(a)
+  def sha3_384[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA3_384)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_512[A : SafeDigestible](a: A): ArraySeq[Byte] = digest(SHA3_512)(a)
+  def sha3_512[A : SafeDigestible](a: A): ArraySeq.ofByte = digest(SHA3_512)(a)
 
-  def md2OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]]    = digestOrError(MD2)(a)
-  def md5OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]]    = digestOrError(MD5)(a)
-  def sha1OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]]   = digestOrError(SHA_1)(a)
-  def sha224OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA_224)(a)
-  def sha256OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA_256)(a)
-  def sha384OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA_384)(a)
-  def sha512OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA_512)(a)
-
-  /**
-    * This algorithm is available from Java 9 onwards
-    */
-  def sha3_224OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA3_224)(a)
+  def md2OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte]    = digestOrError(MD2)(a)
+  def md5OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte]    = digestOrError(MD5)(a)
+  def sha1OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte]   = digestOrError(SHA_1)(a)
+  def sha224OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA_224)(a)
+  def sha256OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA_256)(a)
+  def sha384OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA_384)(a)
+  def sha512OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA_512)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_256OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA3_256)(a)
+  def sha3_224OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA3_224)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_384OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA3_384)(a)
+  def sha3_256OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA3_256)(a)
 
   /**
     * This algorithm is available from Java 9 onwards
     */
-  def sha3_512OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq[Byte]] = digestOrError(SHA3_512)(a)
+  def sha3_384OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA3_384)(a)
+
+  /**
+    * This algorithm is available from Java 9 onwards
+    */
+  def sha3_512OrError[A : UnsafeDigestible](a: A): Either[IOException, ArraySeq.ofByte] = digestOrError(SHA3_512)(a)
 
   trait Syntax {
 
