@@ -3,7 +3,7 @@ package au.id.tmm.utilities.codec.digest
 import java.io.IOException
 
 import au.id.tmm.utilities.codec.binarycodecs.BytesLike
-import org.apache.commons.codec.digest.MessageDigestAlgorithms
+import org.apache.commons.codec.digest.{MessageDigestAlgorithms, DigestUtils => ApacheDigestUtils}
 
 import scala.collection.immutable.ArraySeq
 
@@ -25,10 +25,12 @@ abstract class DigestValueClassCompanion[D] private[digest] (
   algorithm: String,
 ) {
 
-  def digest[A : SafeDigestible](a: A): D = make(Digest.digest[A](algorithm)(a))
+  private val apacheDigestUtils = new ApacheDigestUtils(algorithm)
+
+  def digest[A : SafeDigestible](a: A): D = make(new ArraySeq.ofByte(SafeDigestible[A].digest(apacheDigestUtils, a)))
 
   def digestOrError[A : UnsafeDigestible](a: A): Either[IOException, D] =
-    Digest.digestOrError[A](algorithm)(a).map(make)
+    UnsafeDigestible[A].digest(apacheDigestUtils, a).map(bytes => make(new ArraySeq.ofByte(bytes)))
 
   implicit val bytesLike: BytesLike[D] = d => unwrap(d).unsafeArray
 }

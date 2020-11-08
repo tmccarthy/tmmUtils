@@ -13,6 +13,8 @@ trait SafeDigestible[-A] {
 }
 
 object SafeDigestible {
+  @inline def apply[A : SafeDigestible]: SafeDigestible[A] = implicitly[SafeDigestible[A]]
+
   implicit val forArray: SafeDigestible[Array[Byte]] = (utils, array) => utils.digest(array)
   implicit val forString: SafeDigestible[String]     = (utils, string) => utils.digest(string)
   implicit val forByteArray: SafeDigestible[ArraySeq[Byte]] = (utils, array) =>
@@ -31,6 +33,8 @@ trait UnsafeDigestible[-A] {
 }
 
 object UnsafeDigestible {
+  @inline def apply[A : UnsafeDigestible]: UnsafeDigestible[A] = implicitly[UnsafeDigestible[A]]
+
   implicit val forFile: UnsafeDigestible[File]               = (utils, file) => utils.digest(file)
   implicit val forPath: UnsafeDigestible[Path]               = (utils, path) => utils.digest(path.toFile)
   implicit val forInputStream: UnsafeDigestible[InputStream] = (utils, is) => utils.digest(is)
