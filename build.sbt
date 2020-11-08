@@ -10,7 +10,6 @@ lazy val root = project
   .settings(console := (console in Compile in syntax).value)
   .aggregate(
     errors,
-    codec,
     syntax,
     cats,
     circe,
@@ -25,14 +24,6 @@ val circeVersion = "0.14.0-M1"
 lazy val errors = project
   .in(file("errors"))
   .settings(settingsHelper.settingsForSubprojectCalled("errors"))
-  .dependsOn(testingCore % "test->compile")
-
-lazy val codec = project
-  .in(file("codec"))
-  .settings(settingsHelper.settingsForSubprojectCalled("codec"))
-  .settings(
-    libraryDependencies += "commons-codec" % "commons-codec" % "1.13",
-  )
   .dependsOn(testingCore % "test->compile")
 
 lazy val syntax = project
