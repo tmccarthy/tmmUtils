@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.codec.binarycodecs
+package au.id.tmm.utilities.codec.binarycodecs.syntax
 
 import org.apache.commons.codec.DecoderException
 import org.scalatest.flatspec.AnyFlatSpec
@@ -8,7 +8,7 @@ import scala.collection.immutable.ArraySeq
 class HexSyntaxSpec extends AnyFlatSpec {
 
   private val validHexString = "ADE1A1DE"
-  private val bytes          = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
+  private val bytes = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
 
   private val invalidHexString = "ZZZZ"
 
@@ -35,7 +35,7 @@ class HexSyntaxSpec extends AnyFlatSpec {
   }
 
   it should "throw if parsing an invalid hex string with parseOrThrow" in {
-    val exception = intercept[DecoderException](invalidHexString.parseHexUnsafe)
+    val exception = intercept[DecoderException](invalidHexString.parseHexOrThrow)
 
     assert(exception.getClass === classOf[DecoderException])
   }

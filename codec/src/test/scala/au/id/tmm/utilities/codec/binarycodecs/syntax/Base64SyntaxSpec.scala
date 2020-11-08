@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.codec.binarycodecs
+package au.id.tmm.utilities.codec.binarycodecs.syntax
 
 import org.apache.commons.codec.DecoderException
 import org.scalatest.flatspec.AnyFlatSpec
@@ -8,7 +8,7 @@ import scala.collection.immutable.ArraySeq
 class Base64SyntaxSpec extends AnyFlatSpec {
 
   private val validBase64String = "reGh3g=="
-  private val bytes             = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
+  private val bytes = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
 
   private val invalidBase64String = "ابتث"
 
@@ -35,7 +35,7 @@ class Base64SyntaxSpec extends AnyFlatSpec {
   }
 
   it should "throw if parsing an invalid base64 string with parseOrThrow" in {
-    val exception = intercept[DecoderException](invalidBase64String.parseBase64Unsafe)
+    val exception = intercept[DecoderException](invalidBase64String.parseBase64OrThrow)
 
     assert(exception.getClass === classOf[DecoderException])
   }

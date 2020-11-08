@@ -7,17 +7,22 @@ import scala.collection.immutable.ArraySeq
 
 object Base64 {
 
-  def asBase64String(bytes: Array[Byte]): String    = CommonsBase64.encodeBase64String(bytes)
-  def asBase64String(bytes: ArraySeq[Byte]): String = asBase64String(bytes.unsafeArray.asInstanceOf[Array[Byte]])
-  def asBase64String(bytes: Iterable[Byte]): String = asBase64String(bytes.toArray)
+  def asBase64String[B: BytesLike](bytes: B): String =
+    CommonsBase64.encodeBase64String(BytesLike[B].unsafeBytes(bytes))
 
   private def decodeToBytes(string: String): Array[Byte] =
-    if (CommonsBase64.isBase64(string)) CommonsBase64.decodeBase64(string)
-    else throw new DecoderException("Invalid base64")
+    if (CommonsBase64.isBase64(string)) {
+      CommonsBase64.decodeBase64(string)
+    } else {
+      throw new DecoderException("Invalid base64")
+    }
+
   def parseBase64OrThrow(string: String): ArraySeq.ofByte = new ArraySeq.ofByte(decodeToBytes(string))
+
   def parseBase64(string: String): Either[DecoderException, ArraySeq.ofByte] =
-    try Right(parseBase64OrThrow(string))
-    catch {
+    try {
+      Right(parseBase64OrThrow(string))
+    } catch {
       case e: DecoderException => Left(e)
     }
 

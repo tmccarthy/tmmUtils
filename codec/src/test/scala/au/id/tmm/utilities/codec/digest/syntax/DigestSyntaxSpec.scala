@@ -4,7 +4,7 @@ import java.io.{ByteArrayInputStream, InputStream}
 import java.nio.ByteBuffer
 import java.nio.file.Files
 
-import au.id.tmm.utilities.codec.binarycodecs._
+import au.id.tmm.utilities.codec.binarycodecs.syntax._
 import au.id.tmm.utilities.codec.digest._
 import au.id.tmm.utilities.testing.JreVersionDependentFlatSpec
 import org.scalatest.flatspec.AnyFlatSpec

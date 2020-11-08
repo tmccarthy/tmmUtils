@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.codec.binarycodecs
+package au.id.tmm.utilities.codec.binarycodecs.syntax
 
 import org.apache.commons.codec.DecoderException
 import org.scalatest.flatspec.AnyFlatSpec
@@ -8,7 +8,7 @@ import scala.collection.immutable.ArraySeq
 class BinarySyntaxSpec extends AnyFlatSpec {
 
   private val validBinaryString = "11011110101000011110000110101101"
-  private val bytes             = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
+  private val bytes = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
 
   private val invalidBinaryString = "ZZZZ"
 
@@ -35,7 +35,7 @@ class BinarySyntaxSpec extends AnyFlatSpec {
   }
 
   it should "throw if parsing an invalid binary string with parseOrThrow" in {
-    val exception = intercept[DecoderException](invalidBinaryString.parseBinaryUnsafe)
+    val exception = intercept[DecoderException](invalidBinaryString.parseBinaryOrThrow)
 
     assert(exception.getClass === classOf[DecoderException])
   }
