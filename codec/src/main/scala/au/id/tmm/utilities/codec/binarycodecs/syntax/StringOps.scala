@@ -5,7 +5,7 @@ import org.apache.commons.codec.DecoderException
 
 import scala.collection.immutable.ArraySeq
 
-final class StringOps private(string: String) {
+final class StringOps private (string: String) {
 
   def parseBase32: Either[DecoderException, ArraySeq.ofByte] = Base32.parseBase32(string)
 

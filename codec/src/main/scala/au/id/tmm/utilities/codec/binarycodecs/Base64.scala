@@ -7,7 +7,7 @@ import scala.collection.immutable.ArraySeq
 
 object Base64 {
 
-  def asBase64String[B: BytesLike](bytes: B): String =
+  def asBase64String[B : BytesLike](bytes: B): String =
     CommonsBase64.encodeBase64String(BytesLike[B].unsafeBytes(bytes))
 
   private def decodeToBytes(string: String): Array[Byte] =

@@ -9,7 +9,7 @@ object Base32 {
 
   private val base32Codec = new CommonsBase32(Int.MaxValue, Array.empty[Byte])
 
-  def asBase32String[B: BytesLike](bytes: B): String = base32Codec.encodeToString(BytesLike[B].unsafeBytes(bytes))
+  def asBase32String[B : BytesLike](bytes: B): String = base32Codec.encodeToString(BytesLike[B].unsafeBytes(bytes))
 
   private def decodeToBytes(string: String): Array[Byte] =
     if (base32Codec.isInAlphabet(string)) {

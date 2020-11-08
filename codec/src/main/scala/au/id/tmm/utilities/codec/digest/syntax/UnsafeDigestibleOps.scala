@@ -22,7 +22,7 @@ final class UnsafeDigestibleOps[-A : UnsafeDigestible] private (a: A) {
 
 object UnsafeDigestibleOps {
   trait Syntax {
-    implicit def toTmmUtilsCodecUnsafeDigestibleOps[A: UnsafeDigestible](a: A): UnsafeDigestibleOps[A] =
+    implicit def toTmmUtilsCodecUnsafeDigestibleOps[A : UnsafeDigestible](a: A): UnsafeDigestibleOps[A] =
       new UnsafeDigestibleOps[A](a)
   }
 }

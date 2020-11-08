@@ -9,7 +9,7 @@ object Binary {
 
   private val validBinaryChars = Set('0', '1')
 
-  def asBinaryString[B: BytesLike](bytes: B): String = new String(
+  def asBinaryString[B : BytesLike](bytes: B): String = new String(
     CommonsBinaryCodec.toAsciiChars(BytesLike[B].unsafeBytes(bytes)),
   )
 

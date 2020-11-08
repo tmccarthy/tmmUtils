@@ -7,7 +7,7 @@ import scala.collection.immutable.ArraySeq
 
 object Hex {
 
-  def asHexString[B: BytesLike](bytes: B): String = CommonsHex.encodeHexString(BytesLike[B].unsafeBytes(bytes))
+  def asHexString[B : BytesLike](bytes: B): String = CommonsHex.encodeHexString(BytesLike[B].unsafeBytes(bytes))
 
   private def decodeToBytes(string: String): Array[Byte] = CommonsHex.decodeHex(string)
 

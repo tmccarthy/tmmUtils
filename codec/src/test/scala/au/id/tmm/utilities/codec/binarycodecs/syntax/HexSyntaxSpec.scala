@@ -8,7 +8,7 @@ import scala.collection.immutable.ArraySeq
 class HexSyntaxSpec extends AnyFlatSpec {
 
   private val validHexString = "ADE1A1DE"
-  private val bytes = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
+  private val bytes          = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
 
   private val invalidHexString = "ZZZZ"
 

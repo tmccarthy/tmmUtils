@@ -8,7 +8,7 @@ import scala.collection.immutable.ArraySeq
 class Base32SyntaxSpec extends AnyFlatSpec {
 
   private val validBase32String = "VXQ2DXQ="
-  private val bytes = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
+  private val bytes             = ArraySeq[Byte](0xad.toByte, 0xe1.toByte, 0xa1.toByte, 0xde.toByte)
 
   private val invalidBase32String = "ابتث"
 

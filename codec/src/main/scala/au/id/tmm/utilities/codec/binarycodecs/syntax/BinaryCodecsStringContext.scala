@@ -4,7 +4,7 @@ import au.id.tmm.utilities.codec.binarycodecs._
 
 import scala.collection.immutable.ArraySeq
 
-final class BinaryCodecsStringContext private(stringContext: StringContext) {
+final class BinaryCodecsStringContext private (stringContext: StringContext) {
 
   def base32(subs: Any*): ArraySeq.ofByte = Base32.parseBase32OrThrow(stringContext.s(subs: _*))
 
