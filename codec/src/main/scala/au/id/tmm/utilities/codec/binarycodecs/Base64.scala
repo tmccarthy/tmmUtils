@@ -14,8 +14,8 @@ object Base64 {
   private def decodeToBytes(string: String): Array[Byte] =
     if (CommonsBase64.isBase64(string)) CommonsBase64.decodeBase64(string)
     else throw new DecoderException("Invalid base64")
-  def parseBase64OrThrow(string: String): ArraySeq[Byte] = ArraySeq.unsafeWrapArray(decodeToBytes(string))
-  def parseBase64(string: String): Either[DecoderException, ArraySeq[Byte]] =
+  def parseBase64OrThrow(string: String): ArraySeq.ofByte = new ArraySeq.ofByte(decodeToBytes(string))
+  def parseBase64(string: String): Either[DecoderException, ArraySeq.ofByte] =
     try Right(parseBase64OrThrow(string))
     catch {
       case e: DecoderException => Left(e)
@@ -24,13 +24,13 @@ object Base64 {
   trait Syntax {
 
     implicit class Base64StringContext(private val stringContext: StringContext) {
-      def base64(subs: Any*): ArraySeq[Byte] = parseBase64OrThrow(stringContext.s(subs: _*))
+      def base64(subs: Any*): ArraySeq.ofByte = parseBase64OrThrow(stringContext.s(subs: _*))
     }
 
     implicit class Base64StringOps(private val s: String) {
-      def parseBase64: Either[DecoderException, ArraySeq[Byte]] = Base64.parseBase64(s)
+      def parseBase64: Either[DecoderException, ArraySeq.ofByte] = Base64.parseBase64(s)
 
-      def parseBase64Unsafe: ArraySeq[Byte] = parseBase64OrThrow(s)
+      def parseBase64Unsafe: ArraySeq.ofByte = parseBase64OrThrow(s)
     }
 
     implicit class Base64ByteArrayOps(private val bytes: ArraySeq[Byte]) {

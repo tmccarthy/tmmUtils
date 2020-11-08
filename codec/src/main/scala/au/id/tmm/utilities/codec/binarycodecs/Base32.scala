@@ -19,9 +19,9 @@ object Base32 {
     else
       throw new DecoderException("Invalid base32")
 
-  def parseBase32OrThrow(string: String): ArraySeq[Byte] = ArraySeq.unsafeWrapArray(decodeToBytes(string))
+  def parseBase32OrThrow(string: String): ArraySeq.ofByte = new ArraySeq.ofByte(decodeToBytes(string))
 
-  def parseBase32(string: String): Either[DecoderException, ArraySeq[Byte]] =
+  def parseBase32(string: String): Either[DecoderException, ArraySeq.ofByte] =
     try Right(parseBase32OrThrow(string))
     catch {
       case e: DecoderException => Left(e)
@@ -30,13 +30,13 @@ object Base32 {
   trait Syntax {
 
     implicit class Base32StringContext(private val stringContext: StringContext) {
-      def base32(subs: Any*): ArraySeq[Byte] = parseBase32OrThrow(stringContext.s(subs: _*))
+      def base32(subs: Any*): ArraySeq.ofByte = parseBase32OrThrow(stringContext.s(subs: _*))
     }
 
     implicit class Base32StringOps(private val s: String) {
-      def parseBase32: Either[DecoderException, ArraySeq[Byte]] = Base32.parseBase32(s)
+      def parseBase32: Either[DecoderException, ArraySeq.ofByte] = Base32.parseBase32(s)
 
-      def parseBase32Unsafe: ArraySeq[Byte] = parseBase32OrThrow(s)
+      def parseBase32Unsafe: ArraySeq.ofByte = parseBase32OrThrow(s)
     }
 
     implicit class Base32ByteArrayOps(private val bytes: ArraySeq[Byte]) {

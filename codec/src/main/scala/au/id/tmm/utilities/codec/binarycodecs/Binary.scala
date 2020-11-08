@@ -21,9 +21,9 @@ object Binary {
     else
       CommonsBinaryCodec.fromAscii(string.toCharArray)
 
-  def parseBinaryOrThrow(string: String): ArraySeq[Byte] = ArraySeq.unsafeWrapArray(decodeToBytes(string))
+  def parseBinaryOrThrow(string: String): ArraySeq.ofByte = new ArraySeq.ofByte(decodeToBytes(string))
 
-  def parseBinary(string: String): Either[DecoderException, ArraySeq[Byte]] =
+  def parseBinary(string: String): Either[DecoderException, ArraySeq.ofByte] =
     try Right(parseBinaryOrThrow(string))
     catch {
       case e: DecoderException => Left(e)
@@ -32,13 +32,13 @@ object Binary {
   trait Syntax {
 
     implicit class BinaryStringContext(private val stringContext: StringContext) {
-      def binary(subs: Any*): ArraySeq[Byte] = parseBinaryOrThrow(stringContext.s(subs: _*))
+      def binary(subs: Any*): ArraySeq.ofByte = parseBinaryOrThrow(stringContext.s(subs: _*))
     }
 
     implicit class BinaryStringOps(private val s: String) {
-      def parseBinary: Either[DecoderException, ArraySeq[Byte]] = Binary.parseBinary(s)
+      def parseBinary: Either[DecoderException, ArraySeq.ofByte] = Binary.parseBinary(s)
 
-      def parseBinaryUnsafe: ArraySeq[Byte] = parseBinaryOrThrow(s)
+      def parseBinaryUnsafe: ArraySeq.ofByte = parseBinaryOrThrow(s)
     }
 
     implicit class BinaryByteArrayOps(private val bytes: ArraySeq[Byte]) {
