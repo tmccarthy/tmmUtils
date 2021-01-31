@@ -27,4 +27,38 @@ class ExceptionOrSpec extends AnyFlatSpec {
     }
   }
 
+  "ExceptionOr.catchOnly" should "return success" in {
+    assert(ExceptionOr.catchOnly[RuntimeException](()) === Right(()))
+  }
+
+  it should "catch the specified exception type" in {
+    val runtimeException = new RuntimeException
+    assert(ExceptionOr.catchOnly[RuntimeException](throw runtimeException) === Left(runtimeException))
+  }
+
+  it should "catch subtypes of the specified exception type" in {
+    val illegalArgumentException = new IllegalArgumentException
+    assert(ExceptionOr.catchOnly[RuntimeException](throw illegalArgumentException) === Left(illegalArgumentException))
+  }
+
+  "ExceptionOr.flatCatch" should "return success" in {
+    assert(ExceptionOr.flatCatch(Right(())) === Right(()))
+  }
+
+  it should "return a returned exception" in {
+    val exception = new Exception
+    assert(ExceptionOr.flatCatch(Left(exception)) === Left(exception))
+  }
+
+  it should "return a thrown exception" in {
+    val exception = new Exception
+    assert(ExceptionOr.flatCatch(throw exception) === Left(exception))
+  }
+
+  it should "not catch a ControlThrowable" in {
+    intercept[ControlThrowable] {
+      ExceptionOr.flatCatch(throw new ControlThrowable() {})
+    }
+  }
+
 }
