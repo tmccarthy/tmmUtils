@@ -10,10 +10,12 @@ final class MiniFloat private (
   private[testing] val exponent: Byte,
 ) {
 
-  def toDouble: Double = (if (sign) 1 else -1) * significand.toDouble * math.pow(base, exponent)
+  private def signByte: Byte = if (sign) 0x1 else -0x1
+
+  def toDouble: Double = signByte * significand.toDouble * math.pow(base, exponent)
 
   @tailrec
-  def normalised: MiniFloat = {
+  def normalised: MiniFloat =
     if (significand == 0) {
       MiniFloat.zero
     } else if ((significand * base) <= maxSignificand && exponent > minExponent) {
@@ -21,8 +23,14 @@ final class MiniFloat private (
     } else {
       this
     }
+
+  override def equals(other: Any): Boolean = other match {
+    case that: MiniFloat =>
+      this.toDouble == that.toDouble
+    case _ => false
   }
 
+  override def hashCode(): Int = toDouble.hashCode
 }
 
 object MiniFloat {
@@ -36,14 +44,12 @@ object MiniFloat {
   private val minExponent: Byte = -4
   private val maxExponent: Byte = 4
 
-
-
   val allValues: List[MiniFloat] = {
     for {
       sign <- List(true, false)
       significand <- Range.inclusive(minSignificand, maxSignificand)
       exponent <- Range.inclusive(minExponent, maxExponent)
-    } yield new MiniFloat(sign, significand.toByte, exponent.toByte)
-  }.sortBy(_.toDouble)
+    } yield new MiniFloat(sign, significand.toByte, exponent.toByte).normalised
+  }.distinct.sortBy(_.toDouble)
 
 }
