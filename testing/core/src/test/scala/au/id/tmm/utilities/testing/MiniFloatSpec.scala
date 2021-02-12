@@ -8,6 +8,8 @@ import au.id.tmm.utilities.testing.MiniFloatSpec.arbMiniFloat
 
 class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
+  // Float conversions
+
   private def testFloatConversion(float: Float, expected: MiniFloat)(implicit pos: Position): Unit =
     test(s"MiniFloat.fromFloat($float) === $expected") {
       assert(MiniFloat.from(float) === expected)
@@ -22,6 +24,8 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   testFloatConversion(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
   testFloatConversion(Float.NegativeInfinity, MiniFloat.NegativeInfinity)
   testFloatConversion(Float.NaN, MiniFloat.NaN)
+
+  // Special number tests and behaviours
 
   private def testSpecialNumberExpectations(
     mf: MiniFloat,
@@ -49,6 +53,9 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       mf != MiniFloat.NaN
     }
   }
+
+  // Negation
+
   test("negate zero is zero") {
     assert(-MiniFloat.Zero === MiniFloat.Zero)
   }
@@ -74,6 +81,51 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       assert(-(-mf) === mf)
     }
   }
+
+  // Addition
+
+  test("add commutative") {
+    forAll { (left: MiniFloat, right: MiniFloat) =>
+      assert((left + right) === (right + left))
+    }
+  }
+
+  test("zero addition identity") {
+    forAll { mf: MiniFloat =>
+      assert(mf + MiniFloat.Zero === mf)
+    }
+  }
+
+  test("max plus 1") {
+    assert(MiniFloat.MaxValue + MiniFloat.One === MiniFloat.MaxValue)
+  }
+
+  test("max plus max") {
+    assert(MiniFloat.MaxValue + MiniFloat.MaxValue === MiniFloat.PositiveInfinity)
+  }
+
+  test("∞ + ∞") {
+    assert(MiniFloat.PositiveInfinity + MiniFloat.PositiveInfinity === MiniFloat.PositiveInfinity)
+  }
+
+  test("∞ + 1") {
+    assert(MiniFloat.PositiveInfinity + MiniFloat.One === MiniFloat.PositiveInfinity)
+  }
+
+  test("∞ + (-∞)") {
+    assert(MiniFloat.PositiveInfinity + MiniFloat.One === MiniFloat.NaN)
+  }
+
+  test("NaN addition") {
+    forAll { mf: MiniFloat =>
+      assert(mf + MiniFloat.NaN === MiniFloat.NaN)
+    }
+  }
+
+  // TODO multiplication
+  // TODO subtraction
+  // TODO division
+
 
 }
 

@@ -23,7 +23,6 @@ object MiniFloat {
 
   // TODO make these vals
   def MinPositiveValue: MiniFloat = ???
-  def Infinity: MiniFloat = PositiveInfinity
   def PositiveInfinity: MiniFloat = ???
   def NegativeInfinity: MiniFloat = ???
   def NaN: MiniFloat = ???
