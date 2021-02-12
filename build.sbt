@@ -20,6 +20,7 @@ lazy val root = project
 
 val catsVersion  = "2.2.0-M1"
 val circeVersion = "0.14.0-M1"
+val scalacheckVersion = "1.15.2"
 
 lazy val errors = project
   .in(file("errors"))
@@ -57,6 +58,8 @@ lazy val testingCore = project
   .settings(
     libraryDependencies += "org.scalatest" %% "scalatest"  % DependencySettings.scalatestVersion,
     libraryDependencies += "commons-io"     % "commons-io" % "2.6",
+    libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion % Test,
+    libraryDependencies += "org.scalatestplus" %% "scalacheck-1-15" % "3.2.3.0" % Test
   )
 
 lazy val testingScalacheck = project
@@ -64,7 +67,7 @@ lazy val testingScalacheck = project
   .dependsOn(testingCore)
   .settings(settingsHelper.settingsForSubprojectCalled("testing-scalacheck"))
   .settings(
-    libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.3",
+    libraryDependencies += "org.scalacheck" %% "scalacheck" % scalacheckVersion,
   )
 
 lazy val testingCats = project
