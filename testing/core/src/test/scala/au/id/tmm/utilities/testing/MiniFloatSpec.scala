@@ -24,6 +24,37 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     assert(duplicates === ArraySeq.empty, "Minifloats with duplicate values")
   }
 
+  private def testAllValuesContains(value: MiniFloat)(implicit pos: Position): Unit = {
+    test(s"allValues contains $value") {
+      MiniFloat.allValues.contains(value)
+    }
+  }
+
+  testAllValuesContains(MiniFloat.Zero)
+  testAllValuesContains(MiniFloat.NegativeOne)
+  testAllValuesContains(MiniFloat.One)
+  testAllValuesContains(MiniFloat.MaxValue)
+  testAllValuesContains(MiniFloat.MinValue)
+  testAllValuesContains(MiniFloat.MinPositiveValue)
+  testAllValuesContains(MiniFloat.PositiveInfinity)
+  testAllValuesContains(MiniFloat.NegativeInfinity)
+
+  test("allValues contains NaN") {
+    assert(MiniFloat.allValues.count(_.isNaN) === 1, "has exactly one NaN value in allValues")
+  }
+
+  test("allValues has max") {
+    val maxInAllValues = MiniFloat.allValues.filter(_.isFinite).maxBy(_.toFloat)
+
+    assert(maxInAllValues === MiniFloat.MaxValue)
+  }
+
+  test("allValues has min") {
+    val minInAllValues = MiniFloat.allValues.filter(_.isFinite).minBy(_.toFloat)
+
+    assert(minInAllValues === MiniFloat.MinValue)
+  }
+
   test("behaves the same as Float for all operations on some key values") {
     val genKeyMiniFloatValues: Gen[MiniFloat] = Gen.oneOf(
       MiniFloat.NegativeInfinity,
@@ -42,20 +73,39 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   // Float conversions
 
-  private def testFloatConversion(float: Float, expected: MiniFloat)(implicit pos: Position): Unit =
+  private def testFromFloat(float: Float, expected: MiniFloat)(implicit pos: Position): Unit =
     test(s"MiniFloat.fromFloat($float) === $expected") {
       assert(MiniFloat.from(float) === expected)
     }
 
-  testFloatConversion(1f, MiniFloat.One)
-  testFloatConversion(0f, MiniFloat.Zero)
-  testFloatConversion(-1f, MiniFloat.NegativeOne)
-  testFloatConversion(Float.MinPositiveValue, MiniFloat.Zero)
-  testFloatConversion(Float.MaxValue, MiniFloat.PositiveInfinity)
-  testFloatConversion(Float.MinValue, MiniFloat.NegativeInfinity)
-  testFloatConversion(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
-  testFloatConversion(Float.NegativeInfinity, MiniFloat.NegativeInfinity)
-  testFloatConversion(Float.NaN, MiniFloat.NaN)
+  testFromFloat(1f, MiniFloat.One)
+  testFromFloat(0f, MiniFloat.Zero)
+  testFromFloat(-1f, MiniFloat.NegativeOne)
+
+  testFromFloat(Float.MinPositiveValue, MiniFloat.Zero)
+  testFromFloat(Float.MaxValue, MiniFloat.PositiveInfinity)
+  testFromFloat(Float.MinValue, MiniFloat.NegativeInfinity)
+
+  testFromFloat(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
+  testFromFloat(Float.NegativeInfinity, MiniFloat.NegativeInfinity)
+  testFromFloat(Float.NaN, MiniFloat.NaN)
+
+  private def testFloatNarrowing(float: Float, expected: Float)(implicit pos: Position): Unit =
+    test(s"narrows $float to $expected") {
+      assert(MiniFloat.from(float).toFloat === expected)
+    }
+
+  testFloatNarrowing(0f, 0f)
+  testFloatNarrowing(0.5f, 0.5f)
+  // TODO some tests for numbers under zero
+  testFloatNarrowing(1f, 1f)
+  testFloatNarrowing(2f, 2f)
+  testFloatNarrowing(3f, 2f)
+  testFloatNarrowing(4f, 4f)
+  testFloatNarrowing(5f, 4f)
+  testFloatNarrowing(6f, 4f)
+  testFloatNarrowing(7f, 8f)
+  testFloatNarrowing(8f, 8f)
 
   // Special number tests and behaviours
 
@@ -77,8 +127,9 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   testSpecialNumberExpectations(MiniFloat.PositiveInfinity, expectIsNaN = false, expectIsFinite = false)
   testSpecialNumberExpectations(MiniFloat.NegativeInfinity, expectIsNaN = false, expectIsFinite = false)
   testSpecialNumberExpectations(MiniFloat.Zero, expectIsNaN = false, expectIsFinite = true)
-  testSpecialNumberExpectations(MiniFloat.NegativeInfinity, expectIsNaN = false, expectIsFinite = true)
-  testSpecialNumberExpectations(MiniFloat.PositiveInfinity, expectIsNaN = false, expectIsFinite = true)
+  testSpecialNumberExpectations(MiniFloat.MaxValue, expectIsNaN = false, expectIsFinite = true)
+  testSpecialNumberExpectations(MiniFloat.MinValue, expectIsNaN = false, expectIsFinite = true)
+  testSpecialNumberExpectations(MiniFloat.MinPositiveValue, expectIsNaN = false, expectIsFinite = true)
 
   test("NaN != all MiniFloat") {
     forAll { mf: MiniFloat =>
@@ -96,12 +147,12 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     assert(-MiniFloat.One === MiniFloat.NegativeOne)
   }
 
-  test("negate infinity is negative infinity") {
+  test("negate ∞ is -∞") {
     assert(-MiniFloat.PositiveInfinity === MiniFloat.NegativeInfinity)
   }
 
-  test("negate infinity is negative infinity") {
-    assert(-MiniFloat.PositiveInfinity === MiniFloat.NegativeInfinity)
+  test("negate -∞ is ∞") {
+    assert(-MiniFloat.NegativeInfinity === MiniFloat.PositiveInfinity)
   }
 
   test("negate NaN is NaN") {
