@@ -104,7 +104,6 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   testFloatNarrowing(0f, 0f)
   testFloatNarrowing(0.5f, 0.5f)
-  // TODO some tests for numbers under zero
   testFloatNarrowing(1f, 1f)
   testFloatNarrowing(2f, 2f)
   testFloatNarrowing(3f, 2f)
@@ -253,7 +252,57 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     }
   }
 
-  // TODO multiplication tests
+  // Multiplication
+
+  test("multiplication commutative") {
+    forAll { (left: MiniFloat, right: MiniFloat) =>
+      val forward  = left * right
+      val backward = right * left
+
+      if (forward.isNaN) {
+        assert(backward.isNaN)
+      } else {
+        assert(forward === backward)
+      }
+    }
+  }
+
+  test("one multiplicative identity") {
+    forAll { mf: MiniFloat =>
+      if (mf.isNaN) {
+        assert((mf * MiniFloat.One).isNaN)
+      } else {
+        assert(mf * MiniFloat.One === mf)
+      }
+    }
+  }
+
+  test("max * 1") {
+    assert(MiniFloat.MaxValue * MiniFloat.One === MiniFloat.MaxValue)
+  }
+
+  test("max * max") {
+    assert(MiniFloat.MaxValue * MiniFloat.MaxValue === MiniFloat.PositiveInfinity)
+  }
+
+  test("∞ * ∞") {
+    assert(MiniFloat.PositiveInfinity * MiniFloat.PositiveInfinity === MiniFloat.PositiveInfinity)
+  }
+
+  test("∞ * 1") {
+    assert(MiniFloat.PositiveInfinity * MiniFloat.One === MiniFloat.PositiveInfinity)
+  }
+
+  test("∞ * (-∞)") {
+    assert(MiniFloat.PositiveInfinity * MiniFloat.NegativeInfinity === MiniFloat.NegativeInfinity)
+  }
+
+  test("NaN multiplication") {
+    forAll { mf: MiniFloat =>
+      assert((mf * MiniFloat.NaN).isNaN)
+    }
+  }
+
   // TODO subtraction tests
   // TODO division tests
 
