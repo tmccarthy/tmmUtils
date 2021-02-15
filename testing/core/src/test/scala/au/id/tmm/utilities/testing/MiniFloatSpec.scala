@@ -1,6 +1,5 @@
 package au.id.tmm.utilities.testing
 
-import au.id.tmm.utilities.testing.MiniFloatSpec.FloatArithmeticOp.{Addition, Division, Multiplication, Subtraction}
 import au.id.tmm.utilities.testing.MiniFloatSpec.{FloatArithmeticOp, arbMiniFloat}
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.source.Position
@@ -24,11 +23,10 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     assert(duplicates === ArraySeq.empty, "Minifloats with duplicate values")
   }
 
-  private def testAllValuesContains(value: MiniFloat)(implicit pos: Position): Unit = {
+  private def testAllValuesContains(value: MiniFloat)(implicit pos: Position): Unit =
     test(s"allValues contains $value") {
       MiniFloat.allValues.contains(value)
     }
-  }
 
   testAllValuesContains(MiniFloat.Zero)
   testAllValuesContains(MiniFloat.NegativeOne)
@@ -67,7 +65,13 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
     forAll(FloatArithmeticOp.arb.arbitrary, genKeyMiniFloatValues, genKeyMiniFloatValues) {
       (op: FloatArithmeticOp, left: MiniFloat, right: MiniFloat) =>
-        assert(op.forMiniFloat(left, right).toFloat === op.forFloat(left.toFloat, right.toFloat))
+        val expectedAsFloat: Float = op.forFloat(left.toFloat, right.toFloat)
+
+        if (expectedAsFloat.isNaN) {
+          assert(op.forMiniFloat(left, right).isNaN)
+        } else {
+          assert(op.forMiniFloat(left, right).toFloat === expectedAsFloat)
+        }
     }
   }
 
@@ -88,7 +92,10 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   testFromFloat(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
   testFromFloat(Float.NegativeInfinity, MiniFloat.NegativeInfinity)
-  testFromFloat(Float.NaN, MiniFloat.NaN)
+
+  test("MiniFloat.fromFloat(NaN) isNaN") {
+    assert(MiniFloat.from(Float.NaN).isNaN)
+  }
 
   private def testFloatNarrowing(float: Float, expected: Float)(implicit pos: Position): Unit =
     test(s"narrows $float to $expected") {
@@ -107,13 +114,43 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   testFloatNarrowing(7f, 8f)
   testFloatNarrowing(8f, 8f)
 
+  // TODO document decision to not include -0
+  test("MiniFloat.fromFloat(-0) is not negative") {
+    assert(!(MiniFloat.from(-0).toFloat < 0))
+  }
+
+  test(s"fromDouble consistent with fromFloat") {
+    forAll { (n: Double) =>
+      if (n.isNaN) {
+        assert(MiniFloat.from(n).isNaN)
+      } else {
+        assert(MiniFloat.from(n) === MiniFloat.from(n.toFloat), n)
+      }
+    }
+  }
+
+  test(s"toDouble consistent with toFloat") {
+    forAll { (mf: MiniFloat) =>
+      val fromToDouble = mf.toDouble.toFloat
+      val fromToFloat  = mf.toFloat
+
+      if (fromToDouble.isNaN) {
+        assert(fromToFloat.isNaN)
+      } else {
+        assert(fromToDouble === fromToFloat, mf)
+      }
+    }
+  }
+
   // Special number tests and behaviours
 
   private def testSpecialNumberExpectations(
     mf: MiniFloat,
     expectIsNaN: Boolean,
     expectIsFinite: Boolean,
-  )(implicit pos: Position): Unit = {
+  )(implicit
+    pos: Position,
+  ): Unit = {
     test(s"$mf isNan $expectIsNaN") {
       assert(mf.isNaN === expectIsNaN)
     }
@@ -156,12 +193,12 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   }
 
   test("negate NaN is NaN") {
-    assert(-MiniFloat.NaN === MiniFloat.NaN)
+    assert((-MiniFloat.NaN).isNaN)
   }
 
   test("negation inverse") {
     forAll { mf: MiniFloat =>
-      assert(-(-mf) === mf)
+      assert((-(-mf) === mf) || mf.isNaN)
     }
   }
 
@@ -169,13 +206,24 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   test("add commutative") {
     forAll { (left: MiniFloat, right: MiniFloat) =>
-      assert((left + right) === (right + left))
+      val forward  = left + right
+      val backward = right + left
+
+      if (forward.isNaN) {
+        assert(backward.isNaN)
+      } else {
+        assert(forward === backward)
+      }
     }
   }
 
   test("zero addition identity") {
     forAll { mf: MiniFloat =>
-      assert(mf + MiniFloat.Zero === mf)
+      if (mf.isNaN) {
+        assert((mf + MiniFloat.Zero).isNaN)
+      } else {
+        assert(mf + MiniFloat.Zero === mf)
+      }
     }
   }
 
@@ -196,12 +244,12 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   }
 
   test("∞ + (-∞)") {
-    assert(MiniFloat.PositiveInfinity + MiniFloat.One === MiniFloat.NaN)
+    assert((MiniFloat.PositiveInfinity + MiniFloat.NegativeInfinity).isNaN)
   }
 
   test("NaN addition") {
     forAll { mf: MiniFloat =>
-      assert(mf + MiniFloat.NaN === MiniFloat.NaN)
+      assert((mf + MiniFloat.NaN).isNaN)
     }
   }
 
@@ -209,35 +257,22 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   // TODO subtraction tests
   // TODO division tests
 
-
 }
 
 object MiniFloatSpec {
   implicit val arbMiniFloat: Arbitrary[MiniFloat] = Arbitrary(Gen.oneOf(MiniFloat.allValues))
 
-  private[testing] sealed trait FloatArithmeticOp {
-    def forMiniFloat(left: MiniFloat, right: MiniFloat): MiniFloat =
-      this match {
-        case Addition => left + right
-        case Multiplication => left * right
-        case Subtraction => left - right
-        case Division => left / right
-      }
-
-    def forFloat(left: Float, right: Float): Float =
-      this match {
-        case Addition => left + right
-        case Multiplication => left * right
-        case Subtraction => left - right
-        case Division => left / right
-      }
-  }
+  private[testing] sealed abstract class FloatArithmeticOp(
+    val char: Char,
+    val forMiniFloat: (MiniFloat, MiniFloat) => MiniFloat,
+    val forFloat: (Float, Float) => Float,
+  ) {}
 
   private[testing] object FloatArithmeticOp {
-    case object Addition extends FloatArithmeticOp
-    case object Multiplication extends FloatArithmeticOp
-    case object Subtraction extends FloatArithmeticOp
-    case object Division extends FloatArithmeticOp
+    case object Addition       extends FloatArithmeticOp('+', _ + _, _ + _)
+    case object Multiplication extends FloatArithmeticOp('*', _ * _, _ * _)
+    case object Subtraction    extends FloatArithmeticOp('-', _ - _, _ - _)
+    case object Division       extends FloatArithmeticOp('/', _ / _, _ / _)
 
     implicit val arb: Arbitrary[FloatArithmeticOp] =
       Arbitrary(Gen.oneOf(Addition, Multiplication, Subtraction, Division))
