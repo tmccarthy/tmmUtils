@@ -252,6 +252,20 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     }
   }
 
+  // Subtraction
+
+  test("subtract consistent with addition") {
+    forAll { (left: MiniFloat, right: MiniFloat) =>
+      assert(left.isNaN || right.isNaN || (left + (-right) === (left - right)))
+    }
+  }
+
+  test("NaN subtraction") {
+    forAll { mf: MiniFloat =>
+      assert((mf - MiniFloat.NaN).isNaN)
+    }
+  }
+
   // Multiplication
 
   test("multiplication commutative") {
@@ -303,8 +317,33 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     }
   }
 
-  // TODO subtraction tests
-  // TODO division tests
+  // Division
+
+  test("divide by zero") {
+    forAll { mf: MiniFloat =>
+      val result = mf / MiniFloat.Zero
+
+      if (mf.isNaN || mf === MiniFloat.Zero) {
+        assert(result.isNaN)
+      } else if (mf.toFloat < 0f) {
+        assert(result === MiniFloat.NegativeInfinity)
+      } else {
+        assert(result === MiniFloat.PositiveInfinity)
+      }
+    }
+  }
+
+  test("division consistent with float division") {
+    forAll { (left: MiniFloat, right: MiniFloat) =>
+      val result = left / right
+
+      if (result.isNaN) {
+        assert(MiniFloat.from(left.toFloat / right.toFloat).isNaN)
+      } else {
+        assert(result === MiniFloat.from(left.toFloat / right.toFloat))
+      }
+    }
+  }
 
 }
 
