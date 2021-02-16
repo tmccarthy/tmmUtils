@@ -11,6 +11,9 @@ import scala.collection.immutable.ArraySeq
 
 class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
+  override implicit val generatorDrivenConfig: PropertyCheckConfiguration =
+    PropertyCheckConfiguration(minSuccessful = 5000)
+
   // checks on allValues
 
   test("allValues contains no duplicates") {
@@ -256,7 +259,14 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   test("subtract consistent with addition") {
     forAll { (left: MiniFloat, right: MiniFloat) =>
-      assert(left.isNaN || right.isNaN || (left + (-right) === (left - right)))
+      val additionOfInverse = left + (-right)
+      val subtraction       = left - right
+
+      if (additionOfInverse.isNaN) {
+        assert(subtraction.isNaN)
+      } else {
+        assert(additionOfInverse === subtraction)
+      }
     }
   }
 
@@ -264,6 +274,10 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     forAll { mf: MiniFloat =>
       assert((mf - MiniFloat.NaN).isNaN)
     }
+  }
+
+  test("∞ - ∞") {
+    assert((MiniFloat.PositiveInfinity - MiniFloat.PositiveInfinity).isNaN)
   }
 
   // Multiplication
@@ -342,6 +356,17 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       } else {
         assert(result === MiniFloat.from(left.toFloat / right.toFloat))
       }
+    }
+  }
+
+  // Ordering
+
+  test("ordering consistent with float") {
+    forAll { (left: MiniFloat, right: MiniFloat) =>
+      assert(
+        implicitly[Ordering[MiniFloat]].compare(left, right) ===
+          implicitly[Ordering[Float]].compare(left.toFloat, right.toFloat),
+      )
     }
   }
 

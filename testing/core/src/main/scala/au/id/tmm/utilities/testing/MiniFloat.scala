@@ -86,5 +86,10 @@ object MiniFloat {
   def from(int: Int): MiniFloat       = from(int.toFloat)
   def from(long: Long): MiniFloat     = from(long.toFloat)
 
-  // TODO ordering
+  implicit val ordering: Ordering[MiniFloat] = Orderings.IeeeOrdering
+
+  object Orderings {
+    val IeeeOrdering: Ordering[MiniFloat]  = Ordering.by[MiniFloat, Float](_.toFloat)(Ordering.Float.IeeeOrdering)
+    val TotalOrdering: Ordering[MiniFloat] = Ordering.by[MiniFloat, Float](_.toFloat)(Ordering.Float.TotalOrdering)
+  }
 }
