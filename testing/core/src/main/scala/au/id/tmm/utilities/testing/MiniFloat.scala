@@ -34,7 +34,6 @@ object MiniFloat {
   private val minExponent = -1
   private val maxExponent = 2
 
-  // TODO make these vals
   val Zero: MiniFloat        = new MiniFloat(0f)
   val NegativeOne: MiniFloat = new MiniFloat(-1f)
   val One: MiniFloat         = new MiniFloat(1f)
