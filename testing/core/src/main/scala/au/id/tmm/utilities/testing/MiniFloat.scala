@@ -3,81 +3,107 @@ package au.id.tmm.utilities.testing
 import scala.collection.Searching
 import scala.collection.immutable.ArraySeq
 
+// TODO should have -0.0 also
 // (-8.0, -4.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 4.0, 8.0)
-final class MiniFloat private (private val underlying: Float) extends AnyVal {
+sealed abstract class MiniFloat private (val toFloat: Float) {
 
-  def toFloat: Float   = underlying
-  def toDouble: Double = underlying.toDouble
-  def toInt: Int       = underlying.toInt
-  def toLong: Long     = underlying.toLong
+  def toDouble: Double = toFloat.toDouble
+  def toInt: Int       = toFloat.toInt
+  def toLong: Long     = toFloat.toLong
 
-  def +(that: MiniFloat): MiniFloat = MiniFloat.from(this.underlying + that.underlying)
-  def -(that: MiniFloat): MiniFloat = MiniFloat.from(this.underlying - that.underlying)
-  def *(that: MiniFloat): MiniFloat = MiniFloat.from(this.underlying * that.underlying)
-  def /(that: MiniFloat): MiniFloat = MiniFloat.from(this.underlying / that.underlying)
-  def unary_- : MiniFloat           = MiniFloat.from(-this.underlying)
+  def +(that: MiniFloat): MiniFloat = MiniFloat.from(this.toFloat + that.toFloat)
+  def -(that: MiniFloat): MiniFloat = MiniFloat.from(this.toFloat - that.toFloat)
+  def *(that: MiniFloat): MiniFloat = MiniFloat.from(this.toFloat * that.toFloat)
+  def /(that: MiniFloat): MiniFloat = MiniFloat.from(this.toFloat / that.toFloat)
+  def unary_- : MiniFloat           = MiniFloat.from(-this.toFloat)
 
-  def isNaN: Boolean    = underlying.isNaN
-  def isFinite: Boolean = underlying.isFinite
+  def isNaN: Boolean    = toFloat.isNaN
+  def isFinite: Boolean = toFloat.isFinite
 
-  override def toString = s"MiniFloat($underlying)"
+  override def toString = s"MiniFloat($toFloat)"
 
+  override def equals(other: Any): Boolean = other match {
+    case that: MiniFloat => this.toFloat == that.toFloat
+    case _               => false
+  }
+
+  override def hashCode: Int = java.lang.Float.hashCode(toFloat)
 }
 
 object MiniFloat {
 
-  private val base = 2
+  object PositiveInfinity extends MiniFloat(Float.PositiveInfinity)
+  object NegativeInfinity extends MiniFloat(Float.NegativeInfinity)
+  object NaN              extends MiniFloat(Float.NaN)
 
-  private val minSignificand = -2
-  private val maxSignificand = 2
+  private final class Finite(significand: Int, exponent: Int)
+      extends MiniFloat(significand * math.pow(Finite.base, exponent).toFloat)
 
-  private val minExponent = -1
-  private val maxExponent = 2
+  private[MiniFloat] object Finite {
 
-  val Zero: MiniFloat        = new MiniFloat(0f)
-  val NegativeOne: MiniFloat = new MiniFloat(-1f)
-  val One: MiniFloat         = new MiniFloat(1f)
+    private[MiniFloat] val base = 2
 
-  val MaxValue: MiniFloat         = new MiniFloat(maxSignificand * math.pow(base, maxExponent).toFloat)
-  val MinValue: MiniFloat         = new MiniFloat(minSignificand * math.pow(base, maxExponent).toFloat)
-  val MinPositiveValue: MiniFloat = new MiniFloat(math.pow(base, minSignificand).toFloat)
+    private val minSignificand = -2
+    private val maxSignificand = 2
 
-  val PositiveInfinity: MiniFloat = new MiniFloat(Float.PositiveInfinity)
-  val NegativeInfinity: MiniFloat = new MiniFloat(Float.NegativeInfinity)
-  val NaN: MiniFloat              = new MiniFloat(Float.NaN)
+    private val minExponent = -1
+    private val maxExponent = 2
 
-  private val normalFloatValues: ArraySeq[Float] = {
-    for {
-      significand <- Range.inclusive(minSignificand, maxSignificand)
-      exponent    <- Range.inclusive(minExponent, maxExponent)
-    } yield significand * math.pow(base, exponent).toFloat
-  }.to(ArraySeq).distinct.sorted
+    val allValues: ArraySeq[Finite] = {
+      for {
+        significand <- Range.inclusive(minSignificand, maxSignificand)
+        exponent    <- Range.inclusive(minExponent, maxExponent)
+      } yield new Finite(significand, exponent)
+    }.to(ArraySeq).distinct.sortBy(_.toFloat)
+
+    private[MiniFloat] val allValuesAsFloats: ArraySeq[Float] = allValues.map(_.toFloat)
+
+    val max         = new Finite(maxSignificand, maxExponent)
+    val min         = new Finite(minSignificand, maxExponent)
+    val minPositive = new Finite(significand = 1, exponent = minExponent)
+
+  }
+
+  val Zero: MiniFloat        = MiniFloat.from(0f)
+  val NegativeOne: MiniFloat = MiniFloat.from(-1f)
+  val One: MiniFloat         = MiniFloat.from(1f)
+
+  val MaxValue: MiniFloat         = Finite.max
+  val MinValue: MiniFloat         = Finite.min
+  val MinPositiveValue: MiniFloat = Finite.minPositive
 
   def allValues: ArraySeq[MiniFloat] =
     ArraySeq(NegativeInfinity) ++
-      normalFloatValues.map(new MiniFloat(_)) :+
+      Finite.allValues :+
       PositiveInfinity :+
       NaN
 
+  // TODO this is now very ugly
   def from(float: Float): MiniFloat =
-    if (!float.isFinite) {
-      new MiniFloat(float)
-    } else {
-      normalFloatValues.search(float) match {
-        case Searching.Found(foundIndex) => new MiniFloat(normalFloatValues.apply(foundIndex))
-        case Searching.InsertionPoint(insertionPoint) =>
-          if (insertionPoint == 0) {
-            if (float <= MinValue.underlying * base) NegativeInfinity else MinValue
-          } else if (insertionPoint >= normalFloatValues.size) {
-            if (float >= MaxValue.underlying * base) PositiveInfinity else MaxValue
-          } else {
-            val candidateBelow: Float = normalFloatValues(insertionPoint - 1)
-            val candidateAbove: Float = normalFloatValues(insertionPoint)
+    float match {
+      case Float.PositiveInfinity => PositiveInfinity
+      case Float.NegativeInfinity => NegativeInfinity
+      case f if f.isNaN           => NaN
+      case _ => {
+        Finite.allValuesAsFloats.search(float) match {
+          case Searching.Found(foundIndex) => Finite.allValues(foundIndex)
+          case Searching.InsertionPoint(insertionPoint) =>
+            if (insertionPoint == 0) {
+              if (float <= MinValue.toFloat * Finite.base) NegativeInfinity else MinValue
+            } else if (insertionPoint >= Finite.allValuesAsFloats.size) {
+              if (float >= MaxValue.toFloat * Finite.base) PositiveInfinity else MaxValue
+            } else {
+              val candidateBelow: Float = Finite.allValuesAsFloats(insertionPoint - 1)
+              val candidateAbove: Float = Finite.allValuesAsFloats(insertionPoint)
 
-            // choose closest
-            if (math.abs(float - candidateBelow) <= math.abs(float - candidateAbove)) new MiniFloat(candidateBelow)
-            else new MiniFloat(candidateAbove)
-          }
+              // choose closest
+              if (math.abs(float - candidateBelow) <= math.abs(float - candidateAbove)) {
+                Finite.allValues(insertionPoint - 1)
+              } else {
+                Finite.allValues(insertionPoint)
+              }
+            }
+        }
       }
     }
 
