@@ -80,41 +80,58 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   // Float conversions
 
-  private def testFromFloat(float: Float, expected: MiniFloat)(implicit pos: Position): Unit =
+  private def testFloatConversion(float: Float, expected: MiniFloat)(implicit pos: Position): Unit =
     test(s"MiniFloat.fromFloat($float) === $expected") {
-      assert(MiniFloat.from(float) === expected)
+      val miniFloat = MiniFloat.from(float)
+      if (miniFloat.isNaN) {
+        assert(expected.isNaN)
+      } else {
+        assert(miniFloat === expected)
+      }
     }
 
-  testFromFloat(1f, MiniFloat.One)
-  testFromFloat(0f, MiniFloat.Zero)
-  testFromFloat(-1f, MiniFloat.NegativeOne)
-
-  testFromFloat(Float.MinPositiveValue, MiniFloat.Zero)
-  testFromFloat(Float.MaxValue, MiniFloat.PositiveInfinity)
-  testFromFloat(Float.MinValue, MiniFloat.NegativeInfinity)
-
-  testFromFloat(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
-  testFromFloat(Float.NegativeInfinity, MiniFloat.NegativeInfinity)
-
-  test("MiniFloat.fromFloat(NaN) isNaN") {
-    assert(MiniFloat.from(Float.NaN).isNaN)
-  }
-
-  private def testFloatNarrowing(float: Float, expected: Float)(implicit pos: Position): Unit =
-    test(s"narrows $float to $expected") {
-      assert(MiniFloat.from(float).toFloat === expected)
+  private def testFloatConversion(float: Float, expected: Float)(implicit pos: Position): Unit =
+    test(s"MiniFloat.fromFloat($float) === $expected") {
+      val miniFloat = MiniFloat.from(float)
+      if (miniFloat.isNaN) {
+        assert(expected.isNaN)
+      } else {
+        assert(miniFloat.toFloat === expected)
+      }
     }
 
-  testFloatNarrowing(0f, 0f)
-  testFloatNarrowing(0.5f, 0.5f)
-  testFloatNarrowing(1f, 1f)
-  testFloatNarrowing(2f, 2f)
-  testFloatNarrowing(3f, 2f)
-  testFloatNarrowing(4f, 4f)
-  testFloatNarrowing(5f, 4f)
-  testFloatNarrowing(6f, 4f)
-  testFloatNarrowing(7f, 8f)
-  testFloatNarrowing(8f, 8f)
+  testFloatConversion(Float.NegativeInfinity, MiniFloat.NegativeInfinity)
+  testFloatConversion(Float.MinValue, MiniFloat.NegativeInfinity)
+  testFloatConversion(-16f, MiniFloat.NegativeInfinity)
+  testFloatConversion(math.nextDown(-12f), MiniFloat.NegativeInfinity)
+  testFloatConversion(-12f, -8f)
+  testFloatConversion(math.nextDown(-6f), -8f)
+  testFloatConversion(-6f, -4f)
+  testFloatConversion(math.nextDown(-3f), -4f)
+  testFloatConversion(-3f, -2f)
+  testFloatConversion(-1f, MiniFloat.NegativeOne)
+  testFloatConversion(1f, MiniFloat.One)
+  testFloatConversion(0f, MiniFloat.Zero)
+  testFloatConversion(Float.MinPositiveValue, MiniFloat.Zero)
+  testFloatConversion(-0f, MiniFloat.Zero)
+  testFloatConversion(math.nextDown(0.25f), MiniFloat.Zero)
+  testFloatConversion(0.25f, MiniFloat.Zero)
+  testFloatConversion(0.5f, 0.5f)
+  testFloatConversion(1f, 1f)
+  testFloatConversion(2f, 2f)
+  testFloatConversion(math.nextDown(3f), 2f)
+  testFloatConversion(3f, 4f)
+  testFloatConversion(4f, 4f)
+  testFloatConversion(5f, 4f)
+  testFloatConversion(6f, 8f)
+  testFloatConversion(7f, 8f)
+  testFloatConversion(8f, 8f)
+  testFloatConversion(math.nextDown(12f), 8f)
+  testFloatConversion(12f, MiniFloat.PositiveInfinity)
+  testFloatConversion(16f, MiniFloat.PositiveInfinity)
+  testFloatConversion(Float.MaxValue, MiniFloat.PositiveInfinity)
+  testFloatConversion(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
+  testFloatConversion(Float.NaN, MiniFloat.NaN)
 
   // TODO document decision to not include -0
   test("MiniFloat.fromFloat(-0) is not negative") {

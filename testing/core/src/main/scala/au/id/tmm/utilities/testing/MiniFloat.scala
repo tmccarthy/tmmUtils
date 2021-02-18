@@ -1,6 +1,5 @@
 package au.id.tmm.utilities.testing
 
-import scala.collection.Searching
 import scala.collection.immutable.ArraySeq
 
 // TODO should have -0.0 also
@@ -36,7 +35,7 @@ object MiniFloat {
   object NegativeInfinity extends MiniFloat(Float.NegativeInfinity)
   object NaN              extends MiniFloat(Float.NaN)
 
-  private final class Finite(significand: Int, exponent: Int)
+  private final class Finite private (significand: Int, exponent: Int)
       extends MiniFloat(significand * math.pow(Finite.base, exponent).toFloat)
 
   private[MiniFloat] object Finite {
@@ -62,6 +61,29 @@ object MiniFloat {
     val min         = new Finite(minSignificand, maxExponent)
     val minPositive = new Finite(significand = 1, exponent = minExponent)
 
+    /**
+      * If the given exponent and significand fit within the limits, return the resulting `Finite`. Otherwise, attempt
+      * to construct an equivalent `Finite` by increasing the significand at the expense of the exponent. If this isn't
+      * possible (i.e. there is no way of expressing the given value within the bounds), returns `None`.
+      */
+    def ifCanFit(significand: Int, exponent: Int): Option[Finite] =
+      if (significand == 0) {
+        Some(new Finite(significand = 0, exponent = 1))
+      } else if (withinBounds(significand, exponent)) {
+        Some(new Finite(significand, exponent))
+      } else {
+        val proposedSignificand: Int = significand * base
+        val proposedExponent: Int    = exponent - 1
+
+        Option.when(withinBounds(proposedSignificand, proposedExponent)) {
+          new Finite(proposedSignificand, proposedExponent)
+        }
+      }
+
+    private def withinBounds(significand: Int, exponent: Int): Boolean =
+      (minExponent <= exponent && exponent <= maxExponent) &&
+        (minSignificand <= significand && significand <= maxSignificand)
+
   }
 
   val Zero: MiniFloat        = MiniFloat.from(0f)
@@ -78,32 +100,23 @@ object MiniFloat {
       PositiveInfinity :+
       NaN
 
-  // TODO this is now very ugly
   def from(float: Float): MiniFloat =
     float match {
       case Float.PositiveInfinity => PositiveInfinity
       case Float.NegativeInfinity => NegativeInfinity
       case f if f.isNaN           => NaN
       case _ => {
-        Finite.allValuesAsFloats.search(float) match {
-          case Searching.Found(foundIndex) => Finite.allValues(foundIndex)
-          case Searching.InsertionPoint(insertionPoint) =>
-            if (insertionPoint == 0) {
-              if (float <= MinValue.toFloat * Finite.base) NegativeInfinity else MinValue
-            } else if (insertionPoint >= Finite.allValuesAsFloats.size) {
-              if (float >= MaxValue.toFloat * Finite.base) PositiveInfinity else MaxValue
-            } else {
-              val candidateBelow: Float = Finite.allValuesAsFloats(insertionPoint - 1)
-              val candidateAbove: Float = Finite.allValuesAsFloats(insertionPoint)
+        val exponent: Int    = math.getExponent(float)
+        val significand: Int = math.round(float / math.pow(Finite.base, exponent).toFloat)
 
-              // choose closest
-              if (math.abs(float - candidateBelow) <= math.abs(float - candidateAbove)) {
-                Finite.allValues(insertionPoint - 1)
-              } else {
-                Finite.allValues(insertionPoint)
-              }
-            }
-        }
+        Finite
+          .ifCanFit(
+            significand,
+            exponent,
+          )
+          .getOrElse {
+            if (significand >= 0) PositiveInfinity else NegativeInfinity
+          }
       }
     }
 
