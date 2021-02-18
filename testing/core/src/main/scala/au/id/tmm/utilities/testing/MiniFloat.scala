@@ -57,6 +57,7 @@ object MiniFloat {
 
     private[MiniFloat] val allValuesAsFloats: ArraySeq[Float] = allValues.map(_.toFloat)
 
+    val zero        = new Finite(0, 0)
     val max         = new Finite(maxSignificand, maxExponent)
     val min         = new Finite(minSignificand, maxExponent)
     val minPositive = new Finite(significand = 1, exponent = minExponent)
@@ -68,16 +69,20 @@ object MiniFloat {
       */
     def ifCanFit(significand: Int, exponent: Int): Option[Finite] =
       if (significand == 0) {
-        Some(new Finite(significand = 0, exponent = 1))
+        Some(zero)
       } else if (withinBounds(significand, exponent)) {
         Some(new Finite(significand, exponent))
-      } else {
+      } else if (exponent > maxExponent) {
         val proposedSignificand: Int = significand * base
         val proposedExponent: Int    = exponent - 1
 
         Option.when(withinBounds(proposedSignificand, proposedExponent)) {
           new Finite(proposedSignificand, proposedExponent)
         }
+      } else if (exponent < minExponent) {
+        Some(zero)
+      } else {
+        None
       }
 
     private def withinBounds(significand: Int, exponent: Int): Boolean =

@@ -114,6 +114,8 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   testFloatConversion(0f, MiniFloat.Zero)
   testFloatConversion(Float.MinPositiveValue, MiniFloat.Zero)
   testFloatConversion(-0f, MiniFloat.Zero)
+  testFloatConversion(math.nextDown(0.125f), MiniFloat.Zero)
+  testFloatConversion(0.125f, MiniFloat.Zero)
   testFloatConversion(math.nextDown(0.25f), MiniFloat.Zero)
   testFloatConversion(0.25f, MiniFloat.Zero)
   testFloatConversion(0.5f, 0.5f)
