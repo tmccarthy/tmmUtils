@@ -5,7 +5,7 @@ import scala.collection.immutable.ArraySeq
 /**
   * A floating-point number with a range of values small enough to make it efficient to test every value.
   *
-  * `MiniFloat` can have one of the following values:
+  * `MiniFloat` can have one of the following 14 values:
   * <ul>
   *  <li>`NegativeInfinity`</li>
   *  <li>`-8.0`</li>
