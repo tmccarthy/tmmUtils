@@ -63,27 +63,33 @@ object MiniFloat {
     val minPositive = new Finite(significand = 1, exponent = minExponent)
 
     /**
-      * If the given exponent and significand fit within the limits, return the resulting `Finite`. Otherwise, attempt
-      * to construct an equivalent `Finite` by increasing the significand at the expense of the exponent. If this isn't
-      * possible (i.e. there is no way of expressing the given value within the bounds), returns `None`.
+      * Returns `None` if the given float cannot fit in an instance of `Finite`.
       */
-    def ifCanFit(significand: Int, exponent: Int): Option[Finite] =
-      if (significand == 0) {
+    def from(float: Float): Option[Finite] = {
+      val exponent: Int    = math.getExponent(float)
+      val significand: Int = math.round(float / math.pow(Finite.base, exponent).toFloat)
+
+      if (significand == 0 || exponent < minExponent) {
         Some(zero)
       } else if (withinBounds(significand, exponent)) {
         Some(new Finite(significand, exponent))
       } else if (exponent > maxExponent) {
-        val proposedSignificand: Int = significand * base
-        val proposedExponent: Int    = exponent - 1
+        try {
+          val ordersOfMagnitudeToShift = math.subtractExact(exponent, maxExponent)
 
-        Option.when(withinBounds(proposedSignificand, proposedExponent)) {
-          new Finite(proposedSignificand, proposedExponent)
+          val proposedSignificand: Int = math.multiplyExact(significand, math.pow(base, ordersOfMagnitudeToShift).toInt)
+          val proposedExponent: Int    = math.subtractExact(exponent, ordersOfMagnitudeToShift)
+
+          Option.when(withinBounds(proposedSignificand, proposedExponent)) {
+            new Finite(proposedSignificand, proposedExponent)
+          }
+        } catch {
+          case e: ArithmeticException => None
         }
-      } else if (exponent < minExponent) {
-        Some(zero)
       } else {
         None
       }
+    }
 
     private def withinBounds(significand: Int, exponent: Int): Boolean =
       (minExponent <= exponent && exponent <= maxExponent) &&
@@ -110,19 +116,12 @@ object MiniFloat {
       case Float.PositiveInfinity => PositiveInfinity
       case Float.NegativeInfinity => NegativeInfinity
       case f if f.isNaN           => NaN
-      case _ => {
-        val exponent: Int    = math.getExponent(float)
-        val significand: Int = math.round(float / math.pow(Finite.base, exponent).toFloat)
-
+      case _ =>
         Finite
-          .ifCanFit(
-            significand,
-            exponent,
-          )
+          .from(float)
           .getOrElse {
-            if (significand >= 0) PositiveInfinity else NegativeInfinity
+            if (float > 0) PositiveInfinity else NegativeInfinity
           }
-      }
     }
 
   def from(double: Double): MiniFloat = from(double.toFloat)
