@@ -135,7 +135,6 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   testFloatConversion(Float.PositiveInfinity, MiniFloat.PositiveInfinity)
   testFloatConversion(Float.NaN, MiniFloat.NaN)
 
-  // TODO document decision to not include -0
   test("MiniFloat.fromFloat(-0) is not negative") {
     assert(!(MiniFloat.from(-0).toFloat < 0))
   }

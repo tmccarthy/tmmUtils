@@ -2,8 +2,30 @@ package au.id.tmm.utilities.testing
 
 import scala.collection.immutable.ArraySeq
 
-// TODO should have -0.0 also
-// (-8.0, -4.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 4.0, 8.0)
+/**
+  * A floating-point number with a range of values small enough to make it efficient to test every value.
+  *
+  * `MiniFloat` can have one of the following values:
+  * <ul>
+  *  <li>`NegativeInfinity`</li>
+  *  <li>`-8.0`</li>
+  *  <li>`-4.0`</li>
+  *  <li>`-2.0`</li>
+  *  <li>`-1.0`</li>
+  *  <li>`-0.5`</li>
+  *  <li>`0.0`</li>
+  *  <li>`0.5`</li>
+  *  <li>`1.0`</li>
+  *  <li>`2.0`</li>
+  *  <li>`4.0`</li>
+  *  <li>`8.0`</li>
+  *  <li>`PositiveInfinity`</li>
+  *  <li>`NaN`</li>
+  * </ul>
+  *
+  * In almost all respects (overflows, value approximation, floating point errors) it behaves similarly to `Float` and
+  * `Double`. The main difference is that `MiniFloat` does not support the `-0.0` value, which is represented as `0.0`.
+  */
 sealed abstract class MiniFloat private (val toFloat: Float) {
 
   def toDouble: Double = toFloat.toDouble
