@@ -156,4 +156,20 @@ object MiniFloat {
     val IeeeOrdering: Ordering[MiniFloat]  = Ordering.by[MiniFloat, Float](_.toFloat)(Ordering.Float.IeeeOrdering)
     val TotalOrdering: Ordering[MiniFloat] = Ordering.by[MiniFloat, Float](_.toFloat)(Ordering.Float.TotalOrdering)
   }
+
+  implicit val fractional: Fractional[MiniFloat] = new Fractional[MiniFloat] {
+    override def div(x: MiniFloat, y: MiniFloat): MiniFloat   = x / y
+    override def plus(x: MiniFloat, y: MiniFloat): MiniFloat  = x + y
+    override def minus(x: MiniFloat, y: MiniFloat): MiniFloat = x - y
+    override def times(x: MiniFloat, y: MiniFloat): MiniFloat = x * y
+    override def negate(x: MiniFloat): MiniFloat              = -x
+    override def fromInt(x: Int): MiniFloat                   = from(x)
+    override def parseString(str: String): Option[MiniFloat]  = implicitly[Fractional[Float]].parseString(str).map(from)
+    override def toInt(x: MiniFloat): Int                     = x.toInt
+    override def toLong(x: MiniFloat): Long                   = x.toLong
+    override def toFloat(x: MiniFloat): Float                 = x.toFloat
+    override def toDouble(x: MiniFloat): Double               = x.toDouble
+    override def compare(x: MiniFloat, y: MiniFloat): Int     = Orderings.IeeeOrdering.compare(x, y)
+  }
+
 }
