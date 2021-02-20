@@ -18,7 +18,7 @@ lazy val root = project
     testingCats,
   )
 
-val catsVersion       = "2.2.0-M1"
+val catsVersion       = "2.4.2"
 val circeVersion      = "0.14.0-M1"
 val scalacheckVersion = "1.15.2"
 

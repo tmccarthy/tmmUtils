@@ -4,19 +4,9 @@ import cats.Invariant
 
 trait NumericInstances {
 
-  implicit val tmmUtilsInvariantForNumeric: Invariant[Numeric] = new Invariant[Numeric] {
-    override def imap[A, B](fa: Numeric[A])(f: A => B)(g: B => A): Numeric[B] =
-      new NumericInstances.IMappedNumeric(fa)(f)(g)
-  }
-
   implicit val tmmUtilsInvariantForFractional: Invariant[Fractional] = new Invariant[Fractional] {
     override def imap[A, B](fa: Fractional[A])(f: A => B)(g: B => A): Fractional[B] =
       new NumericInstances.IMappedFractional[A, B](fa)(f)(g)
-  }
-
-  implicit val tmmUtilsInvariantForIntegral: Invariant[Integral] = new Invariant[Integral] {
-    override def imap[A, B](fa: Integral[A])(f: A => B)(g: B => A): Integral[B] =
-      new NumericInstances.IMappedIntegral[A, B](fa)(f)(g)
   }
 
 }
@@ -41,13 +31,6 @@ object NumericInstances {
       extends IMappedNumeric[A, B](fractionalA)(f)(g)
       with Fractional[B] {
     @inline override def div(x: B, y: B): B = f(fractionalA.div(g(x), g(y)))
-  }
-
-  private[instances] class IMappedIntegral[A, B](integralA: Integral[A])(f: A => B)(g: B => A)
-      extends IMappedNumeric[A, B](integralA)(f)(g)
-      with Integral[B] {
-    @inline override def quot(x: B, y: B): B = f(integralA.quot(g(x), g(y)))
-    @inline override def rem(x: B, y: B): B  = f(integralA.rem(g(x), g(y)))
   }
 
 }

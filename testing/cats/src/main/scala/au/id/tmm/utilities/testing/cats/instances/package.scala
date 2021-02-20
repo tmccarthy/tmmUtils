@@ -8,6 +8,7 @@ package object instances {
   object trafficLight extends TrafficLightInstances
   object coinToss     extends CoinTossInstances
   object wrapped      extends WrappedInstances
+  object miniFloat    extends MiniFloatInstances
 
   object all
       extends AnyRef
@@ -17,5 +18,6 @@ package object instances {
       with TrafficLightInstances
       with CoinTossInstances
       with WrappedInstances
+      with MiniFloatInstances
 
 }
