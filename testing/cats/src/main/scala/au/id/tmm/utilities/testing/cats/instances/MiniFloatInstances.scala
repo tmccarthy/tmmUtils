@@ -16,8 +16,8 @@ trait MiniFloatInstances {
 
   implicit val tmmUtilsOrderForMiniFloat: Order[MiniFloat] with Hash[MiniFloat] = new Order[MiniFloat]
     with Hash[MiniFloat] {
-    override def compare(x: MiniFloat, y: MiniFloat): Int = MiniFloat.Orderings.IeeeOrdering.compare(x, y)
-    override def hash(x: MiniFloat): Int                  = java.lang.Float.hashCode(x.toFloat)
+    override def compare(x: MiniFloat, y: MiniFloat): Int = Order[Float].compare(x.toFloat, y.toFloat)
+    override def hash(x: MiniFloat): Int                  = Hash[Float].hash(x.toFloat)
   }
 
 }
