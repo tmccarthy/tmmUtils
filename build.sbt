@@ -29,7 +29,6 @@ lazy val errors = project
 lazy val syntax = project
   .in(file("syntax"))
   .settings(settingsForSubprojectCalled("syntax"))
-  .dependsOn(testingCore % "test->compile")
 
 lazy val cats = project
   .in(file("cats"))

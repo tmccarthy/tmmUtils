@@ -1,29 +1,30 @@
 package au.id.tmm.utilities.errors
 
 import au.id.tmm.utilities.errors.ProductExceptionSpec._
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
 
-class ProductExceptionSpec extends AnyFlatSpec {
+class ProductExceptionSpec extends FunSuite {
 
-  "an exception that is a product type" should "have a message from its toString" in {
-    assert(MessageException("hello").getMessage === "MessageException(hello)")
+  test("an exception that is a product type should have a message from its toString") {
+    assertEquals(MessageException("hello").getMessage, "MessageException(hello)")
   }
 
-  "an exception with a cause that is a product type" should "have a message from its toString" in {
-    assert(
+  test("an exception with a cause that is a product type should have a message from its toString") {
+    assertEquals(
       MessageExceptionWithCause(
         "hello",
         new Exception(),
-      ).getMessage === "MessageExceptionWithCause(hello,java.lang.Exception)",
+      ).getMessage,
+      "MessageExceptionWithCause(hello,java.lang.Exception)",
     )
   }
 
-  it should "have a cause" in {
+  test("an exception with a cause that is a product type should have a cause") {
     val cause = new Exception()
 
     val exception = MessageExceptionWithCause("hello", cause)
 
-    assert(exception.getCause === cause)
+    assertEquals(exception.getCause, cause)
   }
 
 }

@@ -1,10 +1,10 @@
 package au.id.tmm.utilities.syntax.tuples
 
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
 
-class TupleSyntaxSpec extends AnyFlatSpec {
+class TupleSyntaxSpec extends FunSuite {
 
-  "the tuple type syntax" should "work in a collection" in {
+  test("the tuple type syntax should work in a collection") {
     List(
       "hello" -> 1,
       "world" -> 2,

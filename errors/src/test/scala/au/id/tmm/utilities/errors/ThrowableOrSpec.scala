@@ -1,90 +1,83 @@
 package au.id.tmm.utilities.errors
 
-import au.id.tmm.utilities.testing.syntax.TestingEitherOps
+import au.id.tmm.utilities.errors.InterceptHelpers.interceptControlThrowable
 import au.id.tmm.utilities.errors.syntax.throwableOrOps
-import org.scalatest.flatspec.AnyFlatSpec
+import au.id.tmm.utilities.testing.syntax.TestingEitherOps
+import munit.FunSuite
 
 import scala.util.control.ControlThrowable
 
-class ThrowableOrSpec extends AnyFlatSpec {
+class ThrowableOrSpec extends FunSuite {
 
-  "ThrowableOr.catchNonFatal" should "return success" in {
+  test("ThrowableOr.catchNonFatal should return success") {
     val throwableOrString = ThrowableOr.catchNonFatal("hello")
 
-    assert(throwableOrString.get === "hello")
+    assertEquals(throwableOrString.get, "hello")
   }
 
-  it should "catch non-fatal throwables" in {
+  test("ThrowableOr.catchNonFatal should catch non-fatal throwables") {
     val exception = GenericException("hello")
 
     val throwableOrString = ThrowableOr.catchNonFatal(throw exception)
 
-    assert(throwableOrString.leftGet === exception)
+    assertEquals(throwableOrString.leftGet, exception)
   }
 
-  it should "not catch fatal throwables" in {
-    intercept[ControlThrowable] {
+  test("ThrowableOr.catchNonFatal should not catch fatal throwables") {
+    interceptControlThrowable {
       ThrowableOr.catchNonFatal(throw new ControlThrowable() {})
     }
   }
 
-  "ThrowableOr.throwFatal" should "throw a ControlThrowable" in {
-    intercept[ControlThrowable] {
+  test("ThrowableOr.throwFatal should throw a ControlThrowable") {
+    interceptControlThrowable {
       Left(new ControlThrowable() {}).throwFatal
     }
   }
 
-  it should "not throw for a Right" in {
+  test("ThrowableOr.throwFatal should not throw for a Right") {
     Right(()).throwFatal
-
-    succeed
   }
 
-  it should "not throw an exception" in {
+  test("ThrowableOr.throwFatal should not throw an exception") {
     Left(new Exception()).throwFatal
-
-    succeed
   }
 
-  "ThrowableOr.throwErrors" should "throw a ControlThrowable" in {
+  test("ThrowableOr.throwErrors should throw a ControlThrowable") {
     val throwableOr: Either[Throwable, Unit] = Left(new ControlThrowable() {})
 
-    intercept[ControlThrowable] {
+    interceptControlThrowable {
       throwableOr.throwErrors
     }
   }
 
-  it should "not throw an exception" in {
+  test("ThrowableOr.throwErrors should not throw an exception") {
     val throwableOr: Either[Throwable, Unit] = Left(new Exception)
 
     throwableOr.throwErrors
-
-    succeed
   }
 
-  it should "not throw for a Right" in {
+  test("ThrowableOr.throwErrors should not throw for a Right") {
     val throwableOr: Either[Throwable, Unit] = Right(())
 
     throwableOr.throwErrors
-
-    succeed
   }
 
-  it should "narrow the left-hand type for values where the type is not an exception" in {
+  test("ThrowableOr.throwErrors should narrow the left-hand type for values where the type is not an exception") {
     val throwableOr: Either[Throwable, Unit] = Right(())
 
     throwableOr.throwErrors: Either[Exception, Unit]
-
-    succeed
   }
 
-  it should "not compile where the left-hand type is an exception subtype" in assertDoesNotCompile(
-    """val throwableOr: Either[RuntimeException, Unit] = Right(())
-      |
-      |    throwableOr.throwErrors
-      |
-      |    succeed
-      |""".stripMargin,
-  )
+  test("ThrowableOr.throwErrors should not compile where the left-hand type is an exception subtype") {
+    compileErrors {
+      """val throwableOr: Either[RuntimeException, Unit] = Right(())
+
+            throwableOr.throwErrors
+
+            succeed
+        """
+    }
+  }
 
 }

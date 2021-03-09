@@ -1,64 +1,72 @@
 package au.id.tmm.utilities.errors
 
+import au.id.tmm.utilities.errors.ExceptionOrSpec.NonExceptionThrowable
 import au.id.tmm.utilities.testing.syntax.TestingEitherOps
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
 
-import scala.util.control.ControlThrowable
+class ExceptionOrSpec extends FunSuite {
 
-class ExceptionOrSpec extends AnyFlatSpec {
-
-  "ExceptionOr.catchIn" should "return success" in {
+  test("ExceptionOr.catchIn should return success") {
     val exceptionOrString = ExceptionOr.catchIn("hello")
 
-    assert(exceptionOrString.get === "hello")
+    assertEquals(exceptionOrString.get, "hello")
   }
 
-  it should "catch exceptions" in {
+  test("ExceptionOr.catchIn should catch exceptions") {
     val exception = GenericException("hello")
 
     val exceptionOrString = ExceptionOr.catchIn(throw exception)
 
-    assert(exceptionOrString.leftGet === exception)
+    assertEquals(exceptionOrString.leftGet, exception)
   }
 
-  it should "not non-exception throwables" in {
-    intercept[ControlThrowable] {
-      ExceptionOr.catchIn(throw new ControlThrowable() {})
+  test("ExceptionOr.catchIn should not non-exception throwables") {
+    intercept[NonExceptionThrowable] {
+      ExceptionOr.catchIn(throw new NonExceptionThrowable())
     }
   }
 
-  "ExceptionOr.catchOnly" should "return success" in {
-    assert(ExceptionOr.catchOnly[RuntimeException](()) === Right(()))
+  test("ExceptionOr.catchOnly should return success") {
+    assertEquals(ExceptionOr.catchOnly[RuntimeException](()), Right(()))
   }
 
-  it should "catch the specified exception type" in {
+  test("ExceptionOr.catchOnly should catch the specified exception type") {
     val runtimeException = new RuntimeException
-    assert(ExceptionOr.catchOnly[RuntimeException](throw runtimeException) === Left(runtimeException))
+    assertEquals(ExceptionOr.catchOnly[RuntimeException](throw runtimeException), Left(runtimeException))
   }
 
-  it should "catch subtypes of the specified exception type" in {
+  test("ExceptionOr.catchOnly should catch subtypes of the specified exception type") {
     val illegalArgumentException = new IllegalArgumentException
-    assert(ExceptionOr.catchOnly[RuntimeException](throw illegalArgumentException) === Left(illegalArgumentException))
+    assertEquals(
+      ExceptionOr.catchOnly[RuntimeException](throw illegalArgumentException),
+      Left(illegalArgumentException),
+    )
   }
 
-  "ExceptionOr.flatCatch" should "return success" in {
-    assert(ExceptionOr.flatCatch(Right(())) === Right(()))
+  test("ExceptionOr.flatCatch should return success") {
+    assertEquals(ExceptionOr.flatCatch(Right(())), Right(()))
   }
 
-  it should "return a returned exception" in {
+  test("ExceptionOr.flatCatch should return a returned exception") {
     val exception = new Exception
-    assert(ExceptionOr.flatCatch(Left(exception)) === Left(exception))
+    assertEquals(ExceptionOr.flatCatch(Left(exception)), Left(exception))
   }
 
-  it should "return a thrown exception" in {
+  test("ExceptionOr.flatCatch should return a thrown exception") {
     val exception = new Exception
-    assert(ExceptionOr.flatCatch(throw exception) === Left(exception))
+    assertEquals(ExceptionOr.flatCatch(throw exception), Left(exception))
   }
 
-  it should "not catch a ControlThrowable" in {
-    intercept[ControlThrowable] {
-      ExceptionOr.flatCatch(throw new ControlThrowable() {})
+  test("ExceptionOr.flatCatch should not catch a NonExceptionThrowable") {
+    intercept[NonExceptionThrowable] {
+      ExceptionOr.flatCatch(throw new NonExceptionThrowable())
     }
   }
+
+}
+
+object ExceptionOrSpec {
+
+  private final class NonExceptionThrowable extends Throwable
 
 }

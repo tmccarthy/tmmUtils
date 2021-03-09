@@ -2,37 +2,37 @@ package au.id.tmm.utilities.errors.syntax
 
 import au.id.tmm.utilities.errors.{ErrorMessageOr, ExceptionOr, GenericException, StructuredException}
 import au.id.tmm.utilities.testing.syntax.TestingEitherOps
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
 
-class ErrorsSyntaxSpec extends AnyFlatSpec {
+class ErrorsSyntaxSpec extends FunSuite {
 
-  "an error message or string" can "be converted to an exception" in {
+  test("an error message or string can be converted to an exception") {
     val errorMessageOrString: ErrorMessageOr[String] = Left("error message")
 
-    assert(errorMessageOrString.wrapLeftInException.leftGet === GenericException("error message"))
+    assertEquals(errorMessageOrString.wrapLeftInException.leftGet, GenericException("error message"))
   }
 
-  "a throwable or string" can "wrap an exception with another exception" in {
+  test("a throwable or string can wrap an exception with another exception") {
     val cause = new Exception()
 
     val exceptionOrString: ExceptionOr[String] = Left(cause)
 
     val wrapped = exceptionOrString.wrapException(e => GenericException("wrapped", e))
 
-    assert(wrapped.leftGet === GenericException("wrapped", cause))
+    assertEquals(wrapped.leftGet, GenericException("wrapped", cause))
   }
 
-  it can "wrap an exception with a message" in {
+  test("a throwable or string can wrap an exception with a message") {
     val cause = new Exception()
 
     val exceptionOrString: ExceptionOr[String] = Left(cause)
 
     val wrapped = exceptionOrString.wrapExceptionWithMessage("wrapped")
 
-    assert(wrapped.leftGet === GenericException("wrapped", cause))
+    assertEquals(wrapped.leftGet, GenericException("wrapped", cause))
   }
 
-  it can "wrap an exception with a structured exception" in {
+  test("a throwable or string can wrap an exception with a structured exception") {
     val cause = new Exception()
 
     val exceptionOrString: ExceptionOr[String] = Left(cause)
@@ -44,23 +44,23 @@ class ErrorsSyntaxSpec extends AnyFlatSpec {
       "field1" -> "value1",
     ).withCause(cause)
 
-    assert(wrapped.leftGet === expectedException)
+    assertEquals(wrapped.leftGet, expectedException)
   }
 
-  it can "get the right value" in {
+  test("a throwable or string can get the right value") {
     val success = Right("hello")
 
-    assert(success.getOrThrow === "hello")
+    assertEquals(success.getOrThrow, "hello")
   }
 
-  it can "throw the left value" in {
+  test("a throwable or string can throw the left value") {
     val exception = GenericException("hello")
 
     val exceptionOrNothing = Left(exception)
 
     val thrown: GenericException = intercept[GenericException](exceptionOrNothing.getOrThrow)
 
-    assert(thrown === exception)
+    assertEquals(thrown, exception)
   }
 
 }

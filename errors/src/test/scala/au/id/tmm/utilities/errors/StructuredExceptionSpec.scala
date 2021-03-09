@@ -1,12 +1,12 @@
 package au.id.tmm.utilities.errors
 
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
 
 import scala.collection.immutable.ArraySeq
 
-class StructuredExceptionSpec extends AnyFlatSpec {
+class StructuredExceptionSpec extends FunSuite {
 
-  "A structured exception" can "be created without a cause" in {
+  test("it can be created without a cause") {
     val actualException = StructuredException(
       name = "genericException",
       "field1" -> "value1",
@@ -22,10 +22,10 @@ class StructuredExceptionSpec extends AnyFlatSpec {
       cause = None,
     )
 
-    assert(actualException === expectedException)
+    assertEquals(actualException, expectedException)
   }
 
-  it can "be copied to add a cause" in {
+  test("it can be copied to add a cause") {
     val cause = GenericException("cause")
 
     val actualException = StructuredException(
@@ -43,10 +43,10 @@ class StructuredExceptionSpec extends AnyFlatSpec {
       cause = Some(cause),
     )
 
-    assert(actualException === expectedException)
+    assertEquals(actualException, expectedException)
   }
 
-  it should "produce a sensible message" in {
+  test("it should produce a sensible message") {
     val exception = StructuredException(
       name = "EXCEPTION",
       "field1" -> "value1",
@@ -58,10 +58,10 @@ class StructuredExceptionSpec extends AnyFlatSpec {
         |			field1=value1
         |			field2=2""".stripMargin
 
-    assert(exception.getMessage === expectedMessage)
+    assertEquals(exception.getMessage, expectedMessage)
   }
 
-  it should "produce a sensible message when one value is an iterable" in {
+  test("it should produce a sensible message when one value is an iterable") {
     val exception = StructuredException(
       name = "EXCEPTION",
       "field1" -> "value1",
@@ -77,10 +77,10 @@ class StructuredExceptionSpec extends AnyFlatSpec {
         |				3,
         |			)""".stripMargin
 
-    assert(exception.getMessage === expectedMessage)
+    assertEquals(exception.getMessage, expectedMessage)
   }
 
-  it should "produce a sensible message when one value is an empty iterable" in {
+  test("it should produce a sensible message when one value is an empty iterable") {
     val exception = StructuredException(
       name = "EXCEPTION",
       "field1" -> "value1",
@@ -92,17 +92,17 @@ class StructuredExceptionSpec extends AnyFlatSpec {
         |			field1=value1
         |			field2=List()""".stripMargin
 
-    assert(exception.getMessage === expectedMessage)
+    assertEquals(exception.getMessage, expectedMessage)
   }
 
-  it should "produce a sensible message when there are no fields" in {
+  test("it should produce a sensible message when there are no fields") {
     val exception = StructuredException(
       name = "EXCEPTION",
     )
 
     val expectedMessage = "EXCEPTION"
 
-    assert(exception.getMessage === expectedMessage)
+    assertEquals(exception.getMessage, expectedMessage)
   }
 
 }
