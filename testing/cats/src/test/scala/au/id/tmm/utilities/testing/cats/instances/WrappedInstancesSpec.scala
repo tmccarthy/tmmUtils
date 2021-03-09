@@ -4,11 +4,9 @@ import au.id.tmm.utilities.testing.cats.instances.wrapped._
 import au.id.tmm.utilities.testing.scalacheck.instances.wrapped._
 import au.id.tmm.utilities.testing.{Wrapped, WrappedK}
 import cats.laws.discipline.InvariantTests
-import org.scalatest
-import org.scalatest.flatspec.AnyFlatSpec
-import org.typelevel.discipline.scalatest.FlatSpecDiscipline
+import munit.{DisciplineSuite, FunSuite}
 
-class WrappedInstancesSpec extends AnyFlatSpec with FlatSpecDiscipline with scalatest.prop.Configuration {
+class WrappedInstancesSpec extends FunSuite with DisciplineSuite {
 
   private type WrappedOption[A] = WrappedK[Option, A]
 

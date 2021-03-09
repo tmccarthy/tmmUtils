@@ -10,14 +10,12 @@ import cats.kernel.Eq
 import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.{AlternativeTests, ExhaustiveCheck, MonadTests, SemigroupalTests, TraverseTests}
 import cats.{Alternative, Functor, MonadError, Traverse, ~>}
+import munit.{DisciplineSuite, FunSuite}
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest
-import org.scalatest.flatspec.AnyFlatSpec
-import org.typelevel.discipline.scalatest.FlatSpecDiscipline
 
 import scala.collection.immutable.ArraySeq
 
-class InvariantKSpec extends AnyFlatSpec with FlatSpecDiscipline with scalatest.prop.Configuration {
+class InvariantKSpec extends FunSuite with DisciplineSuite {
 
   private type WrappedOption[A] = WrappedK[Option, A]
   private type WrappedList[A]   = WrappedK[List, A]

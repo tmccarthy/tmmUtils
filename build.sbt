@@ -1,3 +1,5 @@
+import au.id.tmm.sbt.DependencySettings
+
 ThisBuild / sonatypeProfile := "au.id.tmm"
 ThisBuild / baseProjectName := "tmm-utils"
 ThisBuild / githubProjectName := "tmmUtils"
@@ -35,9 +37,9 @@ lazy val cats = project
   .in(file("cats"))
   .settings(settingsForSubprojectCalled("cats"))
   .settings(
-    libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
-    libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+    libraryDependencies += "org.typelevel" %% "cats-core"        % catsVersion,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit" % "1.0.6"     % Test,
   )
   .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 
@@ -45,9 +47,9 @@ lazy val circe = project
   .in(file("circe"))
   .settings(settingsForSubprojectCalled("circe"))
   .settings(
-    libraryDependencies += "io.circe"      %% "circe-core"             % circeVersion,
-    libraryDependencies += "io.circe"      %% "circe-testing"          % circeVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"      % Test,
+    libraryDependencies += "io.circe"      %% "circe-core"       % circeVersion,
+    libraryDependencies += "io.circe"      %% "circe-testing"    % circeVersion % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit" % "1.0.6"      % Test,
   )
   .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 
@@ -55,9 +57,9 @@ lazy val testingCore = project
   .in(file("testing/core"))
   .settings(settingsForSubprojectCalled("testing-core"))
   .settings(
-    libraryDependencies += "commons-io"         % "commons-io"      % "2.6",
-    libraryDependencies += "org.scalacheck"    %% "scalacheck"      % scalacheckVersion % Test,
-    libraryDependencies += "org.scalatestplus" %% "scalacheck-1-15" % "3.2.3.0"         % Test,
+    libraryDependencies += "commons-io"      % "commons-io"       % "2.6",
+    libraryDependencies += "org.scalacheck" %% "scalacheck"       % scalacheckVersion                             % Test,
+    libraryDependencies += "org.scalameta"  %% "munit-scalacheck" % au.id.tmm.sbt.DependencySettings.mUnitVersion % Test,
   )
 
 lazy val testingScalatest = project
@@ -80,8 +82,8 @@ lazy val testingCats = project
   .dependsOn(testingCore, testingScalacheck % "test->compile")
   .settings(settingsForSubprojectCalled("testing-cats"))
   .settings(
-    libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
-    libraryDependencies += "org.typelevel" %% "cats-laws"              % catsVersion,
-    libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test, // TODO remove
+    libraryDependencies += "org.typelevel" %% "cats-core"        % catsVersion,
+    libraryDependencies += "org.typelevel" %% "cats-laws"        % catsVersion,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit" % "1.0.6"     % Test,
   )

@@ -1,18 +1,18 @@
 package au.id.tmm.utilities.testing
 
 import au.id.tmm.utilities.testing.MiniFloatSpec.{FloatArithmeticOp, arbMiniFloat}
-import munit.FunSuite
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalactic.source.Position
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import munit.{FunSuite, Location, ScalaCheckSuite}
+import org.scalacheck.Prop._
+import org.scalacheck.{Arbitrary, Gen, Test}
 
 import scala.collection.MapView
 import scala.collection.immutable.ArraySeq
 
-class MiniFloatSpec extends FunSuite with ScalaCheckDrivenPropertyChecks {
+class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
 
-  override implicit val generatorDrivenConfig: PropertyCheckConfiguration =
-    PropertyCheckConfiguration(minSuccessful = 5000)
+  override def scalaCheckTestParameters: Test.Parameters =
+    super.scalaCheckTestParameters
+      .withMinSuccessfulTests(5000)
 
   // checks on allValues
 
@@ -26,7 +26,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckDrivenPropertyChecks {
     assertEquals(duplicates, ArraySeq.empty, "Minifloats with duplicate values")
   }
 
-  private def testAllValuesContains(value: MiniFloat)(implicit pos: Position): Unit =
+  private def testAllValuesContains(value: MiniFloat)(implicit loc: Location): Unit =
     test(s"allValues contains $value") {
       MiniFloat.allValues.contains(value)
     }
@@ -80,7 +80,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckDrivenPropertyChecks {
 
   // Float conversions
 
-  private def testFloatConversion(float: Float, expected: MiniFloat)(implicit pos: Position): Unit =
+  private def testFloatConversion(float: Float, expected: MiniFloat)(implicit loc: Location): Unit =
     test(s"MiniFloat.fromFloat($float) === $expected") {
       val miniFloat = MiniFloat.from(float)
       if (miniFloat.isNaN) {
@@ -90,7 +90,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckDrivenPropertyChecks {
       }
     }
 
-  private def testFloatConversion(float: Float, expected: Float)(implicit pos: Position): Unit =
+  private def testFloatConversion(float: Float, expected: Float)(implicit loc: Location): Unit =
     test(s"MiniFloat.fromFloat($float) === $expected") {
       val miniFloat = MiniFloat.from(float)
       if (miniFloat.isNaN) {
@@ -169,7 +169,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckDrivenPropertyChecks {
     expectIsNaN: Boolean,
     expectIsFinite: Boolean,
   )(implicit
-    pos: Position,
+    loc: Location,
   ): Unit = {
     test(s"$mf isNan $expectIsNaN") {
       assertEquals(mf.isNaN, expectIsNaN)
