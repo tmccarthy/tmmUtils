@@ -2,7 +2,7 @@
 
 set -e
 
-KEY=$1
+KEY=$AES_KEY
 
 [ -n "$KEY" ] || { echo "No key provided"; kill "$PPID"; exit 1; }
 
