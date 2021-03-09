@@ -1,5 +1,5 @@
 # `tmmUtils`
-[![CircleCI](https://circleci.com/gh/tmccarthy/tmmUtils/tree/master.svg?style=shield)](https://circleci.com/gh/tmccarthy/tmmUtils/tree/master)
+[![Continuous Integration](https://github.com/tmccarthy/tmmUtils/actions/workflows/ci.yml/badge.svg)](https://github.com/tmccarthy/tmmUtils/actions/workflows/ci.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/au.id.tmm.tmm-utils/tmm-utils-syntax_2.13.svg)](https://repo.maven.apache.org/maven2/au/id/tmm/tmm-utils/tmm-utils-syntax_2.13/)
 
 A bunch of Scala utilities I've found myself writing that I haven't (yet) decided to spin out into 
