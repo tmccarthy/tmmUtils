@@ -12,6 +12,7 @@ lazy val root = project
     cats,
     circe,
     testingCore,
+    testingScalatest,
     testingScalacheck,
     testingCats,
   )
@@ -54,10 +55,16 @@ lazy val testingCore = project
   .in(file("testing/core"))
   .settings(settingsForSubprojectCalled("testing-core"))
   .settings(
-    libraryDependencies += "org.scalatest"     %% "scalatest"       % scalatestVersion,
     libraryDependencies += "commons-io"         % "commons-io"      % "2.6",
     libraryDependencies += "org.scalacheck"    %% "scalacheck"      % scalacheckVersion % Test,
     libraryDependencies += "org.scalatestplus" %% "scalacheck-1-15" % "3.2.3.0"         % Test,
+  )
+
+lazy val testingScalatest = project
+  .in(file("testing/scalatest"))
+  .settings(settingsForSubprojectCalled("testing-scalatest"))
+  .settings(
+    libraryDependencies += "org.scalatest" %% "scalatest" % scalatestVersion,
   )
 
 lazy val testingScalacheck = project
@@ -76,5 +83,5 @@ lazy val testingCats = project
     libraryDependencies += "org.typelevel" %% "cats-core"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-laws"              % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"           % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit-scalatest" % "1.0.1"     % Test, // TODO remove
   )

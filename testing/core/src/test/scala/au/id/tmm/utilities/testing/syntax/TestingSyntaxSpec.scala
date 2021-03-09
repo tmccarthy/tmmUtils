@@ -1,35 +1,35 @@
 package au.id.tmm.utilities.testing.syntax
 
-import org.scalatest.flatspec.AnyFlatSpec
+import munit.FunSuite
 
-class TestingSyntaxSpec extends AnyFlatSpec {
+class TestingSyntaxSpec extends FunSuite {
 
-  "get on Either" should "return the right value" in {
-    assert(Right("abc").get === "abc")
+  test("get on Either should return the right value") {
+    assertEquals(Right("abc").get, "abc")
   }
 
-  it should "throw an assertion error if the value is a left" in {
+  test("get on Either should throw an assertion error if the value is a left") {
     val assertionError = intercept[AssertionError](Left("abc").get)
 
-    assert(assertionError.getMessage === "Expected Right, but was Left(abc)")
+    assertEquals(assertionError.getMessage, "Expected Right, but was Left(abc)")
   }
 
-  it should "throw an assertion error with the left value as the cause if the left is throwable" in {
+  test("get on Either should throw an assertion error with the left value as the cause if the left is throwable") {
     val cause = new Exception()
 
     val assertionError = intercept[AssertionError](Left(cause).get)
 
-    assert(assertionError.getCause === cause)
+    assertEquals(assertionError.getCause, cause)
   }
 
-  "getLeft on Either" should "return the left value" in {
-    assert(Left("abc").leftGet === "abc")
+  test("getLeft on Either should return the left value") {
+    assertEquals(Left("abc").leftGet, "abc")
   }
 
-  it should "throw an assertion error if the value is a right" in {
+  test("getLeft on Either should throw an assertion error if the value is a right") {
     val assertionError = intercept[AssertionError](Right("abc").leftGet)
 
-    assert(assertionError.getMessage === "Expected Left, but was Right(abc)")
+    assertEquals(assertionError.getMessage, "Expected Left, but was Right(abc)")
   }
 
 }

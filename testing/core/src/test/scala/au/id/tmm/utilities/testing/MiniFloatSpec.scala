@@ -1,15 +1,15 @@
 package au.id.tmm.utilities.testing
 
 import au.id.tmm.utilities.testing.MiniFloatSpec.{FloatArithmeticOp, arbMiniFloat}
+import munit.FunSuite
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalactic.source.Position
-import org.scalatest.funsuite.AnyFunSuite
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 import scala.collection.MapView
 import scala.collection.immutable.ArraySeq
 
-class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
+class MiniFloatSpec extends FunSuite with ScalaCheckDrivenPropertyChecks {
 
   override implicit val generatorDrivenConfig: PropertyCheckConfiguration =
     PropertyCheckConfiguration(minSuccessful = 5000)
@@ -23,7 +23,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
     val duplicates: ArraySeq[(Float, ArraySeq[MiniFloat])] = occurrencesPerFloatValue.to(ArraySeq).filter(_._2.size > 1)
 
-    assert(duplicates === ArraySeq.empty, "Minifloats with duplicate values")
+    assertEquals(duplicates, ArraySeq.empty, "Minifloats with duplicate values")
   }
 
   private def testAllValuesContains(value: MiniFloat)(implicit pos: Position): Unit =
@@ -41,19 +41,19 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   testAllValuesContains(MiniFloat.NegativeInfinity)
 
   test("allValues contains NaN") {
-    assert(MiniFloat.allValues.count(_.isNaN) === 1, "has exactly one NaN value in allValues")
+    assertEquals(MiniFloat.allValues.count(_.isNaN), 1, "has exactly one NaN value in allValues")
   }
 
   test("allValues has max") {
     val maxInAllValues = MiniFloat.allValues.filter(_.isFinite).maxBy(_.toFloat)
 
-    assert(maxInAllValues === MiniFloat.MaxValue)
+    assertEquals(maxInAllValues, MiniFloat.MaxValue)
   }
 
   test("allValues has min") {
     val minInAllValues = MiniFloat.allValues.filter(_.isFinite).minBy(_.toFloat)
 
-    assert(minInAllValues === MiniFloat.MinValue)
+    assertEquals(minInAllValues, MiniFloat.MinValue)
   }
 
   test("behaves the same as Float for all operations on some key values") {
@@ -73,7 +73,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
         if (expectedAsFloat.isNaN) {
           assert(op.forMiniFloat(left, right).isNaN)
         } else {
-          assert(op.forMiniFloat(left, right).toFloat === expectedAsFloat)
+          assertEquals(op.forMiniFloat(left, right).toFloat, expectedAsFloat)
         }
     }
   }
@@ -86,7 +86,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (miniFloat.isNaN) {
         assert(expected.isNaN)
       } else {
-        assert(miniFloat === expected)
+        assertEquals(miniFloat, expected)
       }
     }
 
@@ -96,7 +96,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (miniFloat.isNaN) {
         assert(expected.isNaN)
       } else {
-        assert(miniFloat.toFloat === expected)
+        assertEquals(miniFloat.toFloat, expected)
       }
     }
 
@@ -144,7 +144,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (n.isNaN) {
         assert(MiniFloat.from(n).isNaN)
       } else {
-        assert(MiniFloat.from(n) === MiniFloat.from(n.toFloat), n)
+        assertEquals(MiniFloat.from(n), MiniFloat.from(n.toFloat), n)
       }
     }
   }
@@ -157,7 +157,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (fromToDouble.isNaN) {
         assert(fromToFloat.isNaN)
       } else {
-        assert(fromToDouble === fromToFloat, mf)
+        assertEquals(fromToDouble, fromToFloat, mf)
       }
     }
   }
@@ -172,11 +172,11 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     pos: Position,
   ): Unit = {
     test(s"$mf isNan $expectIsNaN") {
-      assert(mf.isNaN === expectIsNaN)
+      assertEquals(mf.isNaN, expectIsNaN)
     }
 
     test(s"$mf isFinite $expectIsFinite") {
-      assert(mf.isFinite === expectIsFinite)
+      assertEquals(mf.isFinite, expectIsFinite)
     }
   }
 
@@ -197,19 +197,19 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
   // Negation
 
   test("negate zero is zero") {
-    assert(-MiniFloat.Zero === MiniFloat.Zero)
+    assertEquals(-MiniFloat.Zero, MiniFloat.Zero)
   }
 
   test("negate one is one") {
-    assert(-MiniFloat.One === MiniFloat.NegativeOne)
+    assertEquals(-MiniFloat.One, MiniFloat.NegativeOne)
   }
 
   test("negate ∞ is -∞") {
-    assert(-MiniFloat.PositiveInfinity === MiniFloat.NegativeInfinity)
+    assertEquals(-MiniFloat.PositiveInfinity, MiniFloat.NegativeInfinity)
   }
 
   test("negate -∞ is ∞") {
-    assert(-MiniFloat.NegativeInfinity === MiniFloat.PositiveInfinity)
+    assertEquals(-MiniFloat.NegativeInfinity, MiniFloat.PositiveInfinity)
   }
 
   test("negate NaN is NaN") {
@@ -218,7 +218,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   test("negation inverse") {
     forAll { mf: MiniFloat =>
-      assert((-(-mf) === mf) || mf.isNaN)
+      assert((-(-mf) == mf) || mf.isNaN, mf)
     }
   }
 
@@ -232,7 +232,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (forward.isNaN) {
         assert(backward.isNaN)
       } else {
-        assert(forward === backward)
+        assertEquals(forward, backward)
       }
     }
   }
@@ -242,25 +242,25 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (mf.isNaN) {
         assert((mf + MiniFloat.Zero).isNaN)
       } else {
-        assert(mf + MiniFloat.Zero === mf)
+        assertEquals(mf + MiniFloat.Zero, mf)
       }
     }
   }
 
   test("max plus 1") {
-    assert(MiniFloat.MaxValue + MiniFloat.One === MiniFloat.MaxValue)
+    assertEquals(MiniFloat.MaxValue + MiniFloat.One, MiniFloat.MaxValue)
   }
 
   test("max plus max") {
-    assert(MiniFloat.MaxValue + MiniFloat.MaxValue === MiniFloat.PositiveInfinity)
+    assertEquals(MiniFloat.MaxValue + MiniFloat.MaxValue, MiniFloat.PositiveInfinity)
   }
 
   test("∞ + ∞") {
-    assert(MiniFloat.PositiveInfinity + MiniFloat.PositiveInfinity === MiniFloat.PositiveInfinity)
+    assertEquals(MiniFloat.PositiveInfinity + MiniFloat.PositiveInfinity, MiniFloat.PositiveInfinity)
   }
 
   test("∞ + 1") {
-    assert(MiniFloat.PositiveInfinity + MiniFloat.One === MiniFloat.PositiveInfinity)
+    assertEquals(MiniFloat.PositiveInfinity + MiniFloat.One, MiniFloat.PositiveInfinity)
   }
 
   test("∞ + (-∞)") {
@@ -283,7 +283,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (additionOfInverse.isNaN) {
         assert(subtraction.isNaN)
       } else {
-        assert(additionOfInverse === subtraction)
+        assertEquals(additionOfInverse, subtraction)
       }
     }
   }
@@ -308,7 +308,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (forward.isNaN) {
         assert(backward.isNaN)
       } else {
-        assert(forward === backward)
+        assertEquals(forward, backward)
       }
     }
   }
@@ -318,29 +318,29 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (mf.isNaN) {
         assert((mf * MiniFloat.One).isNaN)
       } else {
-        assert(mf * MiniFloat.One === mf)
+        assertEquals(mf * MiniFloat.One, mf)
       }
     }
   }
 
   test("max * 1") {
-    assert(MiniFloat.MaxValue * MiniFloat.One === MiniFloat.MaxValue)
+    assertEquals(MiniFloat.MaxValue * MiniFloat.One, MiniFloat.MaxValue)
   }
 
   test("max * max") {
-    assert(MiniFloat.MaxValue * MiniFloat.MaxValue === MiniFloat.PositiveInfinity)
+    assertEquals(MiniFloat.MaxValue * MiniFloat.MaxValue, MiniFloat.PositiveInfinity)
   }
 
   test("∞ * ∞") {
-    assert(MiniFloat.PositiveInfinity * MiniFloat.PositiveInfinity === MiniFloat.PositiveInfinity)
+    assertEquals(MiniFloat.PositiveInfinity * MiniFloat.PositiveInfinity, MiniFloat.PositiveInfinity)
   }
 
   test("∞ * 1") {
-    assert(MiniFloat.PositiveInfinity * MiniFloat.One === MiniFloat.PositiveInfinity)
+    assertEquals(MiniFloat.PositiveInfinity * MiniFloat.One, MiniFloat.PositiveInfinity)
   }
 
   test("∞ * (-∞)") {
-    assert(MiniFloat.PositiveInfinity * MiniFloat.NegativeInfinity === MiniFloat.NegativeInfinity)
+    assertEquals(MiniFloat.PositiveInfinity * MiniFloat.NegativeInfinity, MiniFloat.NegativeInfinity)
   }
 
   test("NaN multiplication") {
@@ -355,12 +355,12 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
     forAll { mf: MiniFloat =>
       val result = mf / MiniFloat.Zero
 
-      if (mf.isNaN || mf === MiniFloat.Zero) {
+      if (mf.isNaN || mf == MiniFloat.Zero) {
         assert(result.isNaN)
       } else if (mf.toFloat < 0f) {
-        assert(result === MiniFloat.NegativeInfinity)
+        assertEquals(result, MiniFloat.NegativeInfinity)
       } else {
-        assert(result === MiniFloat.PositiveInfinity)
+        assertEquals(result, MiniFloat.PositiveInfinity)
       }
     }
   }
@@ -372,7 +372,7 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
       if (result.isNaN) {
         assert(MiniFloat.from(left.toFloat / right.toFloat).isNaN)
       } else {
-        assert(result === MiniFloat.from(left.toFloat / right.toFloat))
+        assertEquals(result, MiniFloat.from(left.toFloat / right.toFloat))
       }
     }
   }
@@ -381,9 +381,9 @@ class MiniFloatSpec extends AnyFunSuite with ScalaCheckDrivenPropertyChecks {
 
   test("ordering consistent with float") {
     forAll { (left: MiniFloat, right: MiniFloat) =>
-      assert(
-        implicitly[Ordering[MiniFloat]].compare(left, right) ===
-          implicitly[Ordering[Float]].compare(left.toFloat, right.toFloat),
+      assertEquals(
+        implicitly[Ordering[MiniFloat]].compare(left, right),
+        implicitly[Ordering[Float]].compare(left.toFloat, right.toFloat),
       )
     }
   }

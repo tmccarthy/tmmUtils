@@ -1,4 +1,4 @@
-package au.id.tmm.utilities.testing
+package au.id.tmm.utilities.testing.scalatest
 
 import org.scalatest.flatspec.AnyFlatSpecLike
 
