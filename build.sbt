@@ -1,5 +1,3 @@
-import au.id.tmm.sbt.DependencySettings
-
 ThisBuild / sonatypeProfile := "au.id.tmm"
 ThisBuild / baseProjectName := "tmm-utils"
 ThisBuild / githubProjectName := "tmmUtils"
