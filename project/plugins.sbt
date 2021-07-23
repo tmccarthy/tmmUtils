@@ -1,1 +1,1 @@
-addSbtPlugin("au.id.tmm.sbt" % "sbt-tmm-plugin" % "0.1.2")
+addSbtPlugin("au.id.tmm.sbt" % "sbt-tmm-plugin" % "0.2.1")

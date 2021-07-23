@@ -5,7 +5,7 @@ ThisBuild / githubProjectName := "tmmUtils"
 lazy val root = project
   .in(file("."))
   .settings(settingsForRootProject)
-  .settings(console := (console in Compile in syntax).value)
+  .settings(console := (syntax / Compile / console).value)
   .aggregate(
     errors,
     syntax,
