@@ -17,10 +17,11 @@ lazy val root = project
     testingCats,
   )
 
-val catsVersion       = "2.4.2"
-val circeVersion      = "0.14.0-M1"
-val scalacheckVersion = "1.15.2"
-val scalatestVersion  = "3.2.0-M4"
+val catsVersion            = "2.6.1"
+val circeVersion           = "0.14.1"
+val scalacheckVersion      = "1.15.4"
+val scalatestVersion       = "3.2.9"
+val disciplineMunitVersion = "1.0.9"
 
 lazy val errors = project
   .in(file("errors"))
@@ -36,8 +37,8 @@ lazy val cats = project
   .settings(settingsForSubprojectCalled("cats"))
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"        % catsVersion,
-    libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "discipline-munit" % "1.0.6"     % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion            % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit" % disciplineMunitVersion % Test,
   )
   .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 
@@ -46,8 +47,8 @@ lazy val circe = project
   .settings(settingsForSubprojectCalled("circe"))
   .settings(
     libraryDependencies += "io.circe"      %% "circe-core"       % circeVersion,
-    libraryDependencies += "io.circe"      %% "circe-testing"    % circeVersion % Test,
-    libraryDependencies += "org.typelevel" %% "discipline-munit" % "1.0.6"      % Test,
+    libraryDependencies += "io.circe"      %% "circe-testing"    % circeVersion           % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit" % disciplineMunitVersion % Test,
   )
   .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 
@@ -82,6 +83,6 @@ lazy val testingCats = project
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"        % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-laws"        % catsVersion,
-    libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion % Test,
-    libraryDependencies += "org.typelevel" %% "discipline-munit" % "1.0.6"     % Test,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion            % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit" % disciplineMunitVersion % Test,
   )
