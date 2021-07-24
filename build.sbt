@@ -2,9 +2,6 @@ ThisBuild / sonatypeProfile := "au.id.tmm"
 ThisBuild / baseProjectName := "tmm-utils"
 ThisBuild / githubProjectName := "tmmUtils"
 
-ThisBuild / primaryScalaVersion := "3.0.1"
-ThisBuild / otherScalaVersions := List("2.13.6")
-
 lazy val root = project
   .in(file("."))
   .settings(settingsForRootProject)
