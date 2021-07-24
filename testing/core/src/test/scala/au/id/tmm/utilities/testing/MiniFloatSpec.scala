@@ -23,7 +23,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
 
     val duplicates: ArraySeq[(Float, ArraySeq[MiniFloat])] = occurrencesPerFloatValue.to(ArraySeq).filter(_._2.size > 1)
 
-    assertEquals(duplicates, ArraySeq.empty, "Minifloats with duplicate values")
+    assertEquals(duplicates, ArraySeq.empty[(Float, ArraySeq[MiniFloat])], "Minifloats with duplicate values")
   }
 
   private def testAllValuesContains(value: MiniFloat)(implicit loc: Location): Unit =
@@ -189,7 +189,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   testSpecialNumberExpectations(MiniFloat.MinPositiveValue, expectIsNaN = false, expectIsFinite = true)
 
   test("NaN != all MiniFloat") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       mf != MiniFloat.NaN
     }
   }
@@ -217,7 +217,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   }
 
   test("negation inverse") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       assert((-(-mf) == mf) || mf.isNaN, mf)
     }
   }
@@ -238,7 +238,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   }
 
   test("zero addition identity") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       if (mf.isNaN) {
         assert((mf + MiniFloat.Zero).isNaN)
       } else {
@@ -268,7 +268,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   }
 
   test("NaN addition") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       assert((mf + MiniFloat.NaN).isNaN)
     }
   }
@@ -289,7 +289,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   }
 
   test("NaN subtraction") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       assert((mf - MiniFloat.NaN).isNaN)
     }
   }
@@ -314,7 +314,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   }
 
   test("one multiplicative identity") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       if (mf.isNaN) {
         assert((mf * MiniFloat.One).isNaN)
       } else {
@@ -344,7 +344,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   }
 
   test("NaN multiplication") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       assert((mf * MiniFloat.NaN).isNaN)
     }
   }
@@ -352,7 +352,7 @@ class MiniFloatSpec extends FunSuite with ScalaCheckSuite {
   // Division
 
   test("divide by zero") {
-    forAll { mf: MiniFloat =>
+    forAll { (mf: MiniFloat) =>
       val result = mf / MiniFloat.Zero
 
       if (mf.isNaN || mf == MiniFloat.Zero) {
