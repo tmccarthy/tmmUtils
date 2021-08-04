@@ -10,6 +10,7 @@ lazy val root = project
     errors,
     syntax,
     cats,
+    catsEffect,
     circe,
     testingCore,
     testingScalatest,
@@ -18,6 +19,7 @@ lazy val root = project
   )
 
 val catsVersion            = "2.6.1"
+val catsEffectVersion      = "3.2.1"
 val circeVersion           = "0.14.1"
 val scalacheckVersion      = "1.15.4"
 val scalatestVersion       = "3.2.9"
@@ -33,12 +35,23 @@ lazy val syntax = project
   .settings(settingsForSubprojectCalled("syntax"))
 
 lazy val cats = project
-  .in(file("cats"))
+  .in(file("cats/cats-core"))
   .settings(settingsForSubprojectCalled("cats"))
   .settings(
     libraryDependencies += "org.typelevel" %% "cats-core"        % catsVersion,
     libraryDependencies += "org.typelevel" %% "cats-testkit"     % catsVersion            % Test,
     libraryDependencies += "org.typelevel" %% "discipline-munit" % disciplineMunitVersion % Test,
+  )
+  .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
+
+lazy val catsEffect = project
+  .in(file("cats/cats-effect"))
+  .settings(settingsForSubprojectCalled("cats-effect"))
+  .settings(
+    libraryDependencies += "org.typelevel" %% "cats-effect"         % catsEffectVersion,
+    libraryDependencies += "org.typelevel" %% "cats-testkit"        % catsVersion            % Test,
+    libraryDependencies += "org.typelevel" %% "discipline-munit"    % disciplineMunitVersion % Test,
+    libraryDependencies += "org.typelevel" %% "munit-cats-effect-3" % "1.0.5"                % Test,
   )
   .dependsOn(testingCats % "test->compile", testingScalacheck % "test->compile")
 

@@ -55,7 +55,7 @@ jobs:
       - run: sbt ++${{ matrix.scala }} test scalafmtCheckAll scalafmtSbtCheck
 
       - name: Compress target directories
-        run: tar cf targets.tar target testing/cats/target testing/core/target testing/scalacheck/target errors/target syntax/target circe/target cats/target testing/scalatest/target project/target
+        run: tar cf targets.tar target testing/cats/target testing/core/target testing/scalacheck/target errors/target syntax/target circe/target cats/cats-effect/target cats/cats-core/target testing/scalatest/target project/target
 
       - name: Upload target directories
         uses: actions/upload-artifact@v2
