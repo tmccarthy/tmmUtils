@@ -6,9 +6,10 @@ A bunch of Scala utilities I've found myself writing that I haven't (yet) decide
 their own projects.
 
 ```scala
-val tmmUtilsVersion = "0.7.0"
+val tmmUtilsVersion = "0.9.2"
 
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-cats"               % tmmUtilsVersion        // Cats utilities
+libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-cats-effect"        % tmmUtilsVersion        // Cats-effect utilities
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-circe"              % tmmUtilsVersion        // Circe hashing
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-errors"             % tmmUtilsVersion        // Errors
 libraryDependencies += "au.id.tmm.tmm-utils" %% "tmm-utils-syntax"             % tmmUtilsVersion        // Syntax utils
