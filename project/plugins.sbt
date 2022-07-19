@@ -1,1 +1,1 @@
-addSbtPlugin("au.id.tmm.sbt" % "sbt-tmm-plugin" % "0.3.0")
+addSbtPlugin("org.typelevel" % "sbt-typelevel" % "0.4.12")

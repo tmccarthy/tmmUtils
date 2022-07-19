@@ -18,7 +18,7 @@ object EnumeratedCodec {
     *
     * @throws java.lang.IllegalArgumentException if there are duplicate mapping keys or values
     */
-  def apply[T : ClassTag, A : Encoder : Decoder : ClassTag](
+  def apply[T : ClassTag, A : Encoder : Decoder](
     mappings: (T, A)*,
   ): Codec[T] = {
     val encodeLookup: mutable.Map[T, A] = mutable.Map()

@@ -58,7 +58,7 @@ object MiniFloat {
   object NaN              extends MiniFloat(Float.NaN)
 
   private final class Finite private (significand: Int, exponent: Int)
-      extends MiniFloat(significand * math.pow(Finite.base, exponent).toFloat)
+      extends MiniFloat(significand * math.pow(Finite.base.toDouble, exponent.toDouble).toFloat)
 
   private[MiniFloat] object Finite {
 
@@ -89,7 +89,7 @@ object MiniFloat {
       */
     def from(float: Float): Option[Finite] = {
       val exponent: Int    = math.getExponent(float)
-      val significand: Int = math.round(float / math.pow(Finite.base, exponent).toFloat)
+      val significand: Int = math.round(float / math.pow(Finite.base.toDouble, exponent.toDouble).toFloat)
 
       if (significand == 0 || exponent < minExponent) {
         Some(zero)
@@ -99,14 +99,17 @@ object MiniFloat {
         try {
           val ordersOfMagnitudeToShift = math.subtractExact(exponent, maxExponent)
 
-          val proposedSignificand: Int = math.multiplyExact(significand, math.pow(base, ordersOfMagnitudeToShift).toInt)
-          val proposedExponent: Int    = math.subtractExact(exponent, ordersOfMagnitudeToShift)
+          val proposedSignificand: Int = math.multiplyExact(
+            significand,
+            math.pow(base.toDouble, ordersOfMagnitudeToShift.toDouble).toInt,
+          )
+          val proposedExponent: Int = math.subtractExact(exponent, ordersOfMagnitudeToShift)
 
           Option.when(withinBounds(proposedSignificand, proposedExponent)) {
             new Finite(proposedSignificand, proposedExponent)
           }
         } catch {
-          case e: ArithmeticException => None
+          case _: ArithmeticException => None
         }
       } else {
         None

@@ -45,7 +45,7 @@ object Planet {
 
   implicit val ordering: Ordering[Planet] = Ordering.by(_.distanceFromSunAU)
 
-  sealed abstract class Feature(planet: Planet) {
+  sealed abstract class Feature(protected val planet: Planet) {
     def name: String = this.toString
   }
 
