@@ -77,7 +77,11 @@ object InvariantK {
     }
   }
 
-  implicit def tmmUtilsInvariantKForMonadError[E]: InvariantK[MonadError[*[_], E]] = new InvariantK[MonadError[*[_], E]] {
+  trait MonadErrorE[E] {
+    type K[F[_]] = MonadError[F, E]
+  }
+
+  implicit def tmmUtilsInvariantKForMonadError[E]: InvariantK[MonadErrorE[E]#K] = new InvariantK[MonadErrorE[E]#K] {
     override def imapK[F[_], G[_]](Fparam: MonadError[F, E])(fFGparam: F ~> G)(fGFparam: G ~> F): MonadError[G, E] = new DerivedMonadError[F, G, E] {
       override protected def F: MonadError[F, E] = Fparam
       override protected def fFG: F ~> G = fFGparam
@@ -152,7 +156,7 @@ object InvariantK {
     override def tailRecM[A, B](a: A)(f: A => G[Either[A, B]]): G[B] = fFG(F.tailRecM(a)(f.andThen(fGF.apply[Either[A, B]])))
   }
 
-  private[classes] trait DerivedMonadError[F[_], G[_], E] extends DerivedTypeclass[MonadError[*[_], E], F, G] with DerivedMonad[F, G] with MonadError[G, E] {
+  private[classes] trait DerivedMonadError[F[_], G[_], E] extends DerivedTypeclass[MonadErrorE[E]#K, F, G] with DerivedMonad[F, G] with MonadError[G, E] {
     override def raiseError[A](e: E): G[A] = fFG(F.raiseError(e))
     override def handleErrorWith[A](ga: G[A])(f: E => G[A]): G[A] = fFG(F.handleErrorWith(fGF(ga))(f.andThen(fGF.apply[A])))
   }

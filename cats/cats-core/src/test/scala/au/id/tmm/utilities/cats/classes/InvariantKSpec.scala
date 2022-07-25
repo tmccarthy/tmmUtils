@@ -17,8 +17,37 @@ import scala.collection.immutable.ArraySeq
 
 class InvariantKSpec extends FunSuite with DisciplineSuite {
 
-  private type WrappedOption[A] = WrappedK[Option, A]
-  private type WrappedList[A]   = WrappedK[List, A]
+  private type WrappedOption[A]     = WrappedK[Option, A]
+  private type WrappedList[A]       = WrappedK[List, A]
+  private type MonadErrorUnit[F[_]] = MonadError[F, Unit]
+
+  private val wrapWrappedList = new FunctionK[List, WrappedList] {
+    override def apply[A](fa: List[A]): WrappedList[A] = WrappedK(fa)
+  }
+
+  private val unwrapWrappedList = new FunctionK[WrappedList, List] {
+    override def apply[A](fa: WrappedList[A]): List[A] = fa.unwrap
+  }
+
+  private val optionToList = new FunctionK[Option, List] {
+    override def apply[A](fa: Option[A]): List[A] = fa.toList
+  }
+
+  private val listToHeadOption = new FunctionK[List, Option] {
+    override def apply[A](fa: List[A]): Option[A] = fa.headOption
+  }
+
+  private val listToLastOption = new FunctionK[List, Option] {
+    override def apply[A](fa: List[A]): Option[A] = fa.lastOption
+  }
+
+  private val listToSet = new FunctionK[List, Set] {
+    override def apply[A](fa: List[A]): Set[A] = fa.toSet
+  }
+
+  private val setToList = new FunctionK[Set, List] {
+    override def apply[A](fa: Set[A]): List[A] = fa.toList
+  }
 
   private implicit val instancesUnderTestForWrappedOption: MonadError[WrappedOption, Unit] = {
     val fFG: Option ~> WrappedOption = new FunctionK[Option, WrappedOption] {
@@ -29,14 +58,14 @@ class InvariantKSpec extends FunSuite with DisciplineSuite {
       override def apply[A](fa: WrappedOption[A]): Option[A] = fa.unwrap
     }
 
-    InvariantK[MonadError[*[_], Unit]].imapK[Option, WrappedOption](MonadError[Option, Unit])(fFG)(fGF)
+    InvariantK[MonadErrorUnit].imapK[Option, WrappedOption](MonadError[Option, Unit])(fFG)(fGF)
   }
 
   private implicit val traverseUnderTestForWrappedList: Traverse[WrappedList] =
-    Traverse[List].imapK[WrappedList](λ[List ~> WrappedList](WrappedK.apply(_)))(λ[WrappedList ~> List](_.unwrap))
+    Traverse[List].imapK[WrappedList](wrapWrappedList)(unwrapWrappedList)
 
   private implicit val alternativeUnderTestForWrappedList: Alternative[WrappedList] =
-    Alternative[List].imapK[WrappedList](λ[List ~> WrappedList](WrappedK.apply(_)))(λ[WrappedList ~> List](_.unwrap))
+    Alternative[List].imapK[WrappedList](wrapWrappedList)(unwrapWrappedList)
 
   private implicit val isomorphismsForWrappedList: SemigroupalTests.Isomorphisms[WrappedList] =
     SemigroupalTests.Isomorphisms.invariant[WrappedList](tmmUtilsInvariantForWrappedK)
@@ -44,14 +73,15 @@ class InvariantKSpec extends FunSuite with DisciplineSuite {
   private implicit def exhaustiveCheckForSet[A : ExhaustiveCheck]: ExhaustiveCheck[Set[A]] = ExhaustiveCheck.forSet[A]
 
   private implicit def exhaustiveCheckForFunction[A : ExhaustiveCheck, B : ExhaustiveCheck]: ExhaustiveCheck[A => B] = {
-    val allAs = ExhaustiveCheck[A].allValues
-    val allBs = ExhaustiveCheck[B].allValues.to(ArraySeq.untagged)
+    val allAs: List[A]     = ExhaustiveCheck[A].allValues
+    val allBs: ArraySeq[B] = ExhaustiveCheck[B].allValues.to(ArraySeq.untagged)
 
     val bs = allAs.indices.map(i => allBs.apply(i % allBs.size))
 
-    ExhaustiveCheck.instance {
+    ExhaustiveCheck.instance[A => B] {
       allAs.permutations.map { as =>
-        (as zip bs).toMap _
+        val asMap: Map[A, B] = (as zip bs).toMap
+        asMap: (A => B)
       }.toList
     }
   }
@@ -76,24 +106,22 @@ class InvariantKSpec extends FunSuite with DisciplineSuite {
     InvariantKTests[Functor].invariantK[Option, List, Set](
       arbTF = Arbitrary(Gen.const(Functor[Option])),
       arbfFG = Arbitrary(
-        Gen.const[Option ~> List](
-          λ[Option ~> List](_.toList),
-        ),
+        Gen.const[Option ~> List](optionToList),
       ),
       arbfGF = Arbitrary(
         Gen.oneOf[List ~> Option](
-          λ[List ~> Option](_.headOption),
-          λ[List ~> Option](_.lastOption),
+          listToHeadOption,
+          listToLastOption,
         ),
       ),
       arbfGH = Arbitrary(
         Gen.const[List ~> Set](
-          λ[List ~> Set](_.toSet),
+          listToSet,
         ),
       ),
       arbfHG = Arbitrary(
         Gen.const[Set ~> List](
-          λ[Set ~> List](_.toList),
+          setToList,
         ),
       ),
       eqTF = functorEq[Option, TrafficLight, CoinToss],
