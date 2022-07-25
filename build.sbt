@@ -1,6 +1,6 @@
 name := "tmm-utils"
 
-ThisBuild / tlBaseVersion := "0.9"
+ThisBuild / tlBaseVersion := "0.10"
 
 Sonatype.SonatypeKeys.sonatypeProfileName := "au.id.tmm"
 ThisBuild / organization := "au.id.tmm.tmm-utils"
@@ -45,7 +45,6 @@ val catsVersion            = "2.6.1"
 val catsEffectVersion      = "3.2.1"
 val circeVersion           = "0.14.1"
 val scalacheckVersion      = "1.15.4"
-val scalatestVersion       = "3.2.9"
 val disciplineMunitVersion = "1.0.9"
 val mUnitVersion           = "0.7.27"
 
