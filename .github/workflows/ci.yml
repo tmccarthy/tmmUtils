@@ -209,7 +209,7 @@ jobs:
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
       - name: Download target directories (2.13.8, rootJVM)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.13.8-rootJVM
 
@@ -219,7 +219,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.13.8, rootJVM)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.13.8-rootJVM
 
@@ -229,7 +229,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.13.8, rootJVM)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.13.8-rootJVM
 
@@ -239,7 +239,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (3.1.1, rootJVM)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-3.1.1-rootJVM
 
